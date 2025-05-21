@@ -2,7 +2,7 @@ import React from "react";
 
 const Nav = () => {
   return (
-    <div className="w-full flex flex-row justify-center p-5">
+    <div className="w-full bg-white shadow-md p-3 fixed top-0 left-0 z-50">
       <div className="flex  w-11/12 flex-row justify-between items-center">
         <div className="flex flex-row gap-2 text-xl">
           <div>MAN</div>
