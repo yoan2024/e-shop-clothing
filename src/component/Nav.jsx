@@ -2,9 +2,9 @@ import React from "react";
 
 const Nav = () => {
   return (
-    <div className="w-full flex flex-row justify-center  mt-2 text-xl">
-      <div className="flex  w-11/12 flex-row justify-between bg-yellow-300">
-        <div className="flex flex-row gap-2">
+    <div className="w-full flex flex-row justify-center p-5">
+      <div className="flex  w-11/12 flex-row justify-between items-center">
+        <div className="flex flex-row gap-2 text-xl">
           <div>MAN</div>
           <div>WOMAN</div>
           <div>KIDS</div>
@@ -12,9 +12,9 @@ const Nav = () => {
           <div>NEW</div>
         </div>
         <div>
-          <div>BALENCIAGA</div>
+          <div className="text-2xl font-semibold">Trendora</div>
         </div>
-        <div className="flex flex-row items-center gap-2">
+        <div className="flex flex-row  gap-4">
           <div className="w-5 h-5">
             <img src="/images/lupa.png" alt="" className="w-full h-full" />
           </div>
