@@ -1,32 +1,26 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useProducts } from "../context/ContextProducts";
 
 const Tendencia = () => {
-  const [products, setProducts] = useState([]);
+  const { products, setProducts } = useProducts();
   const [topProducts, setTopProducts] = useState([]);
-  const [img, setImg] = useState("");
-  useEffect(() => {
-    async function usarFecht() {
-      const data = await fetch("https://fakestoreapi.com/products")
-        .then((response) => response.json())
-        .then((data) => {
-          setProducts(data);
-          console.log(data);
-        });
-    }
-
-    usarFecht();
-  }, []);
-
-  if (!products) return <li>Cargando...</li>;
+  const [img, setImg] = useState(null);
 
   useEffect(() => {
-    if (products.length > 0) {
-      const top = products.filter((p) => p.rating?.rate >= 4.5);
-      setTopProducts(top); // ⬅️ guardar los productos con rating 5
-      console.log("top populares", top);
+    async function name(params) {
+      const productos = await products;
+      if (productos) {
+        if (productos.length > 0) {
+          const top = products.filter((p) => p.rating?.rate >= 4.5);
+          setTopProducts(top); // ⬅️ guardar los productos con rating 5
+        }
+      } else {
+        console.log("los productos son null");
+      }
     }
+    name();
   }, [products]);
 
   useEffect(() => {
@@ -35,8 +29,8 @@ const Tendencia = () => {
       setImg(img1);
     }
   }, [topProducts]);
-  console.log(topProducts);
-  console.log(img);
+
+  if (!products) return <li>Cargando...</li>;
 
   const handleOnClick = (direction) => {
     const currentIndex = topProducts.findIndex((p) => p.image === img);
@@ -52,8 +46,6 @@ const Tendencia = () => {
       console.log("No hay más productos en esa dirección");
     }
   };
-
-  console.log("top productos", topProducts);
 
   return (
     <div>
@@ -87,18 +79,6 @@ const Tendencia = () => {
           </div>
         </div>
       </div>
-      {products.map((p, index) => {
-        return (
-          <ol key={index}>
-            <li>{p.title}</li>
-            <li>{p.price} </li>
-            <li>{p.category}</li>
-            <li>
-              <img src={p.image} alt="" className="w-10 h-10" />{" "}
-            </li>
-          </ol>
-        );
-      })}
     </div>
   );
 };
