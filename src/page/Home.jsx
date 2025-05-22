@@ -2,12 +2,14 @@ import React from "react";
 import Hero from "../component/Hero";
 import Informacion from "../component/Informacion";
 import Tendencia from "../component/tendencia";
+import ProductsShow from "../component/ProductsShow";
 
 const Home = () => {
   return (
-    <div className="w-full mt-14  min-h-screen bg-blue-400">
+    <div className="w-full mt-14  min-h-screen px-2">
       <Hero />
       <Tendencia />
+      <ProductsShow />
       <Informacion />
     </div>
   );
