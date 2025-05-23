@@ -53,8 +53,10 @@ const Tendencia = () => {
         <h2>Top mas populares</h2>
         <div className="min-w-2/3 flex flex-row justify-center">
           <div>
-            <div className=" relative w-96 h-80">
-              <img src={img} alt="" className="w-full h-full " />
+            <div className=" relative ">
+              <div className="flex flex-row justify-center items-center">
+                <img src={img} alt="" className="w-96 h-80" />
+              </div>
               <span
                 className="absolute top-1/2 cursor-pointer right-0"
                 onClick={() => handleOnClick("correcta")}
