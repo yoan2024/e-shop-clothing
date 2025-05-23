@@ -6,7 +6,7 @@ import ProductsShow from "../component/ProductsShow";
 
 const Home = () => {
   return (
-    <div className="w-full mt-14  min-h-screen px-2">
+    <div className="w-full mt-14  min-h-screen p-2">
       <Hero />
       <Tendencia />
       <ProductsShow />

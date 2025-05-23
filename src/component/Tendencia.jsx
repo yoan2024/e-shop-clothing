@@ -8,6 +8,7 @@ const Tendencia = () => {
   const { products, setProducts } = useProducts();
   const [topProducts, setTopProducts] = useState([]);
   const [img, setImg] = useState(null);
+  const [currentProduct, setCurrentProduct] = useState([]);
 
   useEffect(() => {
     async function name(params) {
@@ -23,6 +24,15 @@ const Tendencia = () => {
     }
     name();
   }, [products]);
+
+  useEffect(() => {
+    if (img && topProducts) {
+      const findCurrent = topProducts.find((p) => p.image === img);
+      if (findCurrent) {
+        setCurrentProduct([findCurrent]);
+      }
+    }
+  }, [img]);
 
   useEffect(() => {
     if (topProducts.length > 0) {
@@ -81,6 +91,14 @@ const Tendencia = () => {
             </div>
           </div>
         </div>
+        {currentProduct.map((p) => {
+          return (
+            <ol key={p.id}>
+              <li>{p.title}</li>
+              <li className="font-bold">$ {p.price} </li>
+            </ol>
+          );
+        })}
       </div>
     </div>
   );
