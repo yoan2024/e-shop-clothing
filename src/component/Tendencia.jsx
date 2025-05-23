@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useProducts } from "../context/ContextProducts";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const Tendencia = () => {
   const { products, setProducts } = useProducts();
@@ -30,7 +31,7 @@ const Tendencia = () => {
     }
   }, [topProducts]);
 
-  if (!products) return <li>Cargando...</li>;
+  if (!products) return <ClipLoader color="#36d7b7" size={50} />;
 
   const handleOnClick = (direction) => {
     const currentIndex = topProducts.findIndex((p) => p.image === img);
