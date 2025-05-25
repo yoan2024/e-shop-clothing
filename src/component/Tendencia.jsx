@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; ///
 import { useProducts } from "../context/ContextProducts";
 import ClipLoader from "react-spinners/ClipLoader";
 
+///
 const Tendencia = () => {
+  const navegate = useNavigate();
   const { products, setProducts } = useProducts();
   const [topProducts, setTopProducts] = useState([]);
   const [img, setImg] = useState(null);
@@ -58,19 +60,31 @@ const Tendencia = () => {
     }
   };
 
+  const curren = topProducts.find((p) => p.image === img);
+
+  const handleRouter = (id) => {
+    if (!id) return;
+    navegate(`/product/${id}`);
+  };
   return (
     <div>
       <div className="flex flex-col justify-center items-center">
         <h2>Top mas populares</h2>
         <div className="min-w-2/3 flex flex-row justify-center">
           <div>
-            <div className=" relative ">
+            <div
+              className=" relative cursor-pointer "
+              onClick={() => handleRouter(curren.id)}
+            >
               <div className="flex flex-row justify-center items-center">
                 <img src={img} alt="" className="w-96 h-80" />
               </div>
               <span
                 className="absolute top-1/2 cursor-pointer right-0"
-                onClick={() => handleOnClick("correcta")}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleOnClick("correcta");
+                }}
               >
                 <img
                   src="/images/flecha-correcta.png"
@@ -80,7 +94,10 @@ const Tendencia = () => {
               </span>
               <span
                 className=" cursor-pointer absolute top-1/2"
-                onClick={() => handleOnClick("izquierda")}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleOnClick("izquierda");
+                }}
               >
                 <img
                   src="/images/flecha-izquierda.png"
@@ -93,7 +110,7 @@ const Tendencia = () => {
         </div>
         {currentProduct.map((p) => {
           return (
-            <ol key={p.id}>
+            <ol key={p.id} className="bg-red">
               <li>{p.title}</li>
               <li className="font-bold">$ {p.price} </li>
             </ol>
