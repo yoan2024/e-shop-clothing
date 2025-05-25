@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import { StarRating } from "../component/Starts";
+import { FavoriteButton } from "../component/Heart";
 const ProductDetails = () => {
   const [product, setProduct] = useState(null);
   const { products, setProducts } = useProducts();
@@ -40,7 +41,7 @@ const ProductDetails = () => {
           </div>
 
           <div className="absolute top-5 right-5 max-sm:right-0">
-            <img src="/images/heart.png" alt="" className="w-10 h-10  " />
+            <FavoriteButton />
           </div>
         </section>
         <section className="flex flex-col  items-center  max-sm:w-full gap-10  sm:w-2/4 ">
@@ -73,6 +74,7 @@ const ProductDetails = () => {
             </Link>
           </div>
         </section>{" "}
+        <section></section>
       </main>
     </div>
   );
