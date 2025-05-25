@@ -33,7 +33,7 @@ const Catalogo = () => {
           filterProducts.map((p, index) => {
             return (
               <>
-                <div key={index}>
+                <div key={index} onClick={() => handleProductDetail(p.id)}>
                   <CartProduct p={p} />
                 </div>
               </>

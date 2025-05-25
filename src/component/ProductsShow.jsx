@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useProducts } from "../context/ContextProducts";
+import { useNavigate } from "react-router-dom"; ///
 
 const ProductsShow = () => {
+  const navegate = useNavigate();
   const { products, setProducts } = useProducts();
   const [productHombre, setProductsHombre] = useState([]);
   const [productMujer, setProductsMujer] = useState([]);
@@ -43,8 +45,11 @@ const ProductsShow = () => {
     name();
   }, [products]);
 
-  console.log("mujer", productMujer);
-  console.log("hombre", productHombre);
+  const handleRouter = (id) => {
+    if (!id) return;
+    navegate(`/product/${id}`);
+  };
+
   if (!productHombre) return <li>Cargando...</li>;
   if (!productMujer) return <li>Cargando...</li>;
 
@@ -59,6 +64,7 @@ const ProductsShow = () => {
           <div
             key={p.id}
             className="w-48 h-64 flex flex-col items-center text-center transition-transform duration-300 transform hover:scale-105 hover:shadow-lg border rounded-xl p-2"
+            onClick={() => handleRouter(p.id)}
           >
             <div className="bg-white w-full h-40 flex items-center justify-center overflow-hidden rounded-md">
               <img
@@ -74,6 +80,7 @@ const ProductsShow = () => {
           </div>
         ))}
       </div>
+
       <div className="text-3xl  self-center mt-10">
         productos relevantes de Mujer
       </div>
@@ -82,6 +89,7 @@ const ProductsShow = () => {
           <div
             key={p.id}
             className="w-48 h-64 flex flex-col items-center text-center transition-transform duration-300 transform hover:scale-105 hover:shadow-lg border rounded-xl p-2"
+            onClick={() => handleRouter(p.id)}
           >
             <div className="bg-white w-full h-40 flex items-center justify-center overflow-hidden rounded-md">
               <img
@@ -105,6 +113,7 @@ const ProductsShow = () => {
           <div
             key={p.id}
             className="w-48 h-64 flex flex-col items-center text-center transition-transform duration-300 transform hover:scale-105 hover:shadow-lg border rounded-xl p-2"
+            onClick={() => handleRouter(p.id)}
           >
             <div className="bg-white w-full h-40 flex items-center justify-center overflow-hidden rounded-md">
               <img
@@ -128,6 +137,7 @@ const ProductsShow = () => {
           <div
             key={p.id}
             className="w-48 h-64 flex flex-col items-center text-center transition-transform duration-300 transform hover:scale-105 hover:shadow-lg border rounded-xl p-2"
+            onClick={() => handleRouter(p.id)}
           >
             <div className="bg-white w-full h-40 flex items-center justify-center overflow-hidden rounded-md">
               <img
