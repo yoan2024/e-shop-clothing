@@ -54,8 +54,8 @@ const ProductDetails = () => {
                 <span className="text-slate-600">
                   total reviews {product.rating.count}{" "}
                 </span>{" "}
-                {product.rating.rate}
               </div>
+              {product.rating.rate}
               <StarRating rating={product.rating.rate} />{" "}
             </div>
           </div>
