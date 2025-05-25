@@ -1,4 +1,4 @@
-import React from "react";
+import { StarRating } from "./Starts";
 
 const CartProduct = ({ p }) => {
   return (
@@ -14,6 +14,7 @@ const CartProduct = ({ p }) => {
         {p.title}
       </div>
       <div className="text-lg font-bold">${p.price}</div>
+      {<StarRating rating={p.rating.rate} />}
     </div>
   );
 };

@@ -14,10 +14,13 @@ const Catalogo = () => {
       setFilterProducts(products);
     }
   }, [products]);
-
+  console.log(filterProducts);
   return (
     <div className="w-full flex flex-row justify-end mt-14  p-2">
-      <Asidebar />
+      <Asidebar
+        filterProducts={filterProducts}
+        setFilterProducts={setFilterProducts}
+      />
       {!products && (
         <>
           <div className="min-h-screen flex flex-row w-5/6  justify-center items-center">
