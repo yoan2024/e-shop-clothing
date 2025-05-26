@@ -4,6 +4,7 @@ import Home from "./page/Home";
 import Nav from "./component/Nav";
 import Catalogo from "./page/Catalogo";
 import ProductDetails from "./page/ProductDetails";
+import Footer from "./component/Footer";
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
         <Route path="/catalogo" element={<Catalogo />} />
         <Route path="/product/:id" element={<ProductDetails />} />
       </Routes>
+      <Footer />
     </Router>
   );
 };
