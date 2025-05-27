@@ -5,17 +5,36 @@ import Nav from "./component/Nav";
 import Catalogo from "./page/Catalogo";
 import ProductDetails from "./page/ProductDetails";
 import Footer from "./component/Footer";
+import Login from "./page/Login";
+import Sign_up from "./page/Sign_up";
+import { useLocation } from "react-router-dom";
 
-const App = () => {
+const Layout = () => {
+  const location = useLocation();
+
+  const urls = ["/sign_up", "/login_in"];
+
+  const includesUrls = urls.includes(location.pathname);
+
   return (
-    <Router>
-      <Nav />
+    <>
+      {!includesUrls && <Nav />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/catalogo" element={<Catalogo />} />
         <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="/sign_up" element={<Sign_up />} />
+        <Route path="/login_in" element={<Login />} />
       </Routes>
-      <Footer />
+      {!includesUrls && <Footer />}
+    </>
+  );
+};
+
+const App = () => {
+  return (
+    <Router>
+      <Layout />
     </Router>
   );
 };
