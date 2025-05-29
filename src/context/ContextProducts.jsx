@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const Context = createContext();
 
-const UserProvider = ({ children }) => {
+const UserProviderProductos = ({ children }) => {
   const [products, setProducts] = useState();
 
   useEffect(() => {
@@ -33,4 +33,4 @@ export const useProducts = () => {
   return context;
 };
 
-export default UserProvider;
+export default UserProviderProductos;
