@@ -1,13 +1,23 @@
 import React, { useState } from "react";
+import { signup } from "../firebase/authService";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navegate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(email, password, name);
-    // Aquí llamas a tu función de login con Firebase
+    try {
+      const registrar = await signup(email, password, name);
+      console.log("Registrado con exito");
+      console.log(registrar);
+      navegate("/");
+    } catch (e) {
+      console.log("hubo un error", e);
+    }
   };
 
   return (
@@ -21,12 +31,10 @@ const Login = () => {
         />
       </div>
 
-      {/* Logo / Título */}
       <div>
         <div className="text-6xl font-bold text-white">Trendora</div>
       </div>
 
-      {/* Formulario */}
       <div className="bg-white p-8 rounded-lg shadow-lg">
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>

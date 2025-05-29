@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Hero from "../component/Hero";
 import Informacion from "../component/Informacion";
 import Tendencia from "../component/tendencia";
 import ProductsShow from "../component/ProductsShow";
+import { useUser } from "../context/User";
 
 const Home = () => {
   return (

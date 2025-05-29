@@ -8,8 +8,11 @@ import Footer from "./component/Footer";
 import Login from "./page/Login";
 import Sign_up from "./page/Sign_up";
 import { useLocation } from "react-router-dom";
+import { useUser } from "./context/User";
 
 const Layout = () => {
+  const { user, setUser } = useUser();
+  console.log("ESTE ES EL CURRENT USER", user);
   const location = useLocation();
 
   const urls = ["/sign_up", "/login_in"];

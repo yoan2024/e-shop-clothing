@@ -7,12 +7,10 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(email, password);
-    // Aquí llamas a tu función de login con Firebase
   };
 
   return (
     <div className="bg-amber-500 min-h-screen relative flex justify-center items-center gap-10">
-      {/* Imagen en la esquina */}
       <div className="w-96 h-60 absolute bottom-0 left-0">
         <img
           src="/images/personaC.png"
@@ -21,12 +19,10 @@ const Login = () => {
         />
       </div>
 
-      {/* Logo / Título */}
       <div>
         <div className="text-6xl font-bold text-white">Trendora</div>
       </div>
 
-      {/* Formulario */}
       <div className="bg-white p-8 rounded-lg shadow-lg">
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
