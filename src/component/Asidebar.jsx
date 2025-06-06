@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useProducts } from "../context/ContextProducts";
 
-const Asidebar = ({ setFilterProducts, filterProducts }) => {
+const Asidebar = ({ setFilterProducts, filterProducts, categ }) => {
   const { products, setProducts } = useProducts();
   const [category, setCategory] = useState("all");
   const [filterPrice, setFilterPrice] = useState("all");
@@ -54,6 +54,10 @@ const Asidebar = ({ setFilterProducts, filterProducts }) => {
     }
   }, [category, filterPrice, products, filterRating]);
 
+  useEffect(() => {
+    setCategory(categ);
+  }, [categ]);
+  console.log("caterogy real", category);
   return (
     <div className=" p-2 flex flex-col gap-6  w-1/6 bg-slate-100 rounded-xl  shadow-2xl">
       <div>

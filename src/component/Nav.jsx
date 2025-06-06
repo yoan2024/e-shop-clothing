@@ -1,17 +1,35 @@
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useUser } from "../context/User";
+import { logout } from "../firebase/authService";
+
 const Nav = () => {
+  const { user, setUser } = useUser();
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   const handleClick = (prom) => {
     if (prom === "MAN") {
-    } else if (prom === "WOMAN") {
-    } else if (prom === "KIDS") {
-    } else if (prom === "EXPLORE") {
-    } else if (prom === "NEW") {
+      navigate("/catalogo/men");
+    } else if (prom === "WOMEN") {
+      navigate("/catalogo/women");
+    } else if (prom === "JEWELERY") {
+      navigate("/catalogo/jewelery");
+    } else if (prom === "ELECTRONICS") {
+      navigate("/catalogo/electronics");
     } else if (prom === "HOME") {
       navigate("/");
+    } else if (prom === "PERFIL") {
+      navigate("/perfilUser");
     }
   };
+
+  if (!user) return null;
 
   return (
     <div className="w-full bg-white/90 shadow-md flex flex-row justify-center p-3 fixed top-0 left-0 z-50">
@@ -26,20 +44,20 @@ const Nav = () => {
           <div className="cursor-pointer" onClick={() => handleClick("MAN")}>
             MAN
           </div>
-          <div className="cursor-pointer" onClick={() => handleClick("WOAMN")}>
+          <div className="cursor-pointer" onClick={() => handleClick("WOMEN")}>
             WOMAN
-          </div>
-          <div className="cursor-pointer" onClick={() => handleClick("KIDS")}>
-            KIDS
           </div>
           <div
             className="cursor-pointer"
-            onClick={() => handleClick("EXPLORE")}
+            onClick={() => handleClick("JEWELERY")}
           >
-            EXPLORE
+            JEWELERY
           </div>
-          <div className="cursor-pointer" onClick={() => handleClick("NEW")}>
-            NEW
+          <div
+            className="cursor-pointer"
+            onClick={() => handleClick("ELECTRONICS")}
+          >
+            ELECTRONICS
           </div>
         </div>
         <div>
@@ -49,9 +67,49 @@ const Nav = () => {
           <div className="w-5 h-5">
             <img src="/images/lupa.png" alt="" className="w-full h-full" />
           </div>
-          <div className="w-5 h-5">
-            {" "}
-            <img src="/images/user.png" alt="" className="w-full h-full" />
+          <div className="relative ">
+            {/* Ícono del usuario */}
+            <button
+              onClick={() => setOpen(!open)}
+              className="focus:outline-none"
+            >
+              <img
+                src={"/images/default-profile-picture.jpg"}
+                alt="User avatar"
+                className="w-10 h-10 rounded-full border border-gray-300"
+              />
+            </button>
+
+            {/* Panel desplegable */}
+            {open && (
+              <div className="absolute right-0 mt-2 w-64 bg-white border rounded-xl shadow-xl p-4 z-50">
+                <div className="flex items-center gap-3 mb-4">
+                  <img
+                    src={"/images/default-profile-picture.jpg"}
+                    alt="Avatar"
+                    className="w-12 h-12 rounded-full"
+                  />
+                  <div>
+                    <p className="font-semibold text-lg">{user.name}</p>
+                    <p className="text-sm text-gray-500">{user.email}</p>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <button
+                    onClick={() => navigate("/perfilUser")}
+                    className="text-left px-4 py-2 rounded-md hover:bg-gray-100"
+                  >
+                    Edit Profile
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="text-left px-4 py-2 rounded-md hover:bg-red-100 text-red-600"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
           <div className="w-5 h-5">
             {" "}
