@@ -14,7 +14,7 @@ const Informacion = () => {
         </div>
         <div
           className="p-2 cursor-pointer rounded-lg bg-red-100 font-semibold w-fit self-center"
-          onClick={() => navegation("/catalogo")}
+          onClick={() => navegation("/catalogo/all")}
         >
           Ver catalogo
         </div>

@@ -3,10 +3,17 @@ import Asidebar from "../component/Asidebar";
 import { useProducts } from "../context/ContextProducts";
 import ClipLoader from "react-spinners/ClipLoader";
 import CartProduct from "../component/CartProduct";
+import { useParams } from "react-router-dom";
 
 const Catalogo = () => {
+  const { category } = useParams();
+  const [categ, setCateg] = useState(category);
   const { products, setProduts } = useProducts();
   const [filterProducts, setFilterProducts] = useState([]);
+
+  useEffect(() => {
+    setCateg(category);
+  }, [category]);
 
   useEffect(() => {
     if (!products) return;
@@ -14,10 +21,13 @@ const Catalogo = () => {
       setFilterProducts(products);
     }
   }, [products]);
-  console.log(filterProducts);
+  console.log("todods los productos", products);
+
+  const handleProductDetail = () => {};
   return (
     <div className="w-full flex flex-row justify-end mt-14  p-2">
       <Asidebar
+        categ={categ}
         filterProducts={filterProducts}
         setFilterProducts={setFilterProducts}
       />

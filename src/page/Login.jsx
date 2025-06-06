@@ -1,12 +1,22 @@
 import React, { useState } from "react";
+import { login } from "../firebase/authService";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(email, password);
+    navigate("/");
+    try {
+      login(email, password);
+      console.log("login con exito");
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (

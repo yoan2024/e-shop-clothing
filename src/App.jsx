@@ -9,6 +9,7 @@ import Login from "./page/Login";
 import Sign_up from "./page/Sign_up";
 import { useLocation } from "react-router-dom";
 import { useUser } from "./context/User";
+import PerfilUser from "./page/PerfilUser";
 
 const Layout = () => {
   const { user, setUser } = useUser();
@@ -24,7 +25,8 @@ const Layout = () => {
       {!includesUrls && <Nav />}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/catalogo" element={<Catalogo />} />
+        <Route path="/perfilUser" element={<PerfilUser />} />
+        <Route path="/catalogo/:category" element={<Catalogo />} />
         <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="/sign_up" element={<Sign_up />} />
         <Route path="/login_in" element={<Login />} />
