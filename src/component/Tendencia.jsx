@@ -20,6 +20,7 @@ const Tendencia = () => {
           const top = products.filter((p) => p.rating?.rate >= 4.5);
           setTopProducts(top); // ⬅️ guardar los productos con rating 5
         }
+        console.log("los productos no son null");
       } else {
         console.log("los productos son null");
       }

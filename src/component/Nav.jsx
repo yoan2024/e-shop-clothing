@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useUser } from "../context/User";
 import { logout } from "../firebase/authService";
 
-const Nav = () => {
+const Nav = ({ togglee, settogglee }) => {
   const { user, setUser } = useUser();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -63,7 +63,7 @@ const Nav = () => {
         <div>
           <div className="text-2xl font-semibold">Trendora</div>
         </div>
-        <div className="flex flex-row   gap-4">
+        <div className="flex flex-row items-center  gap-4">
           <div className="w-5 h-5">
             <img src="/images/lupa.png" alt="" className="w-full h-full" />
           </div>
@@ -111,11 +111,14 @@ const Nav = () => {
               </div>
             )}
           </div>
-          <div className="w-5 h-5">
+          <div
+            className="w-5 h-5 cursor-pointer"
+            onClick={() => settogglee(!togglee)}
+          >
             {" "}
             <img src="/images/bolsa.png" alt="" className="w-full h-full" />
           </div>
-          <div className="w-5 h-5">
+          <div className="w-5 h-5 cursor-pointer">
             {" "}
             <img src="/images/heart.png" alt="" className="w-full h-full" />
           </div>
