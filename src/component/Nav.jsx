@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/User";
 import { useState } from "react";
-const Nav = ({ togglee, settogglee }) => {
+const Nav = ({ tog, settog }) => {
   const { user, setUser } = useUser();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -108,10 +108,7 @@ const Nav = ({ togglee, settogglee }) => {
               </div>
             )}
           </div>
-          <div
-            className="w-5 h-5 cursor-pointer"
-            onClick={() => settogglee(!togglee)}
-          >
+          <div className="w-5 h-5 cursor-pointer" onClick={() => settog(!tog)}>
             {" "}
             <img src="/images/bolsa.png" alt="" className="w-full h-full" />
           </div>
