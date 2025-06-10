@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./page/Home";
-import Nav from "./component/Nav";
+import Header from "./component/Header";
 import Catalogo from "./page/Catalogo";
 import ProductDetails from "./page/ProductDetails";
 import Footer from "./component/Footer";
@@ -111,7 +111,7 @@ const Layout = () => {
 
   return (
     <>
-      {!includesUrls && <Nav togglee={toggle} settogglee={setToggle} />}
+      {!includesUrls && <Header togglee={toggle} settogglee={setToggle} />}
       {/*SHOW ITEMS DEL CARRITO*/}
 
       {toggle && (
