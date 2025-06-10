@@ -4,9 +4,7 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 export function FavoriteButton({ id }) {
   const [liked, setLiked] = useState(false);
 
-  useEffect(() => {
-    console.log("liked!!");
-  }, [liked]);
+  useEffect(() => {}, [liked]);
   return (
     <button
       onClick={() => setLiked((prev) => !prev)}

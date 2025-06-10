@@ -14,6 +14,7 @@ import { useCarrito } from "./context/Carrito";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "./firebase/firebase-config";
 import { setDoc } from "firebase/firestore";
+import Favorites from "./page/Favorites";
 
 const Layout = () => {
   const { carrito, setCarrito } = useCarrito();
@@ -202,6 +203,7 @@ const Layout = () => {
 
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/favorites" element={<Favorites />} />
         <Route path="/perfilUser" element={<PerfilUser />} />
         <Route path="/catalogo/:category" element={<Catalogo />} />
         <Route path="/product/:id" element={<ProductDetails />} />
