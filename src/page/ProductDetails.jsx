@@ -13,14 +13,16 @@ import { addDoc, collection } from "firebase/firestore";
 import { updateDoc } from "firebase/firestore";
 import { deleteField } from "firebase/firestore";
 import { getDoc } from "firebase/firestore";
+import { useCarrito } from "../context/Carrito";
 
 const ProductDetails = () => {
+  const { carrito, setCarrito } = useCarrito();
   const { user, setUser } = useUser();
   const { products, setProducts } = useProducts();
   const [product, setProduct] = useState(null);
   const { id } = useParams();
   useEffect(() => {
-    async function foundProdut(params) {
+    async function foundProdut() {
       let produ = await products;
       if (produ) {
         const finProduct = await produ.find((p) => p.id === Number(id));
@@ -38,17 +40,62 @@ const ProductDetails = () => {
     }
 
     try {
-      const ids = await user.uid;
-      const citiesRef = collection(db, "carrito");
+      const uid = await user.uid;
+      const refDocument = doc(db, "Carrito", uid);
+      const getDocument = await getDoc(refDocument);
+      if (getDocument.exists()) {
+        const data = getDocument.data();
+        const carritosAll = data.carrito;
+        console.log("carrito current del firestorage", carritosAll);
+        console.log("esta es los current carritos", data);
+        const findItem = carritosAll.find((i) => i.id === product.id);
+        console.log("Se incontro el item", findItem);
+        if (findItem) {
+          const cars = carritosAll.map((i) => {
+            if (i.id === product.id && i.cantidad <= 6) {
+              const cant = i.cantidad + 1;
+              return { ...i, cantidad: cant, total: cant * i.price };
+            }
+            return i;
+          });
 
-      await setDoc(doc(citiesRef, ids), { product });
+          setDoc(doc(db, "Carrito", uid), {
+            carrito: cars,
+          });
+          setCarrito(cars);
+          return;
+        }
+
+        const newItem = { ...product, cantidad: 1, total: product.price };
+        const currenCars = [...carritosAll, newItem];
+        setDoc(doc(db, "Carrito", uid), {
+          carrito: currenCars,
+        });
+        setCarrito(currenCars);
+      } else {
+        const item = { ...product, cantidad: 1, total: product.price };
+        console.log("entro en el else", product.price);
+
+        try {
+          setDoc(doc(db, "Carrito", uid), {
+            carrito: [item],
+          });
+          setCarrito([item]);
+        } catch (e) {
+          console.log(
+            "hubo un eeror al intentar agregar iten al caarrito e ¿n firestorage",
+            e
+          );
+        }
+      }
     } catch (e) {
-      console.log(e);
+      console.log("hubo un error al principio del try", e);
     }
   };
 
   <ClipLoader />;
-  console.log(product);
+  console.log("current products", product);
+  console.log("current carrito", carrito);
 
   if (!product)
     return (
@@ -70,7 +117,7 @@ const ProductDetails = () => {
             </div>
 
             <div className="absolute top-5 right-5 max-sm:right-0">
-              <FavoriteButton />
+              <FavoriteButton id={product.id} />
             </div>
           </section>
           <section className="flex flex-col  items-center  max-sm:w-full gap-10  sm:w-2/4 ">

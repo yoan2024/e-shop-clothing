@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 
-export function FavoriteButton() {
+export function FavoriteButton({ id }) {
   const [liked, setLiked] = useState(false);
 
+  useEffect(() => {
+    console.log("liked!!");
+  }, [liked]);
   return (
     <button
       onClick={() => setLiked((prev) => !prev)}
