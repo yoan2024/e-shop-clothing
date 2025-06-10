@@ -18,10 +18,12 @@ import Favorites from "./page/Favorites";
 
 const Layout = () => {
   const { carrito, setCarrito } = useCarrito();
-  const [toggle, setToggle] = useState(false);
+
   const { user, setUser } = useUser();
   const [subTotal, setSubtotal] = useState(0);
   const [total, setTotal] = useState(0);
+  const [toggle, setToggle] = useState(false);
+
   const [cantidades, setCantidades] = useState({});
 
   useEffect(() => {
@@ -111,7 +113,7 @@ const Layout = () => {
 
   return (
     <>
-      {!includesUrls && <Header togglee={toggle} settogglee={setToggle} />}
+      {!includesUrls && <Header togle={toggle} settogle={setToggle} />}
       {/*SHOW ITEMS DEL CARRITO*/}
 
       {toggle && (
