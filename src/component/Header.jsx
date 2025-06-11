@@ -4,8 +4,10 @@ import Nav from "./Nav";
 import { useLocation } from "react-router-dom";
 import { Search } from "lucide-react";
 import { useProducts } from "../context/ContextProducts";
+import { useNavigate } from "react-router-dom";
 
 const Header = ({ togle, settogle }) => {
+  const navegate = useNavigate();
   const { products, setProducts } = useProducts();
   const [inpuValue, setInputValue] = useState("");
   const [suggest, setSuggest] = useState([]);
@@ -103,7 +105,22 @@ const Header = ({ togle, settogle }) => {
                     if (highlightedIndex >= 0) {
                       const selected = suggest[highlightedIndex];
                       console.log("User selected:", selected);
-                      // Optional: clear suggestions or navigate, etc.
+                      const findProdut = products.find(
+                        (p) => p.title === inpuValue
+                      );
+                      if (findProdut) {
+                        console.log("se incontro el product", findProdut);
+                        const id = findProdut.id;
+                        navegate(`product/${id}?from=search`);
+                        setSuggest([]);
+                        setInputValue("");
+                        setSearch("");
+                      } else {
+                        console.log("no se incontro", findProdut);
+                      }
+                    } else {
+                      console.log("buscando producto", inpuValue);
+                      navegate();
                     }
                   }
                 }}

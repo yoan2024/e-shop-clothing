@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useProducts } from "../context/ContextProducts";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+
 import ClipLoader from "react-spinners/ClipLoader";
 import { StarRating } from "../component/Starts";
 import { FavoriteButton } from "../component/Heart";
@@ -14,24 +15,48 @@ import { updateDoc } from "firebase/firestore";
 import { deleteField } from "firebase/firestore";
 import { getDoc } from "firebase/firestore";
 import { useCarrito } from "../context/Carrito";
-
+import { useLocation } from "react-router-dom";
 const ProductDetails = () => {
   const { carrito, setCarrito } = useCarrito();
   const { user, setUser } = useUser();
   const { products, setProducts } = useProducts();
   const [product, setProduct] = useState(null);
+  const [similarProducts, setSimilarProducts] = useState([]);
+
+  const [isSearch, setIsSearch] = useState(false);
   const { id } = useParams();
+  const location = useLocation();
+
   useEffect(() => {
-    async function foundProdut() {
-      let produ = await products;
-      if (produ) {
-        const finProduct = await produ.find((p) => p.id === Number(id));
-        setProduct(finProduct);
+    if (!products) return;
+    if (products.length > 0) {
+      const currentProduct = products.find((p) => p.id === Number(id));
+      setProduct(currentProduct);
+
+      if (isSearch && currentProduct) {
+        const similars = products
+          .filter(
+            (p) =>
+              p.id !== currentProduct.id &&
+              p.category === currentProduct.category
+          )
+          .slice(0, 4); // mostramos solo 4 similares
+        setSimilarProducts(similars);
+      } else {
+        setSimilarProducts([]);
       }
     }
-    foundProdut();
-  }, [products]);
+  }, [id, products]);
   const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    const url = new URLSearchParams(location.search).get("from") === "search";
+    if (url) {
+      setIsSearch(true);
+    } else {
+      setIsSearch(false);
+    }
+  }, [location.search]);
 
   const handleAddToCart = async () => {
     if (!user) {
@@ -106,54 +131,79 @@ const ProductDetails = () => {
   return (
     <>
       <div className="w-full mt-20 flex flex-row justify-center min-h-screen p-2">
-        <main className="flex  w-10/12 flex-col p-4  sm:flex-row">
-          <section className=" max-sm:w-full flex flex-row justify-center items-center sm:w-2/4 relative ">
-            <div>
-              <img
-                src={product.image}
-                alt={product.title}
-                className="max-sm:w-80 max-sm:h-80 sm:w-96 sm:h-96"
-              />
-            </div>
-
-            <div className="absolute top-5 right-5 max-sm:right-0">
-              <FavoriteButton id={product.id} />
-            </div>
-          </section>
-          <section className="flex flex-col  items-center  max-sm:w-full gap-10  sm:w-2/4 ">
-            <div className="text-center md:text-3xl text-2xl">
-              {product.title}
-            </div>
-            <div className="flex mt-4 flex-row justify-between  w-full items-center  border-b-2 border-dashed border-gray-500 h-32">
-              <div className="font-bold">PRICE: ${product.price} USD</div>
-              <div className="flex flex-row gap-1 items-center">
-                <div>
-                  <span className="text-slate-600">
-                    total reviews {product.rating.count}{" "}
-                  </span>{" "}
-                </div>
-                {product.rating.rate}
-                <StarRating rating={product.rating.rate} />{" "}
+        <main className="flex flex-col">
+          <div className="flex  w-10/12 flex-col p-4  sm:flex-row">
+            <section className=" max-sm:w-full flex flex-row justify-center items-center sm:w-2/4 relative ">
+              <div>
+                <img
+                  src={product.image}
+                  alt={product.title}
+                  className="max-sm:w-80 max-sm:h-80 sm:w-96 sm:h-96"
+                />
               </div>
-            </div>
 
-            <div>
-              <div>Description: </div>
-              <div className="text-slate-600">{product.description} </div>
-            </div>
-            <div className="w-full flex flex-row justify-between">
-              <Link
-                className="bg-black text-white font-bold rounded-lg w-52 text-center p-5 max-lg:w-32"
-                onClick={handleAddToCart}
-              >
-                Add To Cart
-              </Link>
-              <Link className="border-solid border-slate-400 border-2   font-bold rounded-lg max-lg:w-32 w-52 text-center p-5 ">
-                Checkout Now
-              </Link>
-            </div>
-          </section>{" "}
-          <section></section>
+              <div className="absolute top-5 right-5 max-sm:right-0">
+                <FavoriteButton id={product.id} />
+              </div>
+            </section>
+            <section className="flex flex-col  items-center  max-sm:w-full gap-10  sm:w-2/4 ">
+              <div className="text-center md:text-3xl text-2xl">
+                {product.title}
+              </div>
+              <div className="flex mt-4 flex-row justify-between  w-full items-center  border-b-2 border-dashed border-gray-500 h-32">
+                <div className="font-bold">PRICE: ${product.price} USD</div>
+                <div className="flex flex-row gap-1 items-center">
+                  <div>
+                    <span className="text-slate-600">
+                      total reviews {product.rating.count}{" "}
+                    </span>{" "}
+                  </div>
+                  {product.rating.rate}
+                  <StarRating rating={product.rating.rate} />{" "}
+                </div>
+              </div>
+
+              <div>
+                <div>Description: </div>
+                <div className="text-slate-600">{product.description} </div>
+              </div>
+              <div className="w-full flex flex-row justify-between">
+                <Link
+                  className="bg-black text-white font-bold rounded-lg w-52 text-center p-5 max-lg:w-32"
+                  onClick={handleAddToCart}
+                >
+                  Add To Cart
+                </Link>
+                <Link className="border-solid border-slate-400 border-2   font-bold rounded-lg max-lg:w-32 w-52 text-center p-5 ">
+                  Checkout Now
+                </Link>
+              </div>
+            </section>
+          </div>
+          {isSearch && similarProducts.length > 0 && (
+            <section className="w-full px-4 py-8">
+              <h2 className="text-2xl font-bold mb-4">Productos similares</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                {similarProducts.map((item) => (
+                  <div key={item.id} className="border rounded p-4">
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="w-full h-40 "
+                    />
+                    <div className="mt-2 font-semibold">{item.title}</div>
+                    <div className="text-gray-600">${item.price}</div>
+                    <Link
+                      to={`/product/${item.id}?from=search`}
+                      className="text-blue-500 underline"
+                    >
+                      Ver más
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
         </main>
       </div>
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
