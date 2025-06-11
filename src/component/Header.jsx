@@ -98,7 +98,10 @@ const Header = ({ togle, settogle }) => {
                     setMouseEnter(false);
                     e.preventDefault();
                     setHighlightedIndex((prev) => {
-                      const idIndex = prev === 0 ? -1 : prev - 1;
+                      const idIndex =
+                        prev === 0 ? suggest.length - 1 : prev - 1;
+
+                      setInputValue(suggest[idIndex].title);
                       return idIndex;
                     });
                   } else if (e.key === "Enter") {
