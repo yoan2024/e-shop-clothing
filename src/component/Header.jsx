@@ -160,6 +160,9 @@ const Header = ({ togle, settogle }) => {
                       setHighlightedIndex(index);
                       setMouseEnter(true);
                     }}
+                    onClick={() => {
+                      navegate(`product/${s.id}?from=search`);
+                    }}
                   >
                     <div className="ml-2">
                       <Search className="text-gray-600" />
