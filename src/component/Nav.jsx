@@ -28,6 +28,7 @@ const Nav = ({ tog, settog }) => {
       navigate("/favorites");
     }
   };
+  if (!user) return null;
   return (
     <nav>
       <div className="flex  w-11/12  flex-row  justify-between items-center">
