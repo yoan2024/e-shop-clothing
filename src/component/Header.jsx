@@ -11,6 +11,7 @@ const Header = ({ togle, settogle }) => {
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [search, setSearch] = useState("");
   const [suplentSearch, setSuplentSearch] = useState("");
+  const [mouseEnter, setMouseEnter] = useState(false);
   const { user, setUser } = useUser();
   const location = useLocation();
   const urls = ["/sign_up", "/login_in"];
@@ -18,7 +19,6 @@ const Header = ({ togle, settogle }) => {
   useEffect(() => {
     const listening = setTimeout(() => {
       const currentProducts = [...products];
-      console.log("current textSearch", search);
       if (search.trim() && search.length > 0) {
         const filterProducts = currentProducts.filter((p) =>
           p.title.toLowerCase().includes(search.toLowerCase())
@@ -44,10 +44,9 @@ const Header = ({ togle, settogle }) => {
   }, [search]);
   if (!user) return null;
 
-  console.log("current products", products);
-
   const handleSearch = () => {};
 
+  console.log("currnet lineado", highlightedIndex, suplentSearch);
   return (
     <header className="w-full bg-white/90 shadow-md flex flex-col justify-center p-3">
       <div className="flex flex-row items-center relative  justify-between mb-2">
@@ -66,22 +65,20 @@ const Header = ({ togle, settogle }) => {
                   if (suggest.length === 0) return;
 
                   if (e.key === "ArrowDown") {
+                    setMouseEnter(false);
                     e.preventDefault();
 
                     setHighlightedIndex((prev) => {
-                      const nextIndex = (prev + 1) % suggest.length;
+                      const idIndex = (prev + 1) % suggest.length;
 
-                      return nextIndex;
+                      return idIndex;
                     });
                   } else if (e.key === "ArrowUp") {
+                    setMouseEnter(false);
                     e.preventDefault();
                     setHighlightedIndex((prev) => {
-                      if (prev === -1) return -1;
-
-                      const nextIndex =
-                        prev === 0 ? suggest.length - 1 : prev - 1;
-
-                      return nextIndex;
+                      const idIndex = prev === 0 ? -1 : prev - 1;
+                      return idIndex;
                     });
                   } else if (e.key === "Enter") {
                     if (highlightedIndex >= 0) {
@@ -109,12 +106,21 @@ const Header = ({ togle, settogle }) => {
           {suggest.length > 0 && (
             <>
               {suggest.map((s, index) => {
+                const isHight = !mouseEnter && highlightedIndex === index;
                 return (
                   <div
                     key={s.id}
-                    className={`flex  mt-2   flex-row gap-2 hover:bg-slate-500 py-2 cursor-pointer ${
-                      highlightedIndex === index ? "bg-slate-500" : ""
+                    className={`flex  mt-2   flex-row gap-2  py-2 cursor-pointer ${
+                      isHight
+                        ? "bg-slate-500"
+                        : mouseEnter === false && highlightedIndex >= 0
+                        ? ""
+                        : "hover:bg-slate-500"
                     }`}
+                    onMouseEnter={() => {
+                      setHighlightedIndex(index);
+                      setMouseEnter(true);
+                    }}
                   >
                     <div className="ml-2">
                       <Search className="text-gray-600" />
