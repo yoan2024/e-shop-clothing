@@ -21,7 +21,10 @@ const Header = ({ togle, settogle }) => {
   const includesUrls = urls.includes(location.pathname);
   useEffect(() => {
     const listening = setTimeout(() => {
+      console.log("current productos", products);
+      if (!products) return;
       const currentProducts = [...products];
+
       if (search.trim() && search.length > 0) {
         let filterProducts;
 
@@ -54,7 +57,6 @@ const Header = ({ togle, settogle }) => {
       clearTimeout(listening);
     };
   }, [search]);
-  if (!user) return null;
 
   const handleSearch = () => {};
 
