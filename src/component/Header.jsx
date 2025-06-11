@@ -7,6 +7,7 @@ import { useProducts } from "../context/ContextProducts";
 
 const Header = ({ togle, settogle }) => {
   const { products, setProducts } = useProducts();
+  const [inpuValue, setInputValue] = useState("");
   const [suggest, setSuggest] = useState([]);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [search, setSearch] = useState("");
@@ -20,9 +21,17 @@ const Header = ({ togle, settogle }) => {
     const listening = setTimeout(() => {
       const currentProducts = [...products];
       if (search.trim() && search.length > 0) {
-        const filterProducts = currentProducts.filter((p) =>
-          p.title.toLowerCase().includes(search.toLowerCase())
-        );
+        let filterProducts;
+
+        if (search.length < 3) {
+          filterProducts = currentProducts.filter((p) =>
+            p.title.toLowerCase().startWith(search.toLowerCase())
+          );
+        } else {
+          filterProducts = currentProducts.filter((p) =>
+            p.title.toLowerCase().includes(search.toLowerCase())
+          );
+        }
 
         const newSuggest = filterProducts
           .map((p) => {
@@ -32,6 +41,7 @@ const Header = ({ togle, settogle }) => {
 
         setSuggest(newSuggest);
         console.log("current suggest", suggest);
+        setHighlightedIndex(-1);
       } else {
         console.log("escribe algo en el search");
         setSuggest([]);
@@ -46,7 +56,6 @@ const Header = ({ togle, settogle }) => {
 
   const handleSearch = () => {};
 
-  console.log("currnet lineado", highlightedIndex, suplentSearch);
   return (
     <header className="w-full bg-white/90 shadow-md flex flex-col justify-center p-3">
       <div className="flex flex-row items-center relative  justify-between mb-2">
@@ -60,17 +69,27 @@ const Header = ({ togle, settogle }) => {
                 className="text-xl w-full p-2 border-none"
                 placeholder="buscar productos...."
                 type="text"
-                value={search}
+                value={inpuValue}
                 onKeyDown={(e) => {
                   if (suggest.length === 0) return;
 
                   if (e.key === "ArrowDown") {
                     setMouseEnter(false);
                     e.preventDefault();
+                    if (highlightedIndex === -1) {
+                      setSuplentSearch(search);
+                    }
 
+                    let index;
+                    if (highlightedIndex + 1 === suggest.length) {
+                      index = -1;
+                      setHighlightedIndex(index);
+                      setInputValue(suplentSearch);
+                      return;
+                    }
                     setHighlightedIndex((prev) => {
                       const idIndex = (prev + 1) % suggest.length;
-
+                      setInputValue(suggest[idIndex].title);
                       return idIndex;
                     });
                   } else if (e.key === "ArrowUp") {
@@ -89,7 +108,10 @@ const Header = ({ togle, settogle }) => {
                   }
                 }}
                 id="search"
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setInputValue(e.target.value);
+                }}
               />{" "}
             </div>
             <label
