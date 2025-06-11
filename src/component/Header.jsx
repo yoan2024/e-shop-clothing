@@ -91,7 +91,15 @@ const Header = ({ togle, settogle }) => {
                     }
                     setHighlightedIndex((prev) => {
                       const idIndex = (prev + 1) % suggest.length;
-                      setInputValue(suggest[idIndex].title);
+                      if (
+                        highlightedIndex >= 0 &&
+                        highlightedIndex < suggest.length
+                      ) {
+                        const selected = suggest[highlightedIndex];
+                        if (selected) {
+                          setInputValue(selected.title);
+                        }
+                      }
                       return idIndex;
                     });
                   } else if (e.key === "ArrowUp") {
@@ -100,8 +108,16 @@ const Header = ({ togle, settogle }) => {
                     setHighlightedIndex((prev) => {
                       const idIndex =
                         prev === 0 ? suggest.length - 1 : prev - 1;
+                      if (
+                        highlightedIndex >= 0 &&
+                        highlightedIndex < suggest.length
+                      ) {
+                        const selected = suggest[highlightedIndex];
+                        if (selected) {
+                          setInputValue(selected.title);
+                        }
+                      }
 
-                      setInputValue(suggest[idIndex].title);
                       return idIndex;
                     });
                   } else if (e.key === "Enter") {
