@@ -113,7 +113,7 @@ const Layout = () => {
 
   return (
     <>
-      {!includesUrls && <Header togle={toggle} settogle={setToggle} />}
+      <Header togle={toggle} settogle={setToggle} />
       {/*SHOW ITEMS DEL CARRITO*/}
 
       {toggle && (
