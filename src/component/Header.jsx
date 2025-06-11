@@ -1,25 +1,50 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUser } from "../context/User";
 import Nav from "./Nav";
 import { useLocation } from "react-router-dom";
 import { Search } from "lucide-react";
+import { useProducts } from "../context/ContextProducts";
 
 const Header = ({ togle, settogle }) => {
-  const [textSearch, setTextSearch] = useState("");
-  const [suggest, setSuggest] = useState([
-    { id: 1, title: "hola como estas bb" },
-    { id: 1, title: "hola como estas bb" },
-    { id: 1, title: "hola como estas bb" },
-  ]);
+  const { products, setProducts } = useProducts();
+  const [suggest, setSuggest] = useState([]);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [search, setSearch] = useState("");
+  const [suplentSearch, setSuplentSearch] = useState("");
   const { user, setUser } = useUser();
   const location = useLocation();
-
   const urls = ["/sign_up", "/login_in"];
-
   const includesUrls = urls.includes(location.pathname);
+  useEffect(() => {
+    const listening = setTimeout(() => {
+      const currentProducts = [...products];
+      console.log("current textSearch", search);
+      if (search.trim() && search.length > 0) {
+        const filterProducts = currentProducts.filter((p) =>
+          p.title.toLowerCase().includes(search.toLowerCase())
+        );
 
+        const newSuggest = filterProducts
+          .map((p) => {
+            return { id: p.id, title: p.title };
+          })
+          .slice(0, 6);
+
+        setSuggest(newSuggest);
+        console.log("current suggest", suggest);
+      } else {
+        console.log("escribe algo en el search");
+        setSuggest([]);
+      }
+    }, 1000);
+
+    return () => {
+      clearTimeout(listening);
+    };
+  }, [search]);
   if (!user) return null;
+
+  console.log("current products", products);
 
   const handleSearch = () => {};
 
@@ -29,7 +54,7 @@ const Header = ({ togle, settogle }) => {
         <div>
           <img src="/images/marca.png" alt="" className="w-28 h-28" />
         </div>
-        <div className="w-1/2  absolute top-10 left-1/4   border-solid border-2 border-slate-600 ">
+        <div className="w-1/2  z-10 bg-white absolute top-10 left-1/4   border-solid border-2 border-slate-600 ">
           <div className="flex flex-row items-center">
             <div className="w-full">
               <input
@@ -37,6 +62,35 @@ const Header = ({ togle, settogle }) => {
                 placeholder="buscar productos...."
                 type="text"
                 value={search}
+                onKeyDown={(e) => {
+                  if (suggest.length === 0) return;
+
+                  if (e.key === "ArrowDown") {
+                    e.preventDefault();
+
+                    setHighlightedIndex((prev) => {
+                      const nextIndex = (prev + 1) % suggest.length;
+
+                      return nextIndex;
+                    });
+                  } else if (e.key === "ArrowUp") {
+                    e.preventDefault();
+                    setHighlightedIndex((prev) => {
+                      if (prev === -1) return -1;
+
+                      const nextIndex =
+                        prev === 0 ? suggest.length - 1 : prev - 1;
+
+                      return nextIndex;
+                    });
+                  } else if (e.key === "Enter") {
+                    if (highlightedIndex >= 0) {
+                      const selected = suggest[highlightedIndex];
+                      console.log("User selected:", selected);
+                      // Optional: clear suggestions or navigate, etc.
+                    }
+                  }
+                }}
                 id="search"
                 onChange={(e) => setSearch(e.target.value)}
               />{" "}
@@ -49,25 +103,30 @@ const Header = ({ togle, settogle }) => {
               <Search className=" border-l-2   border-solid border-slate-400" />
             </label>
           </div>
-          <div className="px-1 mt-2 py-2   bg-white">
-            {/*aqui va la suggest arrays*/}
 
-            {suggest.length > 0 && (
-              <>
-                {suggest.map((s) => {
-                  return (
-                    <div className="flex flex-row gap-2 mt-2 hover:bg-slate-500 py-2 cursor-pointer">
-                      <div className="ml-2">
-                        <Search className="text-gray-600" />
-                      </div>
-                      <div>{s.title}</div>
+          {/*aqui va la suggest arrays*/}
+
+          {suggest.length > 0 && (
+            <>
+              {suggest.map((s, index) => {
+                return (
+                  <div
+                    key={s.id}
+                    className={`flex  mt-2   flex-row gap-2 hover:bg-slate-500 py-2 cursor-pointer ${
+                      highlightedIndex === index ? "bg-slate-500" : ""
+                    }`}
+                  >
+                    <div className="ml-2">
+                      <Search className="text-gray-600" />
                     </div>
-                  );
-                })}
-              </>
-            )}
-          </div>
+                    <div>{s.title}</div>
+                  </div>
+                );
+              })}
+            </>
+          )}
         </div>
+
         <div className="rounded-3xl bg-black w-48 h-36">
           <img src="/images/descuento.png" alt="" className="w-full h-full" />
         </div>
