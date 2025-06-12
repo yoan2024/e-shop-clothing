@@ -14,7 +14,7 @@ import { useCarrito } from "./context/Carrito";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "./firebase/firebase-config";
 import { setDoc } from "firebase/firestore";
-import Favorites from "./page/Favorites";
+import Favoritess from "./page/Favoritess";
 
 const Layout = () => {
   const { carrito, setCarrito } = useCarrito();
@@ -39,10 +39,7 @@ const Layout = () => {
 
           let objet = {};
           let total = 0;
-          console.log(
-            "estos son los items del carrito del useeffect de getCantidades en app",
-            arrayItems
-          );
+
           for (let index in arrayItems) {
             let id = arrayItems[index].id;
             let cantidadd = arrayItems[index].cantidad;
@@ -51,21 +48,13 @@ const Layout = () => {
           }
           setTotal(total.toFixed(2));
           setCantidades(objet);
-          console.log(
-            "entro el en el useefect del app getCantidades y actualizo el setCantidades y total",
-            objet,
-            total
-          );
         }
       } else {
-        console.log("ussuario no existe");
       }
     };
 
     getCantidades();
   }, [user, carrito]);
-
-  console.log("current totla", total);
 
   const location = useLocation();
 
@@ -205,7 +194,7 @@ const Layout = () => {
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/favorites" element={<Favorites />} />
+        <Route path="/favorites" element={<Favoritess />} />
         <Route path="/perfilUser" element={<PerfilUser />} />
         <Route path="/catalogo/:category" element={<Catalogo />} />
         <Route path="/product/:id" element={<ProductDetails />} />

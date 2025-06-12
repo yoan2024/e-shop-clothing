@@ -5,15 +5,21 @@ import App from "./App.jsx";
 import UserProvider from "./context/User.jsx";
 import UserProviderProductos from "./context/ContextProducts.jsx";
 import CarritoProvider from "./context/Carrito.jsx";
+import FavoritesProvider from "./context/Favorites.jsx";
+import LikedProvider from "./context/Liked.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <CarritoProvider>
-      <UserProviderProductos>
-        <UserProvider>
-          <App />
-        </UserProvider>
-      </UserProviderProductos>
-    </CarritoProvider>
+    <LikedProvider>
+      <FavoritesProvider>
+        <CarritoProvider>
+          <UserProviderProductos>
+            <UserProvider>
+              <App />
+            </UserProvider>
+          </UserProviderProductos>
+        </CarritoProvider>
+      </FavoritesProvider>
+    </LikedProvider>
   </StrictMode>
 );

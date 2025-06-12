@@ -16,36 +16,69 @@ import { deleteField } from "firebase/firestore";
 import { getDoc } from "firebase/firestore";
 import { useCarrito } from "../context/Carrito";
 import { useLocation } from "react-router-dom";
+import { useFavorite } from "../context/Favorites";
+import { useLiked } from "../context/Liked";
 const ProductDetails = () => {
+  const { favorites, setFavorites } = useFavorite();
   const { carrito, setCarrito } = useCarrito();
   const { user, setUser } = useUser();
+  const { id } = useParams();
   const { products, setProducts } = useProducts();
   const [product, setProduct] = useState(null);
   const [similarProducts, setSimilarProducts] = useState([]);
-
+  const { liked, setLiked } = useLiked();
   const [isSearch, setIsSearch] = useState(false);
-  const { id } = useParams();
+
   const location = useLocation();
 
   useEffect(() => {
     if (!products) return;
-    if (products.length > 0) {
-      const currentProduct = products.find((p) => p.id === Number(id));
-      setProduct(currentProduct);
+    async function getProduct(params) {
+      if (products.length > 0) {
+        console.log("entro aca en el useefecttttt");
+        const currentProduct = products.find((p) => p.id === Number(id));
+        setProduct(currentProduct);
 
-      if (isSearch && currentProduct) {
-        const similars = products
-          .filter(
-            (p) =>
-              p.id !== currentProduct.id &&
-              p.category === currentProduct.category
-          )
-          .slice(0, 4); // mostramos solo 4 similares
-        setSimilarProducts(similars);
-      } else {
-        setSimilarProducts([]);
+        const iduser = user.uid;
+
+        const refdata = doc(db, "favorites", iduser);
+        const getdata = await getDoc(refdata);
+        console.log("collllllllllllll", getdata);
+        if (getdata.exists()) {
+          const f = getdata.data();
+          const d = f.favorites;
+          console.log("current id produt", id);
+          const findI = d.find((i) => i.id === Number(id));
+          console.log(
+            "se incontro el itemssssssssssssssssssssssssssssssssssssssssssssssss",
+            findI
+          );
+          if (findI) {
+            setLiked(true);
+          } else if (!findI) {
+            setLiked(false);
+            console.log(
+              "actualizado a false correctamente el liked en product details",
+              false
+            );
+          }
+        }
+        if (isSearch && currentProduct) {
+          const similars = products
+            .filter(
+              (p) =>
+                p.id !== currentProduct.id &&
+                p.category === currentProduct.category
+            )
+            .slice(0, 4); // mostramos solo 4 similares
+          setSimilarProducts(similars);
+        } else {
+          setSimilarProducts([]);
+        }
       }
     }
+
+    getProduct();
   }, [id, products]);
   const [showModal, setShowModal] = useState(false);
 
@@ -119,9 +152,7 @@ const ProductDetails = () => {
   };
 
   <ClipLoader />;
-  console.log("current products", product);
-  console.log("current carrito", carrito);
-
+  console.log("ccuren liked en page detailsproduct", liked);
   if (!product)
     return (
       <div className="w-full mt-14  min-h-screen flex flex-row justify-center items-center p-2">
@@ -143,7 +174,11 @@ const ProductDetails = () => {
               </div>
 
               <div className="absolute top-5 right-5 max-sm:right-0">
-                <FavoriteButton id={product.id} />
+                <FavoriteButton
+                  liked={liked}
+                  setLiked={setLiked}
+                  id={product.id}
+                />
               </div>
             </section>
             <section className="flex flex-col  items-center  max-sm:w-full gap-10  sm:w-2/4 ">

@@ -1,12 +1,16 @@
 import { StarRating } from "./Starts";
 import { useNavigate } from "react-router-dom";
+import { useLiked } from "../context/Liked";
 
 const CartProductFavorite = ({ p }) => {
+  const { liked, setLiked } = useLiked();
   const navegate = useNavigate();
   const handleRouter = (id) => {
     if (!id) return;
     navegate(`/product/${id}`);
   };
+
+  console.log("curunet liked", liked);
   return (
     <div
       className="w-48 h-80 flex flex-col items-center text-center transition-transform duration-300 transform hover:scale-105 hover:shadow-lg border rounded-xl p-2 cursor-pointer"
