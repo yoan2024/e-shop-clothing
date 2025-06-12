@@ -21,9 +21,8 @@ const Catalogo = () => {
       setFilterProducts(products);
     }
   }, [products]);
-  console.log("todods los productos", products);
-
   const handleProductDetail = () => {};
+
   return (
     <div className="w-full flex flex-row justify-end mt-14  p-2">
       <Asidebar

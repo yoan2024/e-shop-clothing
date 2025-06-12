@@ -1,17 +1,22 @@
 import { useEffect, useState } from "react";
 import { useUser } from "../context/User";
 import Nav from "./Nav";
+import React from "react";
 import { useLocation } from "react-router-dom";
 import { Search } from "lucide-react";
 import { useProducts } from "../context/ContextProducts";
 import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
 
 const Header = ({ togle, settogle }) => {
+  const wrapperRef = useRef(null); // 1️⃣ Creamos una referencia al contenedor
+  const [sugerenciasVisibles, setSugerenciasVisibles] = React.useState(true);
   const navegate = useNavigate();
   const { products, setProducts } = useProducts();
   const [inpuValue, setInputValue] = useState("");
   const [suggest, setSuggest] = useState([]);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const [suggestion, setSuggestionOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [suplentSearch, setSuplentSearch] = useState("");
   const [mouseEnter, setMouseEnter] = useState(false);
@@ -21,7 +26,6 @@ const Header = ({ togle, settogle }) => {
   const includesUrls = urls.includes(location.pathname);
   useEffect(() => {
     const listening = setTimeout(() => {
-      console.log("current productos", products);
       if (!products) return;
       const currentProducts = [...products];
 
@@ -58,6 +62,26 @@ const Header = ({ togle, settogle }) => {
     };
   }, [search]);
 
+  useEffect(() => {
+    // 2️⃣ Esta función se ejecuta cuando haces clic en cualquier parte del documento
+    function handleClickOutside(event) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        // 3️⃣ Si hiciste clic fuera del componente, cierra las sugerencias
+        setSugerenciasVisibles(false);
+      } else {
+        setSugerenciasVisibles(true);
+      }
+    }
+
+    // 4️⃣ Agregamos el listener al documento
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      // 5️⃣ Limpiamos el listener cuando el componente se desmonta
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleSearch = () => {};
 
   return (
@@ -66,7 +90,10 @@ const Header = ({ togle, settogle }) => {
         <div>
           <img src="/images/marca.png" alt="" className="w-28 h-28" />
         </div>
-        <div className="w-1/2  z-10 bg-white absolute top-10 left-1/4   border-solid border-2 border-slate-600 ">
+        <div
+          className="w-1/2  z-10 bg-white absolute top-10 left-1/4   border-solid border-2 border-slate-600 "
+          ref={wrapperRef}
+        >
           <div className="flex flex-row items-center">
             <div className="w-full">
               <input
@@ -163,7 +190,7 @@ const Header = ({ togle, settogle }) => {
 
           {/*aqui va la suggest arrays*/}
 
-          {suggest.length > 0 && (
+          {sugerenciasVisibles && suggest.length > 0 && (
             <>
               {suggest.map((s, index) => {
                 const isHight = !mouseEnter && highlightedIndex === index;

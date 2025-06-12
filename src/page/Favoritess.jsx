@@ -1,17 +1,19 @@
 import { useProducts } from "../context/ContextProducts";
 import { useEffect, useState } from "react";
 import CartProductFavorite from "../component/CartProductFavorite";
+import { useFavorite } from "../context/Favorites";
 
-const Favorites = () => {
-  const { products, setProducts } = useProducts();
-
-  const [produtos, setProductos] = useState([]);
+const Favoritess = () => {
+  const { favorites, setFavorites } = useFavorite();
+  const [displayed, setDisplayed] = useState([]);
 
   useEffect(() => {
-    if (products) {
-      setProductos(products);
+    if (!favorites) return null;
+    if (favorites) {
+      setDisplayed(favorites);
     }
-  }, [products]);
+  }, [favorites]);
+
   return (
     <div className="w-full mt-20 flex flex-row  justify-center min-h-screen p-2 ">
       <div className="flex flex-col  items-center min-w-96 w-4/5 ">
@@ -24,13 +26,11 @@ const Favorites = () => {
         </div>
         <div>
           <div className="w-11/12 flex flex-row gap-1 justify-center flex-wrap  border-slate-200">
-            {produtos.map((p, index) => {
+            {favorites.map((p, index) => {
               return (
-                <>
-                  <div key={index}>
-                    <CartProductFavorite p={p} />
-                  </div>
-                </>
+                <div key={index}>
+                  <CartProductFavorite p={p} />
+                </div>
               );
             })}
           </div>
@@ -40,4 +40,4 @@ const Favorites = () => {
   );
 };
 
-export default Favorites;
+export default Favoritess;

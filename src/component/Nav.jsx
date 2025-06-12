@@ -92,7 +92,7 @@ const Nav = ({ tog, settog }) => {
                     onClick={() => navigate("/perfilUser")}
                     className="text-left px-4 py-2 rounded-md hover:bg-gray-100"
                   >
-                    Edit Profile
+                    Ver perfil
                   </button>
                   <button
                     onClick={handleLogout}

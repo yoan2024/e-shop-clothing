@@ -33,7 +33,6 @@ const CarritoProvider = ({ children }) => {
         }
       }
       dataUser();
-      console.log("entro el useefte de carrito context");
     });
 
     return () => unSubscribe();
