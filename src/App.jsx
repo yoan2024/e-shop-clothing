@@ -4,6 +4,9 @@ import Home from "./page/Home";
 import Header from "./component/Header";
 import Catalogo from "./page/Catalogo";
 import ProductDetails from "./page/ProductDetails";
+import PagadoConexito from "./component/PagadoConexito";
+import { CheckCircle } from "lucide-react";
+import { updateDoc } from "firebase/firestore";
 import Footer from "./component/Footer";
 import Login from "./page/Login";
 import Sign_up from "./page/Sign_up";
@@ -21,9 +24,10 @@ const Layout = () => {
 
   const { user, setUser } = useUser();
   const [subTotal, setSubtotal] = useState(0);
+  const [descuento, setDescuento] = useState(0);
   const [total, setTotal] = useState(0);
   const [toggle, setToggle] = useState(false);
-
+  const [pagado, setPagado] = useState(false);
   const [cantidades, setCantidades] = useState({});
 
   useEffect(() => {
@@ -99,6 +103,78 @@ const Layout = () => {
       setCarrito(eliminarItem);
     }
   }
+
+  function generarID() {
+    const fecha = new Date();
+
+    const año = fecha.getFullYear();
+    const mes = fecha.getMonth();
+    const dia = fecha.getDay();
+    const hora = fecha.getHours();
+    const minuto = fecha.getMinutes();
+    const segundo = fecha.getSeconds();
+    const milisegundo = fecha.getMilliseconds();
+
+    const pedid =
+      `${año}` +
+      `${mes}` +
+      `${dia}` +
+      `${hora}` +
+      `${minuto}` +
+      `${segundo}` +
+      `${segundo}` +
+      `${milisegundo}`;
+    console.log(`PED-${pedid}`);
+    return `PED-${pedid}`;
+  }
+
+  async function handlePagar() {
+    if (!carrito) return;
+
+    const idPed = generarID();
+    const fechaPed = new Date().toLocaleDateString();
+    const iduser = user.uid;
+    const refdoc = doc(db, "pedidos", iduser);
+    const getdoc = await getDoc(refdoc);
+
+    const refuser = doc(db, "usuarios", iduser);
+    const getuser = await getDoc(refuser);
+    const datauserget = getuser.data();
+    const datauser = datauserget.user;
+
+    const ped = {
+      idPedido: idPed,
+      fechaPedido: fechaPed,
+      itemsPedido: carrito,
+      totalPagado: total,
+      estado: "Pendiente",
+      direction: datauser.direction,
+      telefono: datauser.telefono,
+      nombre: datauser.name,
+    };
+
+    if (getdoc.exists()) {
+      const currentP = getdoc.data();
+      const currentPedidos = currentP.pedidos;
+      console.log(currentPedidos, "cureenenne pedidos");
+      await updateDoc(refdoc, {
+        pedidos: [...currentPedidos, ped],
+      });
+    } else {
+      setDoc(refdoc, {
+        pedidos: [ped],
+        historialPedidos: [],
+      });
+    }
+
+    const refcarrito = doc(db, "Carrito", iduser);
+    setDoc(refcarrito, {
+      carrito: [],
+    });
+    setCarrito([]);
+    setPagado(true);
+  }
+  console.log("current carrito", carrito);
 
   return (
     <>
@@ -177,12 +253,19 @@ const Layout = () => {
                   <div>subtotal: </div>
                   <div>$ {total} </div>
                 </div>
+                <div className="flex text-xl flex-row justify-between">
+                  <div>descuento: </div>
+                  <div>$ {descuento} </div>
+                </div>
                 <div className="flex flex-row text-2xl justify-between">
                   <div>Total:</div>
                   <div>${total} </div>
                 </div>
                 <div className="self-end">
-                  <button className="bg-green-400 rounded-2xl font-bold text-xl  py-2 px-1">
+                  <button
+                    className="bg-green-400 rounded-2xl font-bold text-xl  py-2 px-1"
+                    onClick={() => handlePagar()}
+                  >
                     PAGAR
                   </button>
                 </div>
@@ -191,7 +274,7 @@ const Layout = () => {
           </div>
         </div>
       )}
-
+      {pagado && <PagadoConexito onClose={() => setPagado(false)} />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/favorites" element={<Favoritess />} />

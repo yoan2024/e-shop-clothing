@@ -4,7 +4,9 @@ import {
   signOut,
 } from "firebase/auth";
 import { auth } from "./firebase-config";
+import { doc, setDoc } from "firebase/firestore";
 import { updateProfile } from "firebase/auth";
+import { db } from "./firebase-config";
 
 export const signup = async (email: string, password: string, name: string) => {
   const credenciales = await createUserWithEmailAndPassword(
@@ -15,6 +17,19 @@ export const signup = async (email: string, password: string, name: string) => {
   const user = credenciales.user;
   await updateProfile(user, {
     displayName: name,
+  });
+  const idUser = user.uid;
+  const refDoc = doc(db, "usuarios", idUser);
+
+  await setDoc(refDoc, {
+    user: {
+      name,
+      correo: email,
+      telefono: "sin confirmar",
+      direction: "sin confirmar",
+      image: "",
+      imageDefault: "/images/perfilimg.avif",
+    },
   });
 
   return user;
