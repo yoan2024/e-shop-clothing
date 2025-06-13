@@ -1,229 +1,234 @@
-import { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useUser } from "../context/User";
-import { FaPencilAlt } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import ClipLoader from "react-spinners/ClipLoader";
 import { useCarrito } from "../context/Carrito";
+import { useNavigate } from "react-router-dom";
+import { db } from "../firebase/firebase-config";
+import { doc } from "firebase/firestore";
+import { getDoc } from "firebase/firestore";
+import { setDoc } from "firebase/firestore";
+import InputUser from "../component/InputUser";
+import { useImage } from "../context/Image";
+
 import ProfilePhotoUpdater from "../component/ProfilePhotoUpdater";
+import { logout } from "../firebase/authService";
+
+{
+  /*
+  {disable.includes("name") && (
+              <div className="flex justify-center items-center felx-row gap-2">
+                <div>
+                  <label htmlFor="name">name: </label>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="rounded-xl"
+                  />
+                </div>
+                <div>
+                  <button
+                    className=" p-1 rounded-xl bg-red-700"
+                    onClick={() => handleGuardar("name")}
+                  >
+                    guardar
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {!disable.includes("name") && (
+              <div className="flex flex-row gap-2 items-center">
+                <div className=" ">Nombre Completo :</div>
+                <div className="flex flex-row items-center gap-2">
+                  <div className="">{name} </div>
+                  <div
+                    className="w-6 h-6  group"
+                    onClick={() => handleClick("name")}
+                  >
+                    <FaPencilAlt className="w-full h-full cursor-pointer" />
+                    <div className="w-fit bottom-full text-sm text-blue-300 transition-opacity opacity-0 duration-200 group-hover:opacity-100 ">
+                      Editar
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}*/
+}
 
 const PerfilUsuario = () => {
+  const { url, setUrl } = useImage();
   const { carrito, setCarrito } = useCarrito();
   const navigate = useNavigate();
-  const { usuario, setUsuario } = useUser();
-  const pedidosRef = useRef < HTMLDivElement > null;
-  const location = useLocation();
-
-  //
+  const { user, setUser } = useUser();
   const [name, setName] = useState("");
+  const [cName, setCName] = useState(false);
   const [email, setEmail] = useState("");
+  const [cEmail, setCEmail] = useState(false);
+
   const [telefono, setTelefono] = useState("");
-  const [direction, setDirections] = useState("");
+  const [cTelefono, setCTelefono] = useState(false);
+  const [direction, setDirection] = useState("");
+  const [cDirection, setCDirection] = useState(false);
   const [disable, setDisable] = useState([]);
+
+  useEffect(() => {
+    async function name(params) {
+      if (user) {
+        const iduser = user.uid;
+        const refdoc = doc(db, "usuarios", iduser);
+        const getdoc = await getDoc(refdoc);
+        if (getdoc.exists()) {
+          const dada = getdoc.data();
+          const userdata = dada.user;
+          console.log("dataaaaaa", userdata);
+          const imagen = userdata.image || userdata.imageDefault;
+          setUrl(imagen);
+          setName(userdata.name);
+          setEmail(userdata.correo);
+          setTelefono(userdata.telefono);
+          setDirection(userdata.direction);
+        }
+      }
+    }
+    name();
+  }, [user]);
 
   const handleClick = (e) => {
     if (e === "name") {
-      setDisable(["name"]);
+      setDisable((prev) => [...prev, "name"]);
     } else if (e === "telefono") {
-      setDisable(["telefono"]);
+      setDisable((prev) => [...prev, "telefono"]);
     } else if (e === "email") {
       setDisable((prev) => [...prev, "email"]);
+    } else if (e === "direction") {
+      setDisable((prev) => [...prev, "direction"]);
     }
   };
 
-  const handleGuardar = (e) => {
+  const handleGuardar = async (e) => {
     if (e === "name") {
-      const newDisables = [...disable].filter((i) => i !== "name");
-      setDisable(newDisables);
+      setCName(true);
+    } else if (e === "telefono") {
+      setCTelefono(true);
+    } else if (e === "email") {
+      setCEmail(true);
+    } else if (e === "direction") {
+      setCDirection(true);
+    }
+
+    let newDisables;
+    let newData;
+    const iduser = user.uid;
+    const refdata = doc(db, "usuarios", iduser);
+    const getdata = await getDoc(refdata);
+    if (getdata.exists()) {
+      const datauser = getdata.data();
+      newData = datauser.user;
+    } else {
+      console.log("ususario no existe en base de datos");
+      return;
+    }
+
+    if (e === "name") {
+      newData = { ...newData, name };
+      newDisables = [...disable].filter((i) => i !== "name");
+    } else if (e === "telefono") {
+      newData = { ...newData, telefono };
+      newDisables = [...disable].filter((i) => i !== "telefono");
+    } else if (e === "email") {
+      newData = { ...newData, email };
+      newDisables = [...disable].filter((i) => i !== "email");
+    } else if (e === "direction") {
+      newData = { ...newData, direction };
+      newDisables = [...disable].filter((i) => i !== "direction");
+    }
+    setDoc(refdata, {
+      user: newData,
+    });
+    setDisable(newDisables);
+
+    if (e === "name") {
+      setCName(false);
+    } else if (e === "telefono") {
+      setCTelefono(false);
+    } else if (e === "email") {
+      setCEmail(false);
+    } else if (e === "direction") {
+      setCDirection(false);
     }
   };
-
+  console.log("current url", url);
+  console.log("curent disbles", disable);
   return (
     <div className="bg-slate-300 min-h-screen flex flex-row justify-center items-start">
-      <div className="flex flex-col items-center">
-        <section className="mt-2  flex flex-col items-start gap-5 ">
-          <div className="text-3xl font-medium text-center">
-            INFORMACION PERSONAL
-          </div>
-          <div className="flex flex-row mt-5 justify-center">
-            <ProfilePhotoUpdater />
-            {/* <div className="w-48 h-48">
-              <img
-                src="/images/perfilFake/avatar.png"
-                alt=""
-                className="w-full h-full cursor-pointer hover:bg-white/50  rounded-full"
-              />
-            </div>*/}
-          </div>
-          {disable.includes("name") && (
-            <div className="flex justify-center items-center felx-row gap-2">
-              <div>
-                <label htmlFor="name">name: </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="rounded-xl"
-                />
-              </div>
-              <div>
-                <button
-                  className=" p-1 rounded-xl bg-red-700"
-                  onClick={() => handleGuardar("name")}
-                >
-                  guardar
-                </button>
-              </div>
+      {name ? (
+        <div className="flex flex-col items-center">
+          <section className="mt-2  items-center  flex flex-col  gap-5 ">
+            <div className="text-3xl font-medium text-center">
+              INFORMACION PERSONAL
             </div>
-          )}
+            <div className="flex flex-row mt-5 justify-center ">
+              <ProfilePhotoUpdater />
+              {/* */}
+            </div>
+            <InputUser
+              disable={disable}
+              ref={"name"}
+              texto={"Nombre Completo"}
+              value={name}
+              guardando={cName}
+              handleclick={handleClick}
+              setstate={setName}
+              handleguardar={handleGuardar}
+            />
 
-          {!disable.includes("name") && (
-            <div className="flex flex-row gap-2 items-center">
-              <div className=" ">Nombre Completo :</div>
-              <div className="flex flex-row items-center gap-2">
-                <div className="">Yoan sebastian </div>
-                <div
-                  className="w-6 h-6  group"
-                  onClick={() => handleClick("name")}
-                >
-                  <FaPencilAlt className="w-full h-full cursor-pointer" />
-                  <div className="w-fit bottom-full text-sm text-blue-300 transition-opacity opacity-0 duration-200 group-hover:opacity-100 ">
-                    Editar
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+            <InputUser
+              disable={disable}
+              guardando={cEmail}
+              texto={"Email"}
+              ref={"email"}
+              value={email}
+              handleclick={handleClick}
+              setstate={setEmail}
+              handleguardar={handleGuardar}
+            />
+            <InputUser
+              disable={disable}
+              ref={"telefono"}
+              value={telefono}
+              handleclick={handleClick}
+              setstate={setTelefono}
+              guardando={cTelefono}
+              texto={"Telefono"}
+              handleguardar={handleGuardar}
+            />
 
-          {disable.includes("email") && (
-            <div className="flex justify-center items-center felx-row gap-2">
-              <div>
-                <label htmlFor="email">email:</label>
-                <input
-                  type="text"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="rounded-xl"
-                />
-              </div>
-              <div>
-                <button
-                  className=" p-1 rounded-xl bg-red-700"
-                  onClick={() => handleGuardar("email")}
-                >
-                  guardar
-                </button>
-              </div>
-            </div>
-          )}
-          {!disable.includes("email") && (
-            <div className="flex flex-row  gap-2 items-center">
-              <div className=" ">Correo :</div>
-              <div className="flex flex-row items-center gap-2">
-                <div className="">"Yoan@gmail.com</div>
-                <div
-                  className="w-6 h-6  group"
-                  onClick={() => handleClick("email")}
-                >
-                  <FaPencilAlt className="w-full h-full cursor-pointer" />
-                  <div className="w-fit bottom-full text-sm text-blue-300 transition-opacity opacity-0 duration-200 group-hover:opacity-100 ">
-                    Editar
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-          {disable.includes("telefono") && (
-            <div className="flex justify-center items-center felx-row gap-2">
-              <div>
-                <label htmlFor="telefono">telefono:</label>
-                <input
-                  type="text"
-                  value={telefono}
-                  onChange={(e) => setTelefono(e.target.value)}
-                  className="rounded-xl"
-                />
-              </div>
-              <div>
-                <button
-                  className=" p-1 rounded-xl bg-red-700"
-                  onClick={() => handleGuardar("telefono")}
-                >
-                  guardar
-                </button>
-              </div>
-            </div>
-          )}
-          {!disable.includes("telefono") && (
-            <div className="flex flex-row  gap-2 items-center">
-              <div className=" ">Telefono :</div>
-              <div className="flex flex-row items-center gap-2">
-                <div className="">
-                  {/* {currentUser.telefono
-                    ? "Sin con firmar"
-                    : currentUser.telefono}{" "}*/}
-                  sin confirmar
-                </div>
-                <div
-                  className="w-6 h-6  group"
-                  onClick={() => handleClick("telefono")}
-                >
-                  <FaPencilAlt className="w-full h-full cursor-pointer" />
-                  <div className="w-fit bottom-full text-sm text-blue-300 transition-opacity opacity-0 duration-200 group-hover:opacity-100 ">
-                    Editar
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-          {disable.includes("direction") && (
-            <div className="flex justify-center items-center felx-row gap-2">
-              <div>
-                <label htmlFor="direction">Direction</label>
-                <input
-                  type="text"
-                  value={direction}
-                  onChange={(e) => setDirections(e.target.value)}
-                  className="rounded-xl"
-                />
-              </div>
-              <div>
-                <button
-                  className=" p-1 rounded-xl bg-red-700"
-                  onClick={() => handleGuardar("direction")}
-                >
-                  guardar
-                </button>
-              </div>
-            </div>
-          )}
-          {!disable.includes("direction") && (
-            <div className="flex flex-row  gap-2 items-center">
-              <div className=" ">Dirrecion de envio principal :</div>
-              <div className="flex flex-row items-center gap-2">
-                <div className="">
-                  {/*  {currentUser.direction
-                    ? "Sin confirmar"
-                    : currentUser.direction}{" "}*/}
-                  sin confirmar
-                </div>
-                <div
-                  className="w-6 h-6  group"
-                  onClick={() => handleClick("direction")}
-                >
-                  <FaPencilAlt className="w-full h-full cursor-pointer" />
-                  <div className="w-fit bottom-full text-sm text-blue-300 transition-opacity opacity-0 duration-200 group-hover:opacity-100 ">
-                    Editar
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </section>
+            <InputUser
+              disable={disable}
+              ref={"direction"}
+              texto={"Direction"}
+              value={direction}
+              guardando={cDirection}
+              handleclick={handleClick}
+              setstate={setDirection}
+              handleguardar={handleGuardar}
+            />
+          </section>
 
-        <button className="mt-5 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
-          Cerrar sesión
-        </button>
-      </div>
+          <button
+            className="mt-5 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+            onClick={() => {
+              logout();
+              navigate("/");
+            }}
+          >
+            Cerrar sesión
+          </button>
+        </div>
+      ) : (
+        <ClipLoader color="#36d7b7" size={50} />
+      )}
     </div>
   );
 };

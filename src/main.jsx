@@ -8,18 +8,21 @@ import CarritoProvider from "./context/Carrito.jsx";
 import FavoritesProvider from "./context/Favorites.jsx";
 import LikedProvider from "./context/Liked.jsx";
 
+import ImageProvider from "./context/Image.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <LikedProvider>
-      <FavoritesProvider>
-        <CarritoProvider>
-          <UserProviderProductos>
-            <UserProvider>
-              <App />
-            </UserProvider>
-          </UserProviderProductos>
-        </CarritoProvider>
-      </FavoritesProvider>
-    </LikedProvider>
+    <ImageProvider>
+      <LikedProvider>
+        <FavoritesProvider>
+          <CarritoProvider>
+            <UserProviderProductos>
+              <UserProvider>
+                <App />
+              </UserProvider>
+            </UserProviderProductos>
+          </CarritoProvider>
+        </FavoritesProvider>
+      </LikedProvider>
+    </ImageProvider>
   </StrictMode>
 );
