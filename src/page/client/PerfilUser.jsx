@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
-import { useUser } from "../context/User";
+import { useUser } from "../../context/User";
 import ClipLoader from "react-spinners/ClipLoader";
-import { useCarrito } from "../context/Carrito";
+import { useCarrito } from "../../context/Carrito";
 import { useNavigate } from "react-router-dom";
-import { db } from "../firebase/firebase-config";
+import { db } from "../../firebase/firebase-config";
+import Table from "../../component/Table";
 import { doc } from "firebase/firestore";
 import { getDoc } from "firebase/firestore";
 import { setDoc } from "firebase/firestore";
-import InputUser from "../component/InputUser";
-import { useImage } from "../context/Image";
+import InputUser from "../../component/InputUser";
+import { useImage } from "../../context/Image";
 
-import ProfilePhotoUpdater from "../component/ProfilePhotoUpdater";
-import { logout } from "../firebase/authService";
+import ProfilePhotoUpdater from "../../component/ProfilePhotoUpdater";
+import { logout } from "../../firebase/authService";
+import { usePedidos } from "../../context/PedidosProvider";
+import BodyTableP from "../../component/BodyTableP";
 
 {
   /*
@@ -60,9 +63,12 @@ const PerfilUsuario = () => {
   const { url, setUrl } = useImage();
   const { carrito, setCarrito } = useCarrito();
   const navigate = useNavigate();
+  const { pedidos, setPedidos, historialPedidos, setHistorialPedidos } =
+    usePedidos();
   const { user, setUser } = useUser();
   const [name, setName] = useState("");
   const [cName, setCName] = useState(false);
+  const [showHP, setShowHP] = useState(false);
   const [email, setEmail] = useState("");
   const [cEmail, setCEmail] = useState(false);
 
@@ -88,6 +94,18 @@ const PerfilUsuario = () => {
           setEmail(userdata.correo);
           setTelefono(userdata.telefono);
           setDirection(userdata.direction);
+        } else {
+          console.log("no existe un usuario actual please sign in or login in");
+        }
+
+        const refped = doc(db, "pedidos", iduser);
+        const getpeds = await getDoc(refped);
+        if (getpeds.exists()) {
+          const getdataped = getpeds.data();
+          const datapedidos = getdataped.pedidos;
+          const datahistorialpedidos = getdataped.historialPedidos;
+          setPedidos(datapedidos);
+          setHistorialPedidos(datahistorialpedidos);
         }
       }
     }
@@ -158,76 +176,94 @@ const PerfilUsuario = () => {
       setCDirection(false);
     }
   };
-  console.log("current url", url);
-  console.log("curent disbles", disable);
+  console.log("mostar p", pedidos, "mostrar hp", historialPedidos);
   return (
-    <div className="bg-slate-300 min-h-screen flex flex-row justify-center items-start">
+    <div className="bg-slate-300 min-h-screen flex flex-col">
       {name ? (
-        <div className="flex flex-col items-center">
-          <section className="mt-2  items-center  flex flex-col  gap-5 ">
-            <div className="text-3xl font-medium text-center">
-              INFORMACION PERSONAL
-            </div>
-            <div className="flex flex-row mt-5 justify-center ">
-              <ProfilePhotoUpdater />
-              {/* */}
-            </div>
-            <InputUser
-              disable={disable}
-              ref={"name"}
-              texto={"Nombre Completo"}
-              value={name}
-              guardando={cName}
-              handleclick={handleClick}
-              setstate={setName}
-              handleguardar={handleGuardar}
-            />
+        <>
+          <section className="flex flex-row justify-center items-start">
+            <div className="flex flex-col items-center">
+              <section className="mt-2  items-center  flex flex-col  gap-5 ">
+                <div className="text-3xl font-medium text-center">
+                  INFORMACION PERSONAL
+                </div>
+                <div className="flex flex-row mt-5 justify-center ">
+                  <ProfilePhotoUpdater />
+                  {/* */}
+                </div>
+                <InputUser
+                  disable={disable}
+                  ref={"name"}
+                  texto={"Nombre Completo"}
+                  value={name}
+                  guardando={cName}
+                  handleclick={handleClick}
+                  setstate={setName}
+                  handleguardar={handleGuardar}
+                />
 
-            <InputUser
-              disable={disable}
-              guardando={cEmail}
-              texto={"Email"}
-              ref={"email"}
-              value={email}
-              handleclick={handleClick}
-              setstate={setEmail}
-              handleguardar={handleGuardar}
-            />
-            <InputUser
-              disable={disable}
-              ref={"telefono"}
-              value={telefono}
-              handleclick={handleClick}
-              setstate={setTelefono}
-              guardando={cTelefono}
-              texto={"Telefono"}
-              handleguardar={handleGuardar}
-            />
+                <InputUser
+                  disable={disable}
+                  guardando={cEmail}
+                  texto={"Email"}
+                  ref={"email"}
+                  value={email}
+                  handleclick={handleClick}
+                  setstate={setEmail}
+                  handleguardar={handleGuardar}
+                />
+                <InputUser
+                  disable={disable}
+                  ref={"telefono"}
+                  value={telefono}
+                  handleclick={handleClick}
+                  setstate={setTelefono}
+                  guardando={cTelefono}
+                  texto={"Telefono"}
+                  handleguardar={handleGuardar}
+                />
 
-            <InputUser
-              disable={disable}
-              ref={"direction"}
-              texto={"Direction"}
-              value={direction}
-              guardando={cDirection}
-              handleclick={handleClick}
-              setstate={setDirection}
-              handleguardar={handleGuardar}
-            />
+                <InputUser
+                  disable={disable}
+                  ref={"direction"}
+                  texto={"Direction"}
+                  value={direction}
+                  guardando={cDirection}
+                  handleclick={handleClick}
+                  setstate={setDirection}
+                  handleguardar={handleGuardar}
+                />
+              </section>
+              <button
+                className="mt-5 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+                onClick={() => {
+                  logout();
+                  navigate("/");
+                }}
+              >
+                Cerrar sesión
+              </button>
+            </div>
           </section>
-
-          <button
-            className="mt-5 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-            onClick={() => {
-              logout();
-              navigate("/");
-            }}
-          >
-            Cerrar sesión
-          </button>
-        </div>
+          <Table label={"Pedidos"} ped={pedidos} />
+          <div className="flex flex-row justify-center mb-5">
+            <button
+              className="mt-5 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+              onClick={() => setShowHP(!showHP)}
+            >
+              {!showHP
+                ? "Mostrar Historial Pedidos"
+                : "Cerrar Historial Pedidos"}
+            </button>
+          </div>
+          {showHP && (
+            <Table label={"Historial Pedidos"} ped={historialPedidos} />
+          )}
+        </>
       ) : (
-        <ClipLoader color="#36d7b7" size={50} />
+        <div className="flex flex-row justify-center items-center h-screen ">
+          <ClipLoader color="#36d7b7" size={50} />
+        </div>
       )}
     </div>
   );
