@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { logout } from "../firebase/authService";
 const AsidebarAdmin = () => {
+  const location = useLocation();
   const [hover, seHover] = useState("");
   const navigate = useNavigate();
 
@@ -16,10 +19,15 @@ const AsidebarAdmin = () => {
       seHover("usuarios");
     }
   };
-
+  useEffect(() => {
+    if (location.pathname === "/admin/productos") {
+      seHover("productos");
+    }
+    console.log(location.pathname);
+  }, [location]);
   console.log("current hover", hover);
   return (
-    <div className=" p-2 flex flex-col gap-6 min-h-screen  w-1/5 bg-slate-100 rounded-xl  shadow-2xl justify-between">
+    <div className=" p-2 flex flex-col gap-6 max-h-screen  w-1/5 bg-slate-100 rounded-xl  shadow-2xl justify-between">
       <div className="flex flex-col gap-2 mt-4">
         <div
           className={`p-2 ${
@@ -47,7 +55,10 @@ const AsidebarAdmin = () => {
         </div>
       </div>
       <div className="mb-5">
-        <button className="bg-red-700 p-1 rounded-2xl font-bold">
+        <button
+          className="bg-red-700 p-1 rounded-2xl font-bold"
+          onClick={() => logout()}
+        >
           Cerrar sesion
         </button>
       </div>
