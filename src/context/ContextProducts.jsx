@@ -12,9 +12,11 @@ const UserProviderProductos = ({ children }) => {
       const refproducts = doc(db, "productos", "productos1088272651");
       const getproducts = await getDoc(refproducts);
       if (getproducts.exists()) {
-        const products = getproducts.data();
-        const p = products.productos;
+        const produ = getproducts.data();
+        console.log("jajaja", produ);
+        const p = produ.productos;
         setProducts(p);
+        console.log("curent prodtc hay", p);
         console.log("entra varias veces");
       } else {
         let productos;
