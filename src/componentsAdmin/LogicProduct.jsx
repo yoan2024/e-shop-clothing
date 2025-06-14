@@ -1,10 +1,18 @@
+import { getDoc, updateDoc } from "firebase/firestore";
 import React, { useState, useEffect } from "react";
+import { setDoc } from "firebase/firestore";
+import { doc } from "firebase/firestore";
+import axios from "axios";
+import { useProducts } from "../context/ContextProducts";
+import { db } from "../firebase/firebase-config";
 
-const EditarProduct = ({ onClose, p }) => {
+const LogicProduct = ({ onClose, p, logica }) => {
   const [titulo, setTitulo] = useState("");
   const [precio, setPrecio] = useState("");
+  const { products, setProducts } = useProducts();
   const [categoria, setCategoria] = useState("");
   const [descripcion, setDescripcion] = useState("");
+  const [file, setFile] = useState("");
   const [imagenPreview, setImagenPreview] = useState("");
 
   useEffect(() => {
@@ -20,12 +28,16 @@ const EditarProduct = ({ onClose, p }) => {
 
   const handleImagenChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
+    if (file && file.size > 1 * 1024 * 1024) {
+      console.log("imagen muy grande tiene q ser mayor a 2 MB");
+    } else {
+      console.log(file, "se guardo la imagen");
+      setFile(file);
       setImagenPreview(URL.createObjectURL(file));
     }
   };
 
-  const handleGuardar = () => {
+  const handleGuardar = async (prod) => {
     console.log({
       titulo,
       precio,
@@ -33,6 +45,68 @@ const EditarProduct = ({ onClose, p }) => {
       descripcion,
       imagenPreview,
     });
+
+    if (
+      titulo.length > 5 &&
+      precio > 0 &&
+      categoria.length > 5 &&
+      descripcion.length > 5 &&
+      imagenPreview
+    ) {
+      const formData = new FormData();
+      const imagenRuta = "/images/sinimagen.webp";
+      const response = await fetch(imagenRuta);
+      const blog = await response.blob();
+      const image = file || imagenPreview || blog;
+      formData.append("file", image);
+      formData.append("upload_preset", "ecomerce");
+      let img;
+      try {
+        const res = await axios.post(
+          "https://api.cloudinary.com/v1_1/dcqsgyyax/image/upload",
+          formData
+        );
+
+        img = res.data.secure_url;
+
+        alert("✅ Imagen subida correctamente");
+      } catch (error) {
+        console.error("Error uploading:", error);
+        alert("❌ Falló la subida");
+      }
+
+      const refP = doc(db, "productos", "productos1088272651");
+      const getP = await getDoc(refP);
+      const dataP = getP.data();
+      let p = dataP.productos;
+      if (logica === "editar") {
+        const editarP = p.map((p) => {
+          if (p.id === prod.id) {
+            return {
+              ...p,
+              title: titulo,
+              category: categoria,
+              price: precio,
+              description: descripcion,
+              image: img,
+            };
+          }
+          return p;
+        });
+        console.log("curenttt productos ya editassssssssss", editarP);
+        setDoc(refP, {
+          productos: editarP,
+        });
+
+        setProducts(editarP);
+        console.log(
+          "todo el producto se edito correctamente gracias por usar trendora"
+        );
+      } else {
+      }
+    } else {
+      return;
+    }
   };
 
   return (
@@ -93,10 +167,10 @@ const EditarProduct = ({ onClose, p }) => {
             className="w-full text-sm"
           />
           <button
-            onClick={handleGuardar}
+            onClick={() => handleGuardar(p)}
             className="w-full mt-4 bg-blue-600 text-white rounded py-2 hover:bg-blue-700 transition"
           >
-            Guardar Cambios
+            {logica === "editar" ? "Guardar Cambios" : "Guardar Producto"}
           </button>
         </div>
       </div>
@@ -104,4 +178,4 @@ const EditarProduct = ({ onClose, p }) => {
   );
 };
 
-export default EditarProduct;
+export default LogicProduct;
