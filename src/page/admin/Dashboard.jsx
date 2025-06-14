@@ -1,5 +1,22 @@
+import AsidebarAdmin from "../../componentsAdmin/AsidebarAdmin";
+import MainProduct from "../../componentsAdmin/MainProduct";
+import MainUsers from "../../componentsAdmin/MainUsers";
+import MainPedidos from "../../componentsAdmin/MainPedidos";
+import { Navigate } from "react-router-dom";
+import BienvenidaAdmin from "../../componentsAdmin/BienvenidaAdmin";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 const Dashboard = () => {
-  return <div>dashboard</div>;
+  return (
+    <>
+      <div className="w-full flex flex-row justify-end   p-2">
+        <AsidebarAdmin />
+        <Routes>
+          <Route path="/" element={<Navigate to="/admin" />} />
+          <Route path="/admin" element={<BienvenidaAdmin />} />
+        </Routes>
+      </div>
+    </>
+  );
 };
 
 export default Dashboard;
