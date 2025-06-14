@@ -1,7 +1,6 @@
-import { useProducts } from "../context/ContextProducts";
 import { useEffect, useState } from "react";
-import CartProductFavorite from "../component/CartProductFavorite";
-import { useFavorite } from "../context/Favorites";
+import CartProductFavorite from "../../component/CartProductFavorite";
+import { useFavorite } from "../../context/Favorites";
 
 const Favoritess = () => {
   const { favorites, setFavorites } = useFavorite();

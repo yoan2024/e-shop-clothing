@@ -1,23 +1,23 @@
 import { useParams } from "react-router-dom";
-import { useProducts } from "../context/ContextProducts";
+import { useProducts } from "../../context/ContextProducts";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import ClipLoader from "react-spinners/ClipLoader";
-import { StarRating } from "../component/Starts";
-import { FavoriteButton } from "../component/Heart";
-import Modal from "../component/Modal";
-import { useUser } from "../context/User";
+import { StarRating } from "../../component/Starts";
+import { FavoriteButton } from "../../component/Heart";
+import Modal from "../../component/Modal";
+import { useUser } from "../../context/User";
 import { doc, setDoc } from "firebase/firestore";
-import { db } from "../firebase/firebase-config";
+import { db } from "../../firebase/firebase-config";
 import { addDoc, collection } from "firebase/firestore";
 import { updateDoc } from "firebase/firestore";
 import { deleteField } from "firebase/firestore";
 import { getDoc } from "firebase/firestore";
-import { useCarrito } from "../context/Carrito";
+import { useCarrito } from "../../context/Carrito";
 import { useLocation } from "react-router-dom";
-import { useFavorite } from "../context/Favorites";
-import { useLiked } from "../context/Liked";
+import { useFavorite } from "../../context/Favorites";
+import { useLiked } from "../../context/Liked";
 const ProductDetails = () => {
   const { favorites, setFavorites } = useFavorite();
   const { carrito, setCarrito } = useCarrito();

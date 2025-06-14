@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { signup } from "../firebase/authService";
+import { signup } from "../../firebase/authService";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Sign_up = () => {
   const navegate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -86,4 +86,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Sign_up;

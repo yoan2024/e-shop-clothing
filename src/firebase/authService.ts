@@ -21,6 +21,13 @@ export const signup = async (email: string, password: string, name: string) => {
   const idUser = user.uid;
   const refDoc = doc(db, "usuarios", idUser);
 
+  let rol = "";
+  if (email === "yhoangaga2025@gmail.com") {
+    rol = "admin";
+  } else {
+    rol = "user";
+  }
+
   await setDoc(refDoc, {
     user: {
       name,
@@ -29,6 +36,7 @@ export const signup = async (email: string, password: string, name: string) => {
       direction: "sin confirmar",
       image: "",
       imageDefault: "/images/perfilimg.avif",
+      rol,
     },
   });
 

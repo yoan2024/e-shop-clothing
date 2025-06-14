@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import Asidebar from "../component/Asidebar";
-import { useProducts } from "../context/ContextProducts";
+import Asidebar from "../../component/Asidebar";
+import { useProducts } from "../../context/ContextProducts";
 import ClipLoader from "react-spinners/ClipLoader";
-import CartProduct from "../component/CartProduct";
+import CartProduct from "../../component/CartProduct";
 import { useParams } from "react-router-dom";
 
 const Catalogo = () => {
