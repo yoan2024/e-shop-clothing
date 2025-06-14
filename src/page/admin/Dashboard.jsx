@@ -13,6 +13,9 @@ const Dashboard = () => {
         <Routes>
           <Route path="/" element={<Navigate to="/admin" />} />
           <Route path="/admin" element={<BienvenidaAdmin />} />
+          <Route path="/admin/productos" element={<MainProduct />} />
+          <Route path="/admin/pedidos" element={<MainPedidos />} />
+          <Route path="/admin/usuarios" element={<MainUsers />} />
         </Routes>
       </div>
     </>
