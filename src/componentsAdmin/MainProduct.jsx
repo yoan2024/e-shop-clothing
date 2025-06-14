@@ -3,10 +3,13 @@ import { useProducts } from "../context/ContextProducts";
 import { getDoc, setDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase-config";
 import { doc } from "firebase/firestore";
+import EditarProduct from "./EditarProduct";
 
 const MainProduct = () => {
   const { products, setProducts } = useProducts();
   const [showAllProducts, setShowAllProducts] = useState(false);
+  const [editar, setEditar] = useState(false);
+  const [productEditing, setProductEditing] = useState({});
   console.log("current products", products);
 
   const handleEliminarProduct = async (id) => {
@@ -50,6 +53,11 @@ const MainProduct = () => {
     );
   };
 
+  const handleEditar = (p) => {
+    setEditar(true);
+    setProductEditing(p);
+  };
+
   return (
     <div className="w-4/5">
       <main>
@@ -87,7 +95,10 @@ const MainProduct = () => {
 
                   {/* Botones */}
                   <div className="flex gap-2 mt-2">
-                    <button className="px-2 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600">
+                    <button
+                      className="px-2 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600"
+                      onClick={() => handleEditar(p)}
+                    >
                       Editar
                     </button>
                     <button
@@ -101,10 +112,11 @@ const MainProduct = () => {
               );
             })}
           </div>
-          {false && (
-            <div className="fixed inset-0 flex flex-row justify-center items-center opacity-60 bg-slate-400">
-              <div className="max-w-40 max-h-40 bg-white"></div>
-            </div>
+          {editar && (
+            <EditarProduct
+              onClose={() => setEditar(false)}
+              p={productEditing}
+            />
           )}
         </section>
       </main>
