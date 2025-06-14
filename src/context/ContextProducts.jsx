@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
-
+import { getDoc, setDoc } from "firebase/firestore";
+import { doc } from "firebase/firestore";
+import { db } from "../firebase/firebase-config";
 const Context = createContext();
 
 const UserProviderProductos = ({ children }) => {
@@ -7,11 +9,27 @@ const UserProviderProductos = ({ children }) => {
 
   useEffect(() => {
     async function usarFecht() {
-      const data = await fetch("https://fakestoreapi.com/products")
-        .then((response) => response.json())
-        .then((data) => {
-          setProducts(data);
+      const refproducts = doc(db, "productos", "productos1088272651");
+      const getproducts = await getDoc(refproducts);
+      if (getproducts.exists()) {
+        const products = getproducts.data();
+        const p = products.productos;
+        setProducts(p);
+        console.log("entra varias veces");
+      } else {
+        let productos;
+        const data = await fetch("https://fakestoreapi.com/products")
+          .then((response) => response.json())
+          .then((data) => {
+            productos = data;
+            setProducts(data);
+          });
+
+        setDoc(refproducts, {
+          productos: productos,
         });
+        console.log("solo entro una ves");
+      }
     }
 
     usarFecht();

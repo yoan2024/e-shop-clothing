@@ -22,7 +22,7 @@ export const signup = async (email: string, password: string, name: string) => {
   const refDoc = doc(db, "usuarios", idUser);
 
   let rol = "";
-  if (email === "yhoangaga2025@gmail.com") {
+  if (email === "admin@gmail.com") {
     rol = "admin";
   } else {
     rol = "user";

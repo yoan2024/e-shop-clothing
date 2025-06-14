@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "../page/client/Home";
-
+import PagadoConexito from "./PagadoConexito";
 import Header from "./Header";
 import ProductDetails from "../page/client/ProductDetails";
 import Catalogo from "../page/client/Catalogo";
@@ -153,6 +153,7 @@ const LayoutClient = () => {
       direction: datauser.direction,
       telefono: datauser.telefono,
       nombre: datauser.name,
+      iduser,
     };
 
     if (getdoc.exists()) {
