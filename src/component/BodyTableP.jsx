@@ -7,10 +7,10 @@ const BodyTableP = ({ itemspedidos }) => {
 
   return (
     <>
-      {itemspedidos.map((p) => {
+      {itemspedidos.map((p, index) => {
         console.log(p.estado);
         return (
-          <>
+          <React.Fragment key={index}>
             <tr className="text-center">
               <td> </td>
               <td></td>
@@ -34,7 +34,7 @@ const BodyTableP = ({ itemspedidos }) => {
                 </span>
               </td>
             </tr>
-          </>
+          </React.Fragment>
         );
         ("bg-red-500");
       })}

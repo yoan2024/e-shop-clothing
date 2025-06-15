@@ -36,6 +36,9 @@ const Table = ({ label, ped }) => {
                   <th className="border-solid border-2 border-slate-900">
                     ESTADO
                   </th>
+                  <th className="border-solid border-2 border-slate-900">
+                    Envio
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -46,7 +49,21 @@ const Table = ({ label, ped }) => {
                   <th></th>
                   <th></th>
                   <th></th>
-                  <th className="bg-slate-700">${p.totalPagado} USD</th>
+                  <th className="bg-slate-700 p-2">${p.totalPagado} USD</th>
+                  <th
+                    className={
+                      p.estado === "Pendiente"
+                        ? "bg-yellow-300 p-2"
+                        : p.estado === "En camino"
+                        ? "bg-blue-400 p-2"
+                        : p.estado === "Entregado"
+                        ? "bg-green-300 p-2"
+                        : "bg-red-300"
+                    }
+                  >
+                    {p.estado}{" "}
+                  </th>
+                  <th className="p-2 animate-pulse">{p.envio}</th>
                 </tr>
               </tbody>
             </table>

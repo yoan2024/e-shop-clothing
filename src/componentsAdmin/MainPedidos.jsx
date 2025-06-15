@@ -3,8 +3,9 @@ import { query } from "firebase/firestore";
 import { collection } from "firebase/firestore";
 import { orderBy } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import ModalDetailsPedido from "./ModalDetailsPedido.jsx";
 import { getDocs } from "firebase/firestore";
-import ModalDetailsPedido from "./ModalDetailsPedido";
+
 const MainPedidos = () => {
   const [pedidos, setPedidos] = useState([]);
   const [onClose, setOnClose] = useState(false);
@@ -12,16 +13,27 @@ const MainPedidos = () => {
 
   useEffect(() => {
     async function name(params) {
-      const refdoc = collection(db, "todosPedidos");
-      const organizardocs = query(refdoc, orderBy("fechaPedido", "desc"));
-      let peds = [];
-      const getdocs = await getDocs(organizardocs);
-      getdocs.forEach((d) => {
-        const data = d.data();
-        console.log("dataaaaaaa de un pedido", data);
-        peds.push(data);
-      });
-      setPedidos(peds);
+      try {
+        const refdoc = collection(db, "todosPedidos");
+        const organizardocs = query(refdoc, orderBy("fechaPedido", "desc"));
+        let peds = [];
+        const getdocs = await getDocs(organizardocs);
+        if (getdocs.empty) {
+          console.log("Documento sin nada en useefct");
+        }
+        getdocs.forEach((d) => {
+          console.log("dataaaaaaaaaaaaaaaaaaaaaaaaa", d.data());
+        });
+        getdocs.forEach((d) => {
+          const data = d.data();
+          console.log("dataaaaaaa de un pedido", data);
+          peds.push(data);
+        });
+        console.log("pedios en useefect", peds);
+        setPedidos(peds);
+      } catch (e) {
+        console.log("Eror", e);
+      }
     }
     name();
   }, []);
@@ -30,6 +42,7 @@ const MainPedidos = () => {
     setpd(p);
     setOnClose(true);
   };
+  console.log("curent pedidos", pedidos);
   return (
     <div className="w-4/5 flex flex-col items-center">
       <div className="text-center mt-7 text-4xl">PEDIDOS</div>
@@ -48,9 +61,10 @@ const MainPedidos = () => {
             </tr>
           </thead>
           <tbody className="bg-slate-200">
-            {pedidos.map((p) => {
+            {pedidos.map((p, index) => {
               return (
                 <tr
+                  key={index}
                   onClick={() => handleClickDetails(p)}
                   className="cursor-pointer"
                 >
@@ -84,7 +98,11 @@ const MainPedidos = () => {
           </tbody>
         </table>
         {onClose && pd && (
-          <ModalDetailsPedido onclose={() => setOnClose(false)} p={pd} />
+          <ModalDetailsPedido
+            onclose={() => setOnClose(false)}
+            p={pd}
+            setpedidos={setPedidos}
+          />
         )}
       </div>
     </div>
