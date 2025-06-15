@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { db } from "../../firebase/firebase-config";
 import Table from "../../component/Table";
 import { doc, where } from "firebase/firestore";
+import { onSnapshot } from "firebase/firestore";
 import { collection } from "firebase/firestore";
 import { getDocs } from "firebase/firestore";
 import { query } from "firebase/firestore";
@@ -83,7 +84,8 @@ const PerfilUsuario = () => {
   const [disable, setDisable] = useState([]);
 
   useEffect(() => {
-    async function name(params) {
+    if (!user) return;
+    async function actualizar_Pedidos_Y_HistorialPedidos(params) {
       if (user) {
         const iduser = user.uid;
         const refdoc = doc(db, "usuarios", iduser);
@@ -119,7 +121,7 @@ const PerfilUsuario = () => {
         const getpedsH = await getDocs(refpedH);
 
         {
-          /*logiaca delo refodcs*/
+          /*logiaca de PEDIDOS*/
         }
 
         if (!getpeds.empty) {
@@ -131,22 +133,44 @@ const PerfilUsuario = () => {
           });
           setPedidos(p);
           console.log("setpedidos correctamente eitosos");
+        } else {
+          console.log("no hay pedidos encontrados");
         }
 
+        {
+          /*logica de PEDIDOS HISTORILA*/
+        }
         if (!getpedsH.empty) {
           let pH = [];
 
-          getpeds.forEach((d) => {
+          getpedsH.forEach((d) => {
             const data = d.data();
             pH.push(data);
           });
-
+          console.log("H-P JUSTO ANTES DE AGREGAR: ", pH);
           setHistorialPedidos(pH);
           console.log("Sethistorial pedidos exitoso");
         }
       }
     }
-    name();
+
+    const ref = query(
+      collection(db, "todosPedidos"),
+      where("iduser", "==", user.uid),
+      orderBy("fechaPedido", "desc")
+    );
+    const unsubscribe = onSnapshot(ref, (snapshot) => {
+      const pedidos = snapshot.docs.map((doc) => ({
+        ...doc.data(),
+      }));
+      const actuales = pedidos.filter((p) => p.estado !== "Entregado");
+      const historial = pedidos.filter((p) => p.estado === "Entregado");
+
+      setPedidos(actuales);
+      setHistorialPedidos(historial);
+    });
+    actualizar_Pedidos_Y_HistorialPedidos();
+    return () => unsubscribe();
   }, [user]);
 
   console.log("curent pedidos: ", pedidos, "current hp", historialPedidos);
@@ -261,7 +285,12 @@ const PerfilUsuario = () => {
       setCDirection(false);
     }
   };
-  console.log("mostar p", pedidos, "mostrar hp", historialPedidos);
+  console.log(
+    "mostar p",
+    pedidos,
+    "mostrar historial pedidos : ",
+    historialPedidos
+  );
   return (
     <div className="bg-slate-300 min-h-screen flex flex-col">
       {user ? (

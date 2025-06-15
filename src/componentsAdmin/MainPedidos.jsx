@@ -100,6 +100,7 @@ const MainPedidos = () => {
         {onClose && pd && (
           <ModalDetailsPedido
             onclose={() => setOnClose(false)}
+            setpd={setpd}
             p={pd}
             setpedidos={setPedidos}
           />

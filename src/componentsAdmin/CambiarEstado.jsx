@@ -12,7 +12,7 @@ import { setDoc } from "firebase/firestore";
   /**/
 }
 
-const CambiarEstado = ({ onclose, pedido, setPedidos }) => {
+const CambiarEstado = ({ onclose, pedido, setPedidos, setpd }) => {
   const [envio, setEnvio] = useState(pedido.envio);
   const [estado, setEstado] = useState(pedido.estado);
 
@@ -38,7 +38,9 @@ const CambiarEstado = ({ onclose, pedido, setPedidos }) => {
     const refuserpedido = doc(db, "todosPedidos", iddoc);
 
     console.log("pedido antes de guargarrr", p);
-    await setDoc(refuserpedido, { ...p, envio, estado });
+    const pedidoActualizado = { ...p, envio, estado };
+    setpd(pedidoActualizado);
+    await setDoc(refuserpedido, pedidoActualizado);
     console.log("actuaizado con exito en todos pedidos");
 
     const refdocument = collection(db, "todosPedidos");
@@ -97,7 +99,7 @@ const CambiarEstado = ({ onclose, pedido, setPedidos }) => {
             <select
               value={estado}
               name="estado"
-              onChange={() => setEstado(e.target.value)}
+              onChange={(e) => setEstado(e.target.value)}
               id=""
               className="border-2 flex-1  border-solid  border-black"
             >

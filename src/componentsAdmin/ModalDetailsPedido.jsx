@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import CambiarEstado from "./CambiarEstado";
 
-const ModalDetailsPedido = ({ onclose, p, setpedidos }) => {
+const ModalDetailsPedido = ({ onclose, p, setpedidos, setpd }) => {
   const [estado, setEstado] = useState("");
   const [envio, setEnvio] = useState("");
   const [showES, setShowED] = useState(false);
@@ -99,6 +99,7 @@ const ModalDetailsPedido = ({ onclose, p, setpedidos }) => {
         <CambiarEstado
           onclose={() => setShowED(false)}
           pedido={p}
+          setpd={setpd}
           setPedidos={setpedidos}
         />
       )}
