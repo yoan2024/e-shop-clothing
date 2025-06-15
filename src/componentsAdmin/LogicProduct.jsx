@@ -103,6 +103,35 @@ const LogicProduct = ({ onClose, p, logica }) => {
           "todo el producto se edito correctamente gracias por usar trendora"
         );
       } else {
+        const randomRate = Math.random() * 6;
+        const randomCount = Math.random() * 200;
+        const floatrate = Math.floor(randomRate);
+        const floatCount = Math.floor(randomCount);
+
+        const sorProducts = p.sort((a, b) => b.id - a.id);
+        const newId = sorProducts[0].id;
+
+        const newProducto = {
+          category: categoria,
+          description: descripcion,
+          id: newId,
+          image: img,
+          price: precio,
+          rating: { count: floatCount, rate: floatrate },
+        };
+
+        p.push(newProducto);
+        setDoc(refP, {
+          productos: p,
+        });
+        setProducts(p);
+
+        console.log(
+          "se agregaron correctamente el producto",
+          newProducto,
+          "p actualizados: ",
+          p
+        );
       }
     } else {
       return;

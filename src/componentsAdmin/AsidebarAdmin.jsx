@@ -27,7 +27,7 @@ const AsidebarAdmin = () => {
   }, [location]);
   console.log("current hover", hover);
   return (
-    <div className=" p-2 flex flex-col gap-6 max-h-screen  w-1/5 bg-slate-100 rounded-xl  shadow-2xl justify-between">
+    <div className=" p-2 flex flex-col gap-6 h-screen max-h-screen  w-1/5  bg-slate-100 rounded-xl  shadow-2xl justify-between">
       <div className="flex flex-col gap-2 mt-4">
         <div
           className={`p-2 ${
