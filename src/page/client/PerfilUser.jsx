@@ -5,7 +5,11 @@ import { useCarrito } from "../../context/Carrito";
 import { useNavigate } from "react-router-dom";
 import { db } from "../../firebase/firebase-config";
 import Table from "../../component/Table";
-import { doc } from "firebase/firestore";
+import { doc, where } from "firebase/firestore";
+import { collection } from "firebase/firestore";
+import { getDocs } from "firebase/firestore";
+import { query } from "firebase/firestore";
+import { orderBy } from "firebase/firestore";
 import { getDoc } from "firebase/firestore";
 import { setDoc } from "firebase/firestore";
 import InputUser from "../../component/InputUser";
@@ -98,19 +102,54 @@ const PerfilUsuario = () => {
           console.log("no existe un usuario actual please sign in or login in");
         }
 
-        const refped = doc(db, "pedidos", iduser);
-        const getpeds = await getDoc(refped);
-        if (getpeds.exists()) {
-          const getdataped = getpeds.data();
-          const datapedidos = getdataped.pedidos;
-          const datahistorialpedidos = getdataped.historialPedidos;
-          setPedidos(datapedidos);
-          setHistorialPedidos(datahistorialpedidos);
+        const refped = query(
+          collection(db, "todosPedidos"),
+          where("iduser", "==", iduser),
+          where("estado", "in", ["Pendiente", "En camino"]),
+          orderBy("fechaPedido", "desc")
+        );
+        const getpeds = await getDocs(refped);
+
+        const refpedH = query(
+          collection(db, "todosPedidos"),
+          where("iduser", "==", iduser),
+          where("estado", "in", ["Entregado", "Cancelado"]),
+          orderBy("fechaPedido", "desc")
+        );
+        const getpedsH = await getDocs(refpedH);
+
+        {
+          /*logiaca delo refodcs*/
+        }
+
+        if (!getpeds.empty) {
+          let p = [];
+
+          getpeds.forEach((d) => {
+            const data = d.data();
+            p.push(data);
+          });
+          setPedidos(p);
+          console.log("setpedidos correctamente eitosos");
+        }
+
+        if (!getpedsH.empty) {
+          let pH = [];
+
+          getpeds.forEach((d) => {
+            const data = d.data();
+            pH.push(data);
+          });
+
+          setHistorialPedidos(pH);
+          console.log("Sethistorial pedidos exitoso");
         }
       }
     }
     name();
   }, [user]);
+
+  console.log("curent pedidos: ", pedidos, "current hp", historialPedidos);
 
   const handleClick = (e) => {
     if (e === "name") {

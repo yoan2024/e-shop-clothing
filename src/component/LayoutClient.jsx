@@ -5,15 +5,7 @@ import {
   Route,
   useLocation,
 } from "react-router-dom";
-import {
-  collection,
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-  addDoc,
-  serverTimestamp,
-} from "firebase/firestore";
+import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase-config";
 import { useCarrito } from "../context/Carrito";
 import { useUser } from "../context/User";
@@ -28,6 +20,7 @@ import Login from "../page/client/Login";
 import Sign_up from "../page/client/Sign_up";
 import PerfilUser from "../page/client/PerfilUser";
 import Favoritess from "../page/client/Favoritess";
+import { addDoc } from "firebase/firestore";
 
 const LayoutClient = () => {
   const { carrito, setCarrito } = useCarrito();
@@ -114,14 +107,13 @@ const LayoutClient = () => {
     if (!userSnap.exists()) return;
 
     const userData = userSnap.data().user;
-    const items = carrito.map((p) => ({ ...p, estado: "Pendiente" }));
 
     const pedido = {
       idPedido,
       metodoPago: "Cart Credit",
       fechaPedido,
-      envio: "preparando",
-      itemsPedido: items,
+      envio: "Preparando",
+      itemsPedido: carrito,
       correo: userData.correo,
       totalPagado: total,
       estado: "Pendiente",
@@ -131,7 +123,8 @@ const LayoutClient = () => {
       iduser: user.uid,
     };
 
-    const refPedidos = doc(db, "pedidos", user.uid);
+    {
+      /*const refPedidos = doc(db, "pedidos", user.uid);
     const pedidosSnap = await getDoc(refPedidos);
 
     if (pedidosSnap.exists()) {
@@ -139,6 +132,7 @@ const LayoutClient = () => {
       await updateDoc(refPedidos, { pedidos: [...prevPedidos, pedido] });
     } else {
       await setDoc(refPedidos, { pedidos: [pedido], historialPedidos: [] });
+    }*/
     }
 
     await addDoc(collection(db, "todosPedidos"), pedido);
