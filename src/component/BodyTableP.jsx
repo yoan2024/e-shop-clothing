@@ -3,12 +3,11 @@ import React, { useEffect } from "react";
 const BodyTableP = ({ itemspedidos }) => {
   useEffect(() => {
     console.log("cureeeeeeeeeeee", itemspedidos);
-  }, []);
+  }, [itemspedidos]);
 
   return (
     <>
       {itemspedidos.map((p, index) => {
-        console.log(p.estado);
         return (
           <React.Fragment key={index}>
             <tr className="text-center">

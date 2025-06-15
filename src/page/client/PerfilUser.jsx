@@ -175,10 +175,15 @@ const PerfilUsuario = () => {
     }
 
     let newDisables;
+
+    {
+      /*actualizando datos en db de ususarios*/
+    }
     let newData;
     const iduser = user.uid;
     const refdata = doc(db, "usuarios", iduser);
     const getdata = await getDoc(refdata);
+
     if (getdata.exists()) {
       const datauser = getdata.data();
       newData = datauser.user;
@@ -203,8 +208,49 @@ const PerfilUsuario = () => {
     setDoc(refdata, {
       user: newData,
     });
-    setDisable(newDisables);
 
+    {
+      /*actualizando todosPedidos del ususario*/
+    }
+
+    const refqueryTododsPedidos = query(
+      collection(db, "todosPedidos"),
+      where("iduser", "==", iduser)
+    );
+    const getdocsTodosPedidos = await getDocs(refqueryTododsPedidos);
+    if (!getdocsTodosPedidos.empty) {
+      async function ActualizarDoc(d) {
+        const data = d.data();
+        const iddoc = d.id;
+        let newDoc;
+        if (e === "name") {
+          newDoc = { ...data, nombre: name };
+        } else if (e === "telefono") {
+          newDoc = { ...data, telefono: telefono };
+        } else if (e === "email") {
+          newDoc = { ...data, correo: email };
+        } else if (e === "direction") {
+          newDoc = { ...data, direction: direction };
+        }
+
+        const refdoc = doc(db, "todosPedidos", iddoc);
+        const getdoc = await getDoc(refdoc);
+        if (getdoc.exists()) {
+          await setDoc(refdoc, newDoc);
+        } else {
+          console.log("no exixste un doc en forEach intentelo de nuevo");
+        }
+      }
+
+      getdocsTodosPedidos.forEach((d) => {
+        ActualizarDoc(d);
+      });
+
+      console.log("todods los pedidos se actualiaron con exito");
+    } else {
+      console.log("no existen pedidos echos por este usuario");
+    }
+    setDisable(newDisables);
     if (e === "name") {
       setCName(false);
     } else if (e === "telefono") {
@@ -218,7 +264,7 @@ const PerfilUsuario = () => {
   console.log("mostar p", pedidos, "mostrar hp", historialPedidos);
   return (
     <div className="bg-slate-300 min-h-screen flex flex-col">
-      {name ? (
+      {user ? (
         <>
           <section className="flex flex-row justify-center items-start">
             <div className="flex flex-col items-center">
