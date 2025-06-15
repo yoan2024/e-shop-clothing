@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { getDoc, setDoc } from "firebase/firestore";
 import { doc } from "firebase/firestore";
 import { db } from "../firebase/firebase-config";
+import { onSnapshot } from "firebase/firestore";
 const Context = createContext();
 
 const UserProviderProductos = ({ children }) => {
@@ -33,7 +34,7 @@ const UserProviderProductos = ({ children }) => {
         console.log("solo entro una ves");
       }
     }
-
+    console.log("ussuariooooo", iduser);
     usarFecht();
   }, []);
 
