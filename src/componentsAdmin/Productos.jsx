@@ -62,10 +62,10 @@ const Productos = () => {
   return (
     <>
       <div className="flex flex-row justify-center flex-wrap gap-4 relative">
-        {products.map((p) => {
+        {products.map((p, index) => {
           return (
             <div
-              key={p.id}
+              key={index}
               className="w-52 h-auto flex flex-col items-center text-center transition-transform duration-300 transform hover:scale-105 hover:shadow-lg border rounded-xl p-3 cursor-pointer bg-white"
             >
               <div className="bg-white w-full h-40 flex items-center justify-center overflow-hidden rounded-md">

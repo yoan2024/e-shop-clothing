@@ -20,16 +20,21 @@ const AsidebarAdmin = () => {
     }
   };
   useEffect(() => {
+    console.log("entro en usefeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
     if (location.pathname === "/admin/productos") {
       seHover("productos");
+    } else if (location.pathname === "/admin/pedidos") {
+      seHover("pedidos");
+    } else if (location.pathname === "/admin/usuarios") {
+      seHover("usuarios");
     }
-    console.log(location.pathname);
   }, [location]);
-  console.log("current hover", hover);
+  console.log("current hoverrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr", hover);
   return (
     <div className=" p-2 flex flex-col gap-6 h-screen max-h-screen  w-1/5  bg-slate-100 rounded-xl  shadow-2xl justify-between">
       <div className="flex flex-col gap-2 mt-4">
         <div
+          style={{ cursor: "pointer" }}
           className={`p-2 ${
             hover === "productos" ? "bg-red-400" : "bg-slate-400"
           } rounded-2xl text-xl`}
@@ -38,6 +43,7 @@ const AsidebarAdmin = () => {
           PRODUCTOS
         </div>
         <div
+          style={{ cursor: "pointer" }}
           className={`p-2 ${
             hover === "pedidos" ? "bg-red-400" : "bg-slate-400"
           } rounded-2xl text-xl`}
@@ -46,6 +52,7 @@ const AsidebarAdmin = () => {
           PEDIDOS
         </div>
         <div
+          style={{ cursor: "pointer" }}
           className={`p-2 ${
             hover === "usuarios" ? "bg-red-400" : "bg-slate-400"
           } rounded-2xl text-xl`}

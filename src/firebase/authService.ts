@@ -29,15 +29,15 @@ export const signup = async (email: string, password: string, name: string) => {
   }
 
   await setDoc(refDoc, {
-    user: {
-      name,
-      correo: email,
-      telefono: "sin confirmar",
-      direction: "sin confirmar",
-      image: "",
-      imageDefault: "/images/perfilimg.avif",
-      rol,
-    },
+    name,
+    correo: email,
+    createAt: new Date().toLocaleDateString(),
+    telefono: "sin confirmar",
+    direction: "sin confirmar",
+    image: "",
+    imageDefault: "/images/perfilimg.avif",
+    rol,
+    estatus: "Active",
   });
 
   return user;

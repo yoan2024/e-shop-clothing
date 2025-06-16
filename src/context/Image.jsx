@@ -24,8 +24,8 @@ const ImageProvider = ({ children }) => {
           const document = await getDoc(refDoc);
           if (document.exists()) {
             const userdata = document.data();
-            const itemsUser = userdata.user;
-            const image = itemsUser.image || itemsUser.imageDefault;
+
+            const image = userdata.image || userdata.imageDefault;
             setUrl(image);
           } else {
             console.log("no existe un ususario actual");
