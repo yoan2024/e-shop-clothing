@@ -3,8 +3,11 @@ import { query } from "firebase/firestore";
 import { db } from "../firebase/firebase-config";
 import { useEffect, useState } from "react";
 import { getDocs } from "firebase/firestore";
+import ModalUserDetail from "./ModalUserDetail";
 const MainUsers = () => {
   const [usuarios, setUsuarios] = useState([]);
+  const [onShowModal, setOnShowModal] = useState(false);
+  const [u, setU] = useState({});
 
   useEffect(() => {
     async function getUsusarios() {
@@ -38,7 +41,7 @@ const MainUsers = () => {
   console.log("usersssssssssssssssssssssss", usuarios);
   return (
     <div className="w-4/5 flex flex-row overflow-x-auto justify-center">
-      <div className="min-w-full max-w-full">
+      <div className="min-w-full max-w-full flex flex-col items-center">
         <table className="text-xl text-center">
           <thead className="bg-slate-300">
             <tr>
@@ -51,7 +54,13 @@ const MainUsers = () => {
           <tbody className="bg-slate-200 ">
             {usuarios.map((u) => {
               return (
-                <tr className="cursor-pointer">
+                <tr
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setU(u);
+                    setOnShowModal(true);
+                  }}
+                >
                   <td className="border-2 p-1 border-solid border-black">
                     {u.name}{" "}
                   </td>
@@ -70,6 +79,13 @@ const MainUsers = () => {
           </tbody>
         </table>
       </div>
+      {onShowModal && (
+        <ModalUserDetail
+          user={u}
+          setu={setU}
+          onclose={() => setOnShowModal(false)}
+        />
+      )}
     </div>
   );
 };

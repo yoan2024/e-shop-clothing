@@ -106,7 +106,7 @@ const LayoutClient = () => {
 
     if (!userSnap.exists()) return;
 
-    const userData = userSnap.data().user;
+    const userData = userSnap.data();
 
     const pedido = {
       idPedido,
