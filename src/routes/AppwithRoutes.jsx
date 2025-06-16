@@ -18,7 +18,7 @@ const AppwithRoutes = () => {
           const refuser = doc(db, "usuarios", user.uid);
           const getdocuser = await getDoc(refuser);
           const docuser = getdocuser.data();
-          const userdata = docuser?.user;
+          const userdata = docuser;
 
           if (userdata && userdata.rol) {
             setRol(userdata.rol);

@@ -34,7 +34,7 @@ const UserProviderProductos = ({ children }) => {
         console.log("solo entro una ves");
       }
     }
-    console.log("ussuariooooo", iduser);
+
     usarFecht();
   }, []);
 
