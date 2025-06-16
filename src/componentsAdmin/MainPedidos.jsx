@@ -45,67 +45,73 @@ const MainPedidos = () => {
   console.log("curent pedidos", pedidos);
   return (
     <div className="w-4/5 flex flex-col items-center">
-      <div className="text-center mt-7 text-4xl">PEDIDOS</div>
-      <div>
-        <table className="text-xl text-center">
-          <thead className="bg-slate-300">
-            <tr>
-              <th>Pedido ID</th>
-              <th>Cliente</th>
-              <th>Fecha</th>
-              <th>estado</th>
-              <th>Total</th>
-              <th>Pago</th>
-              <th>Envio</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody className="bg-slate-200">
-            {pedidos.map((p, index) => {
-              return (
-                <tr
-                  key={index}
-                  onClick={() => handleClickDetails(p)}
-                  className="cursor-pointer"
-                >
-                  <td className="border-2 p-1 border-solid cursor-pointer border-black">
-                    {p.idPedido}
-                  </td>
-                  <td className="border-2 p-1 border-solid border-black">
-                    {p.nombre}
-                  </td>
-                  <td className="border-2 p-1 border-solid border-black">
-                    {p.fechaPedido}
-                  </td>
-                  <td className="border-2 p-1 border-solid border-black">
-                    {p.estado}
-                  </td>
-                  <td className="border-2 p-1 border-solid border-black">
-                    {p.totalPagado}
-                  </td>
-                  <td className="border-2 p-1 border-solid border-black">
-                    {p.metodoPago}{" "}
-                  </td>
-                  <td className="border-2 p-1 border-solid border-black">
-                    {p.envio || "preparando"}
-                  </td>
-                  <td className="border-2 p-1 border-solid border-black">
-                    Editar/Ver
-                  </td>
+      {pedidos.length > 0 ? (
+        <>
+          <div className="text-center mt-7 text-4xl">PEDIDOS</div>
+          <div>
+            <table className="text-xl text-center">
+              <thead className="bg-slate-300">
+                <tr>
+                  <th>Pedido ID</th>
+                  <th>Cliente</th>
+                  <th>Fecha</th>
+                  <th>estado</th>
+                  <th>Total</th>
+                  <th>Pago</th>
+                  <th>Envio</th>
+                  <th>Acciones</th>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
-        {onClose && pd && (
-          <ModalDetailsPedido
-            onclose={() => setOnClose(false)}
-            setpd={setpd}
-            p={pd}
-            setpedidos={setPedidos}
-          />
-        )}
-      </div>
+              </thead>
+              <tbody className="bg-slate-200">
+                {pedidos.map((p, index) => {
+                  return (
+                    <tr
+                      key={index}
+                      onClick={() => handleClickDetails(p)}
+                      className="cursor-pointer"
+                    >
+                      <td className="border-2 p-1 border-solid cursor-pointer border-black">
+                        {p.idPedido}
+                      </td>
+                      <td className="border-2 p-1 border-solid border-black">
+                        {p.nombre}
+                      </td>
+                      <td className="border-2 p-1 border-solid border-black">
+                        {p.fechaPedido}
+                      </td>
+                      <td className="border-2 p-1 border-solid border-black">
+                        {p.estado}
+                      </td>
+                      <td className="border-2 p-1 border-solid border-black">
+                        {p.totalPagado}
+                      </td>
+                      <td className="border-2 p-1 border-solid border-black">
+                        {p.metodoPago}{" "}
+                      </td>
+                      <td className="border-2 p-1 border-solid border-black">
+                        {p.envio || "preparando"}
+                      </td>
+                      <td className="border-2 p-1 border-solid border-black">
+                        Editar/Ver
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            {onClose && pd && (
+              <ModalDetailsPedido
+                onclose={() => setOnClose(false)}
+                setpd={setpd}
+                p={pd}
+                setpedidos={setPedidos}
+              />
+            )}
+          </div>
+        </>
+      ) : (
+        <div className="text-5xl">Ups No hay pedidos haun</div>
+      )}
     </div>
   );
 };
