@@ -117,6 +117,7 @@ const LayoutClient = () => {
       correo: userData.correo,
       totalPagado: total,
       estado: "Pendiente",
+      rol: userData.rol,
       direction: userData.direction,
       telefono: userData.telefono,
       nombre: userData.name,
