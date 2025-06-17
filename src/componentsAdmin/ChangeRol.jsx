@@ -58,7 +58,7 @@ const ChangeRol = ({ setchangerol, u, setu }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex flex-row justify-center items-center z-50">
       <div className="bg-white  flex flex-col justify-between   max-w-xl w-80 h-2/6  relative">
         <div
-          className="absolute p-2 hover:bg-slate-500 top-0 left-0"
+          className="absolute p-2 hover:bg-slate-500 top-0 cursor-pointer left-0"
           onClick={setchangerol}
         >
           X

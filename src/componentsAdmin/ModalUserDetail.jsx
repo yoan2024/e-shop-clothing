@@ -1,6 +1,7 @@
 import {
   collection,
   deleteDoc,
+  getDoc,
   orderBy,
   query,
   setDoc,
@@ -11,6 +12,7 @@ import { db } from "../firebase/firebase-config";
 import { getDocs } from "firebase/firestore";
 import ChangeRol from "./ChangeRol";
 import { doc } from "firebase/firestore";
+import EditarUser from "./EditarUser";
 
 const estadosOrdenes = [
   "All",
@@ -42,9 +44,7 @@ const ModalUserDetail = ({ user, onclose, setu }) => {
           where("correo", "==", user.correo)
         );
 
-        console.log("user correo: ", user.correo);
         const getrefdoc = await getDocs(refdoc);
-        console.log("getdocccccccc", getrefdoc);
         if (!getrefdoc.empty) {
           let peds = [];
           getrefdoc.forEach((d) => {
@@ -55,8 +55,6 @@ const ModalUserDetail = ({ user, onclose, setu }) => {
               ? peds
               : peds.filter((order) => order.envio === selected);
           setOrders(filteredOrders);
-        } else {
-          console.log("hubo un problema no se incontraron documentos");
         }
       } catch (e) {
         console.log("eeror: ", e);
@@ -66,7 +64,6 @@ const ModalUserDetail = ({ user, onclose, setu }) => {
     getPedidos();
   }, [selected]);
 
-  console.log("currnet orders", orders);
   const handlebanner = () => {
     setTextPop("bannear");
     setPop(true);
@@ -80,53 +77,33 @@ const ModalUserDetail = ({ user, onclose, setu }) => {
   const handleAction = async () => {
     setGuardando(true);
     try {
-      const refdoc = query(
-        collection(db, "usuarios"),
-        where("correo", "==", user.correo)
-      );
+      const refdoc = doc(db, "usuarios", user.idUser);
+      const getdoc = await getDoc(refdoc);
 
-      console.log("user correo: ", user.correo);
-      const getrefdoc = await getDocs(refdoc);
-      console.log("getdocccccccc", getrefdoc);
-      if (!getrefdoc.empty) {
-        let us = [];
-        let iddoc;
-        getrefdoc.forEach((d) => {
-          iddoc = d.id;
-          us.push(d.data());
-        });
-
-        if (textPop === "bannear") {
-          let updateuser = { ...us[0], estatus: "Banned" };
-
-          await setDoc(doc(db, "usuarios", iddoc), {
-            ...updateuser,
-          });
-
-          console.log("ususario update correctamente", updateuser);
-          setTimeout(() => {
-            setPop(false);
-          }, 300);
-          setTextPop("");
-        } else if (textPop === "borrar") {
-          await deleteDoc(doc(db, "usuarios", iddoc));
-          console.log("ussuario borrado correctamente");
-          setTimeout(() => {
-            setPop(false);
-          }, 300);
-          setTextPop("");
-        }
-      } else {
-        console.log("hubo un problema no se incontraron documentos");
+      if (textPop === "bannear") {
+        let updateuser = { ...getdoc.data(), estatus: "Banned" };
+        await setDoc(refdoc, updateuser);
+        setTimeout(() => {
+          setPop(false);
+          setGuardando(false);
+        }, 300);
+        setTextPop("");
+      } else if (textPop === "borrar") {
+        await deleteDoc(refdoc);
+        setTimeout(() => {
+          setPop(false);
+          setGuardando(false);
+        }, 300);
+        setTextPop("");
       }
     } catch (e) {
       console.log("eeror: ", e);
     }
   };
+
   return (
     <div className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-40">
-      <div className="bg-white rounded-2xl   shadow-2xl p-6 h-5/6 w-full max-w-xl   animate-fade-in-up relative overflow-y-hidden overflow-y-scroll">
-        {/* Botón cerrar */}
+      <div className="bg-white rounded-2xl shadow-2xl p-6 h-5/6 w-full max-w-xl animate-fade-in-up relative overflow-y-auto">
         <button
           className="absolute top-3 right-3 text-gray-600 hover:text-black text-2xl font-bold"
           onClick={onclose}
@@ -134,7 +111,7 @@ const ModalUserDetail = ({ user, onclose, setu }) => {
           ×
         </button>
 
-        {/* Cliente */}
+        {/* Detalles del usuario */}
         <section className="mb-6">
           <h2 className="text-xl font-semibold mb-2 text-slate-700">
             🧑 User Detail view
@@ -166,94 +143,85 @@ const ModalUserDetail = ({ user, onclose, setu }) => {
           </div>
         </section>
 
-        {/* Pedido */}
+        {/* Pedidos */}
         <section className="mb-6">
           <h2 className="text-xl font-semibold mb-2 text-slate-700">
             🛒 Pedido
           </h2>
-
+          <div className="flex flex-row items-start max-sm:flex-col gap-2">
+            <div>Filtrar por estado: </div>
+            <select
+              value={selected}
+              onChange={(e) => setSelected(e.target.value)}
+              className="border-2 border-solid border-black"
+            >
+              {estadosOrdenes.map((o, i) => (
+                <option key={i} value={o}>
+                  {o}
+                </option>
+              ))}
+            </select>
+          </div>
+          <br />
           {orders.length > 0 ? (
-            <>
-              <div className="flex flex-row items-start max-sm:flex-col gap-2">
-                <div>Filtrar por estado: </div>
-                <select
-                  name=""
-                  id=""
-                  value={selected}
-                  onChange={(e) => setSelected(e.target.value)}
-                  className="border-2 border-solid border-black"
-                >
-                  {estadosOrdenes.map((o) => {
-                    return <option value={o}>{o}</option>;
-                  })}
-                </select>
-              </div>
-              <br />
-              <table>
-                <thead>
-                  <tr className="bg-gray-500">
-                    <th className="border-2 border-solid border-black">
-                      Order ID
-                    </th>
-                    <th className="border-2 border-solid border-black">User</th>
-                    <th className="border-2 border-solid border-black">
-                      Status
-                    </th>
-                    <th className="border-2 border-solid border-black">
-                      Total
-                    </th>
+            <table>
+              <thead>
+                <tr className="bg-gray-500">
+                  <th className="border-2 border-solid border-black">
+                    Order ID
+                  </th>
+                  <th className="border-2 border-solid border-black">User</th>
+                  <th className="border-2 border-solid border-black">Status</th>
+                  <th className="border-2 border-solid border-black">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.map((o, i) => (
+                  <tr key={i} className="bg-slate-300">
+                    <td className="border-r border-2 border-solid border-black">
+                      {o.idPedido}
+                    </td>
+                    <td className="border-r border-2 border-solid border-black">
+                      {o.nombre}
+                    </td>
+                    <td className="border-r border-2 border-solid border-black">
+                      {o.envio}
+                    </td>
+                    <td className="border-r border-2 border-solid border-black">
+                      ${o.totalPagado}
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {orders.map((o) => {
-                    return (
-                      <tr className="bg-slate-300">
-                        <td className="border-r border-2 border-solid border-black">
-                          {o.idPedido}
-                        </td>
-                        <td className="border-r border-2 border-solid border-black">
-                          {o.nombre}
-                        </td>
-                        <td className="border-r border-2 border-solid border-black">
-                          {o.envio}
-                        </td>
-                        <td className="border-r border-2 border-solid border-black">
-                          ${o.totalPagado}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </>
+                ))}
+              </tbody>
+            </table>
           ) : (
-            <div>ESTE USUARIO NO HA ECHO NINGUN PEDIDO.</div>
+            <div>ESTE USUARIO NO HA HECHO NINGÚN PEDIDO.</div>
           )}
         </section>
 
-        {/* Envío */}
+        {/* Acciones */}
         <section className="mb-6">
           <h2 className="text-xl font-semibold mb-2 text-slate-700">
-            BANEAR/ELIMINAR/CHANGE ROL
+            BANEAR / ELIMINAR / CAMBIAR ROL
           </h2>
           <div className="space-y-1 items-center gap-2 text-gray-600 max-sm:flex-col flex flex-row">
             <div
               className="bg-red-400 text-white cursor-pointer rounded-2xl p-3 hover:bg-red-500"
               onClick={handlebanner}
             >
-              <buttom>Banner</buttom>
+              <button>Banear</button>
             </div>
             <div
               className="bg-red-600 text-white cursor-pointer hover:bg-red-700 rounded-2xl p-3"
               onClick={handledelete}
             >
-              <button>Delete</button>
+              <button>Eliminar</button>
             </div>
             <div
               className="bg-green-400 text-white cursor-pointer hover:bg-green-500 rounded-2xl p-3"
               onClick={() => setChangeRol(true)}
             >
-              <button>Change rol</button>
+              <button>Cambiar rol</button>
             </div>
           </div>
           {changeRol && (
@@ -265,51 +233,36 @@ const ModalUserDetail = ({ user, onclose, setu }) => {
           )}
         </section>
 
-        {/* Cambiar estado (placeholder) */}
-        <section>
-          <h2 className="text-xl font-semibold mb-2 text-slate-700">
-            🛠️ Acciones
-          </h2>
-          <div>
-            {/* Aquí puedes añadir botones o selects para cambiar el estado del pedido */}
-            <button className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg">
-              Cambiar estado del pedido
-            </button>
-          </div>
-        </section>
-      </div>
-      {pop && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-40">
-          <div className="bg-white rounded-2xl flex flex-col justify-center relative shadow-2xl   h-2/6 w-full max-w-xs ">
-            <div
-              className="absolute cursor-pointer top-0 left-0 hover:bg-slate-600 p-1 w-fit"
-              onClick={() => {
-                setTextPop("");
-                setPop(false);
-              }}
-            >
-              X
-            </div>
-            <div className="flex flex-col items-center gap-5">
-              <div className="text-center text-2xl">
-                Estas seguro de que quieres {textPop} esta persona?
-              </div>
-              {guardando ? (
-                <button className="bg-slate-700 p-3 rounded-2xl">
-                  Guardando Cambios.....
-                </button>
-              ) : (
+        {/* Editar datos */}
+        <EditarUser user={user} setu={setu} />
+
+        {/* Confirmación de acción */}
+        {pop && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white rounded-xl p-6 text-center shadow-lg">
+              <p>¿Estás seguro de que deseas {textPop} este usuario?</p>
+              <div className="flex justify-center gap-4 mt-4">
                 <button
-                  className="bg-red-700 p-3 rounded-2xl"
-                  onClick={() => handleAction()}
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                  onClick={handleAction}
                 >
-                  Si {textPop}{" "}
+                  {guardando ? "Procesando..." : "Sí, continuar"}
                 </button>
-              )}
+                <button
+                  className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400"
+                  onClick={() => {
+                    setPop(false);
+                    setTextPop("");
+                    setGuardando(false);
+                  }}
+                >
+                  Cancelar
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

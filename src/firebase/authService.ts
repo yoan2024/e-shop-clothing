@@ -38,6 +38,7 @@ export const signup = async (email: string, password: string, name: string) => {
     imageDefault: "/images/perfilimg.avif",
     rol,
     estatus: "Active",
+    idUser,
   });
 
   return user;
