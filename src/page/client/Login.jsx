@@ -7,12 +7,12 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(email, password);
     navigate("/");
     try {
-      login(email, password);
+      await login(email, password);
       console.log("login con exito");
     } catch (e) {
       console.log(e);
@@ -33,8 +33,8 @@ const Login = () => {
         <div className="text-6xl font-bold text-white">Trendora</div>
       </div>
 
-      <div className="bg-white p-8 rounded-lg shadow-lg">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <div className="bg-white p-8  rounded-lg shadow-lg">
+        <form onSubmit={handleSubmit} className="flex mb-5 flex-col gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Email
@@ -66,6 +66,15 @@ const Login = () => {
             Login
           </button>
         </form>
+        <span>
+          No tienes cuenta yep?{" "}
+          <a
+            className="hover:text-blue-600  border-b-2 border-black"
+            href="/sign_up"
+          >
+            Sign up here
+          </a>
+        </span>
       </div>
     </div>
   );

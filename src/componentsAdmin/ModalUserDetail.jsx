@@ -8,6 +8,7 @@ import {
   where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { useImage } from "../context/Image";
 import { db } from "../firebase/firebase-config";
 import { getDocs } from "firebase/firestore";
 import ChangeRol from "./ChangeRol";
@@ -31,7 +32,7 @@ const ModalUserDetail = ({ user, onclose, setu }) => {
   const [changeRol, setChangeRol] = useState(false);
   const [selected, setSelected] = useState("All");
   const [orders, setOrders] = useState([]);
-
+  const { url, setUrl } = useImage();
   const [pop, setPop] = useState(false);
   const [guardando, setGuardando] = useState(false);
   const [textPop, setTextPop] = useState("");
@@ -116,11 +117,11 @@ const ModalUserDetail = ({ user, onclose, setu }) => {
           <h2 className="text-xl font-semibold mb-2 text-slate-700">
             🧑 User Detail view
           </h2>
-          <div className="w-40 h-40">
+          <div className="w-40 h-40 overflow-hidden rounded-2xl">
             <img
-              src="/images/default-profile-picture.jpg"
+              src={user.image || user.imageDefault}
               alt=""
-              className="w-full h-full"
+              className="object-cover"
             />
           </div>
           <div className="space-y-1 text-gray-600">
@@ -195,7 +196,10 @@ const ModalUserDetail = ({ user, onclose, setu }) => {
               </tbody>
             </table>
           ) : (
-            <div>ESTE USUARIO NO HA HECHO NINGÚN PEDIDO.</div>
+            <div>
+              ESTE USUARIO NO HA HECHO NINGÚN PEDIDO O EN ESTE ESTADO NO HAY
+              PEDIDOS.
+            </div>
           )}
         </section>
 

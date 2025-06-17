@@ -81,6 +81,15 @@ const Sign_up = () => {
             Sign Up
           </button>
         </form>
+        <span>
+          Ya tienes cuenta?{" "}
+          <a
+            className="hover:text-blue-600  border-b-2 border-black"
+            href="/login_in"
+          >
+            Login in here
+          </a>
+        </span>
       </div>
     </div>
   );

@@ -91,15 +91,14 @@ const PerfilUsuario = () => {
         const refdoc = doc(db, "usuarios", iduser);
         const getdoc = await getDoc(refdoc);
         if (getdoc.exists()) {
-          const dada = getdoc.data();
-          const userdata = dada.user;
-          console.log("dataaaaaa", userdata);
-          const imagen = userdata.image || userdata.imageDefault;
+          const data = getdoc.data();
+
+          const imagen = data.image || data.imageDefault;
           setUrl(imagen);
-          setName(userdata.name);
-          setEmail(userdata.correo);
-          setTelefono(userdata.telefono);
-          setDirection(userdata.direction);
+          setName(data.name);
+          setEmail(data.correo);
+          setTelefono(data.telefono);
+          setDirection(data.direction);
         } else {
           console.log("no existe un usuario actual please sign in or login in");
         }
@@ -173,8 +172,6 @@ const PerfilUsuario = () => {
     return () => unsubscribe();
   }, [user]);
 
-  console.log("curent pedidos: ", pedidos, "current hp", historialPedidos);
-
   const handleClick = (e) => {
     if (e === "name") {
       setDisable((prev) => [...prev, "name"]);
@@ -207,10 +204,10 @@ const PerfilUsuario = () => {
     const iduser = user.uid;
     const refdata = doc(db, "usuarios", iduser);
     const getdata = await getDoc(refdata);
-
+    console.log("entrooooooooooooooooooooooooooo aquiiiiii");
     if (getdata.exists()) {
       const datauser = getdata.data();
-      newData = datauser.user;
+      newData = datauser;
     } else {
       console.log("ususario no existe en base de datos");
       return;
@@ -230,7 +227,7 @@ const PerfilUsuario = () => {
       newDisables = [...disable].filter((i) => i !== "direction");
     }
     setDoc(refdata, {
-      user: newData,
+      ...newData,
     });
 
     {
@@ -285,12 +282,6 @@ const PerfilUsuario = () => {
       setCDirection(false);
     }
   };
-  console.log(
-    "mostar p",
-    pedidos,
-    "mostrar historial pedidos : ",
-    historialPedidos
-  );
   return (
     <div className="bg-slate-300 min-h-screen flex flex-col">
       {user ? (
