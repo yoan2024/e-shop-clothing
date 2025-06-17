@@ -64,7 +64,10 @@ const AsidebarAdmin = () => {
       <div className="mb-5">
         <button
           className="bg-red-700 p-1 rounded-2xl font-bold"
-          onClick={() => logout()}
+          onClick={() => {
+            logout();
+            navigate("/login_in");
+          }}
         >
           Cerrar sesion
         </button>

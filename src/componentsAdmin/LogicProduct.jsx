@@ -109,11 +109,12 @@ const LogicProduct = ({ onClose, p, logica }) => {
         const floatCount = Math.floor(randomCount);
 
         const sorProducts = p.sort((a, b) => b.id - a.id);
-        const newId = sorProducts[0].id;
+        const newId = sorProducts[0].id + 1;
 
         const newProducto = {
           category: categoria,
           description: descripcion,
+          title: titulo,
           id: newId,
           image: img,
           price: precio,
@@ -132,6 +133,12 @@ const LogicProduct = ({ onClose, p, logica }) => {
           "p actualizados: ",
           p
         );
+
+        setTitulo("");
+        setPrecio("");
+        setCategoria("");
+        setDescripcion("");
+        setTimeout(onClose(), 600);
       }
     } else {
       return;

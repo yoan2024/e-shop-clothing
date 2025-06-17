@@ -49,12 +49,8 @@ function ProfilePhotoUploader() {
       const getdata = await getDoc(refdoc);
       if (getdata.exists()) {
         const data = getdata.data();
-
-        const userdata = data.user;
-        let newData = { ...userdata, image: res.data.secure_url };
-        setDoc(refdoc, {
-          user: newData,
-        });
+        let newData = { ...data, image: res.data.secure_url };
+        setDoc(refdoc, newData);
         console.log("actualizado correctamente la imagen de firebase de user");
       }
       setUrl(res.data.secure_url);
