@@ -5,7 +5,7 @@ import { useProducts } from "../context/ContextProducts";
 import ClipLoader from "react-spinners/ClipLoader";
 
 ///
-const Tendencia = () => {
+const Tendenciaa = () => {
   const navegate = useNavigate();
   const { products, setProducts } = useProducts();
   const [topProducts, setTopProducts] = useState([]);
@@ -120,4 +120,4 @@ const Tendencia = () => {
   );
 };
 
-export default Tendencia;
+export default Tendenciaa;
