@@ -1,6 +1,6 @@
 import Hero from "../../component/Hero";
 import Informacion from "../../component/Informacion";
-import Tendenciaa from "../../component/tendencia";
+import Tendenciaa from "../../component/Tendencita";
 import ProductsShow from "../../component/ProductsShow";
 
 const Home = () => {
