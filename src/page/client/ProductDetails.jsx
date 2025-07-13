@@ -161,7 +161,7 @@ const ProductDetails = () => {
     );
   return (
     <>
-      <div className="w-full mt-20 flex flex-row justify-center min-h-screen p-2">
+      <div className="w-full mt-20 flex flex-row justify-center min-h-screen items-center p-2">
         <main className="flex flex-col">
           <div className="flex  w-10/12 flex-col p-4  sm:flex-row">
             <section className=" max-sm:w-full flex flex-row justify-center items-center sm:w-2/4 relative ">
@@ -202,14 +202,14 @@ const ProductDetails = () => {
                 <div>Description: </div>
                 <div className="text-slate-600">{product.description} </div>
               </div>
-              <div className="w-full flex flex-row justify-between">
+              <div className="w-full flex flex-row justify-between gap-2">
                 <Link
-                  className="bg-black text-white font-bold rounded-lg w-52 text-center p-5 max-lg:w-32"
+                  className="bg-black flex flex-row items-center justify-center max-sm:w-36 max-sm:h-16 text-white font-bold rounded-lg w-40 text-center   md:w-32 md:h-24 flex-1"
                   onClick={handleAddToCart}
                 >
-                  Add To Cart
+                  <span>Add To Cart</span>
                 </Link>
-                <Link className="border-solid border-slate-400 border-2   font-bold rounded-lg max-lg:w-32 w-52 text-center p-5 ">
+                <Link className="bg-white flex flex-row items-center justify-center max-sm:w-36 max-sm:h-16 text-black border-solid border-2 border-black font-bold rounded-lg w-52 text-center flex-1  md:w-32 md:h-24">
                   Checkout Now
                 </Link>
               </div>
