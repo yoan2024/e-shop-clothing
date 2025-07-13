@@ -145,7 +145,9 @@ const LayoutClient = () => {
 
   return (
     <>
-      <Header togle={toggle} settogle={setToggle} />
+      {!hiddenRoutes.includes(location.pathname) && (
+        <Header togle={toggle} settogle={setToggle} />
+      )}
 
       {toggle && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-end z-50">
