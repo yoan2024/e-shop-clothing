@@ -90,142 +90,141 @@ const Header = ({ togle, settogle }) => {
         <div>
           <img src="/images/marca.png" alt="" className="w-28 h-28" />
         </div>
-        <div
-          className="w-1/2  z-10 bg-white absolute top-10 left-1/4   border-solid border-2 border-slate-600 "
-          ref={wrapperRef}
-        >
-          <div className="flex flex-row items-center">
-            <div className="w-full">
-              <input
-                className="text-xl w-full p-2 border-none"
-                placeholder="buscar productos...."
-                type="text"
-                value={inpuValue}
-                onKeyDown={(e) => {
-                  if (suggest.length === 0) return;
 
-                  if (e.key === "ArrowDown") {
-                    setMouseEnter(false);
-                    e.preventDefault();
-                    if (highlightedIndex === -1) {
-                      setSuplentSearch(search);
-                    }
-
-                    let index;
-                    if (highlightedIndex + 1 === suggest.length) {
-                      index = -1;
-                      setHighlightedIndex(index);
-                      setInputValue(suplentSearch);
-                      return;
-                    }
-                    setHighlightedIndex((prev) => {
-                      const idIndex = (prev + 1) % suggest.length;
-                      if (
-                        highlightedIndex >= 0 &&
-                        highlightedIndex < suggest.length
-                      ) {
-                        const selected = suggest[highlightedIndex];
-                        if (selected) {
-                          setInputValue(selected.title);
-                        }
-                      }
-                      return idIndex;
-                    });
-                  } else if (e.key === "ArrowUp") {
-                    setMouseEnter(false);
-                    e.preventDefault();
-                    setHighlightedIndex((prev) => {
-                      const idIndex =
-                        prev === 0 ? suggest.length - 1 : prev - 1;
-                      if (
-                        highlightedIndex >= 0 &&
-                        highlightedIndex < suggest.length
-                      ) {
-                        const selected = suggest[highlightedIndex];
-                        if (selected) {
-                          setInputValue(selected.title);
-                        }
-                      }
-
-                      return idIndex;
-                    });
-                  } else if (e.key === "Enter") {
-                    if (highlightedIndex >= 0) {
-                      const selected = suggest[highlightedIndex];
-                      console.log("User selected:", selected);
-                      const findProdut = products.find(
-                        (p) => p.title === inpuValue
-                      );
-                      if (findProdut) {
-                        console.log("se incontro el product", findProdut);
-                        const id = findProdut.id;
-                        navegate(`product/${id}?from=search`);
-                        setSuggest([]);
-                        setInputValue("");
-                        setSearch("");
-                      } else {
-                        console.log("no se incontro", findProdut);
-                      }
-                    } else {
-                      console.log("buscando producto", inpuValue);
-                      navegate();
-                    }
-                  }
-                }}
-                id="search"
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setInputValue(e.target.value);
-                }}
-              />{" "}
-            </div>
-            <label
-              htmlFor="search"
-              className="p-1 cursor-pointer"
-              onClick={handleSearch}
-            >
-              <Search className=" border-l-2   border-solid border-slate-400" />
-            </label>
-          </div>
-
-          {/*aqui va la suggest arrays*/}
-
-          {sugerenciasVisibles && suggest.length > 0 && (
-            <>
-              {suggest.map((s, index) => {
-                const isHight = !mouseEnter && highlightedIndex === index;
-                return (
-                  <div
-                    key={s.id}
-                    className={`flex  mt-2   flex-row gap-2  py-2 cursor-pointer ${
-                      isHight
-                        ? "bg-slate-500"
-                        : mouseEnter === false && highlightedIndex >= 0
-                        ? ""
-                        : "hover:bg-slate-500"
-                    }`}
-                    onMouseEnter={() => {
-                      setHighlightedIndex(index);
-                      setMouseEnter(true);
-                    }}
-                    onClick={() => {
-                      navegate(`product/${s.id}?from=search`);
-                    }}
-                  >
-                    <div className="ml-2">
-                      <Search className="text-gray-600" />
-                    </div>
-                    <div>{s.title}</div>
-                  </div>
-                );
-              })}
-            </>
-          )}
-        </div>
-
-        <div className="rounded-3xl bg-black w-48 h-36">
+        <div className="rounded-3xl bg-black w-32 h-24">
           <img src="/images/descuento.png" alt="" className="w-full h-full" />
         </div>
+      </div>
+      <div
+        className="w-3/4 self-center  z-10 bg-white   border-solid border-2 border-slate-600 "
+        ref={wrapperRef}
+      >
+        <div className="flex flex-row items-center">
+          <div className="w-full">
+            <input
+              className="text-xl w-full p-2 border-none"
+              placeholder="buscar productos...."
+              type="text"
+              value={inpuValue}
+              onKeyDown={(e) => {
+                if (suggest.length === 0) return;
+
+                if (e.key === "ArrowDown") {
+                  setMouseEnter(false);
+                  e.preventDefault();
+                  if (highlightedIndex === -1) {
+                    setSuplentSearch(search);
+                  }
+
+                  let index;
+                  if (highlightedIndex + 1 === suggest.length) {
+                    index = -1;
+                    setHighlightedIndex(index);
+                    setInputValue(suplentSearch);
+                    return;
+                  }
+                  setHighlightedIndex((prev) => {
+                    const idIndex = (prev + 1) % suggest.length;
+                    if (
+                      highlightedIndex >= 0 &&
+                      highlightedIndex < suggest.length
+                    ) {
+                      const selected = suggest[highlightedIndex];
+                      if (selected) {
+                        setInputValue(selected.title);
+                      }
+                    }
+                    return idIndex;
+                  });
+                } else if (e.key === "ArrowUp") {
+                  setMouseEnter(false);
+                  e.preventDefault();
+                  setHighlightedIndex((prev) => {
+                    const idIndex = prev === 0 ? suggest.length - 1 : prev - 1;
+                    if (
+                      highlightedIndex >= 0 &&
+                      highlightedIndex < suggest.length
+                    ) {
+                      const selected = suggest[highlightedIndex];
+                      if (selected) {
+                        setInputValue(selected.title);
+                      }
+                    }
+
+                    return idIndex;
+                  });
+                } else if (e.key === "Enter") {
+                  if (highlightedIndex >= 0) {
+                    const selected = suggest[highlightedIndex];
+                    console.log("User selected:", selected);
+                    const findProdut = products.find(
+                      (p) => p.title === inpuValue
+                    );
+                    if (findProdut) {
+                      console.log("se incontro el product", findProdut);
+                      const id = findProdut.id;
+                      navegate(`product/${id}?from=search`);
+                      setSuggest([]);
+                      setInputValue("");
+                      setSearch("");
+                    } else {
+                      console.log("no se incontro", findProdut);
+                    }
+                  } else {
+                    console.log("buscando producto", inpuValue);
+                    navegate();
+                  }
+                }
+              }}
+              id="search"
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setInputValue(e.target.value);
+              }}
+            />{" "}
+          </div>
+          <label
+            htmlFor="search"
+            className="p-1 cursor-pointer"
+            onClick={handleSearch}
+          >
+            <Search className=" border-l-2   border-solid border-slate-400" />
+          </label>
+        </div>
+
+        {/*aqui va la suggest arrays*/}
+
+        {sugerenciasVisibles && suggest.length > 0 && (
+          <>
+            {suggest.map((s, index) => {
+              const isHight = !mouseEnter && highlightedIndex === index;
+              return (
+                <div
+                  key={s.id}
+                  className={`flex  mt-2   flex-row gap-2  py-2 cursor-pointer ${
+                    isHight
+                      ? "bg-slate-500"
+                      : mouseEnter === false && highlightedIndex >= 0
+                      ? ""
+                      : "hover:bg-slate-500"
+                  }`}
+                  onMouseEnter={() => {
+                    setHighlightedIndex(index);
+                    setMouseEnter(true);
+                  }}
+                  onClick={() => {
+                    navegate(`product/${s.id}?from=search`);
+                  }}
+                >
+                  <div className="ml-2">
+                    <Search className="text-gray-600" />
+                  </div>
+                  <div>{s.title}</div>
+                </div>
+              );
+            })}
+          </>
+        )}
       </div>
       {!includesUrls && <Nav tog={togle} settog={settogle} />}
     </header>
