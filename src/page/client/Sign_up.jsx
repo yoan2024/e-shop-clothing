@@ -21,21 +21,14 @@ const Sign_up = () => {
   };
 
   return (
-    <div className="bg-amber-500 min-h-screen relative flex justify-center items-center gap-10">
+    <div className="bg-amber-500 min-h-screen relative max-sm:flex-col flex justify-center items-center gap-10">
       {/* Imagen en la esquina */}
-      <div className="w-96 h-60 absolute bottom-0 left-0">
-        <img
-          src="/images/personaC.png"
-          alt="persona"
-          className="w-full h-full object-contain"
-        />
-      </div>
 
-      <div>
+      <div className="max-sm:mt-7">
         <div className="text-6xl font-bold text-white">Trendora</div>
       </div>
 
-      <div className="bg-white p-8 rounded-lg shadow-lg">
+      <div className="bg-white p-8  rounded-lg shadow-lg">
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -90,6 +83,13 @@ const Sign_up = () => {
             Login in here
           </a>
         </span>
+      </div>
+      <div className="w-96 h-60 sm:absolute sm:bottom-0 sm:left-0">
+        <img
+          src="/images/personaC.png"
+          alt="persona"
+          className="w-full h-full object-contain"
+        />
       </div>
     </div>
   );
