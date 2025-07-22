@@ -51,7 +51,9 @@ const LayoutClient = () => {
         });
 
         setCantidades(newCantidades);
-        setTotal(newTotal.toFixed(2));
+    
+        let total = Number(newTotal)
+        setTotal(total.toFixed(2));
       }
     };
 

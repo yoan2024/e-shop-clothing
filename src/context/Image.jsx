@@ -16,7 +16,7 @@ const ImageProvider = ({ children }) => {
       async function dataUser() {
         try {
           if (!user) {
-            console.log("user not logueado");
+            /*usuario sin iniciar sesión*/
             return null;
           }
           const uid = user.uid;

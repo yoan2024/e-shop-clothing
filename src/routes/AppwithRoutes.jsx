@@ -13,7 +13,7 @@ const AppwithRoutes = () => {
   useEffect(() => {
     async function getRol() {
       if (user) {
-        console.log("entroooooooooooo");
+       
         try {
           const refuser = doc(db, "usuarios", user.uid);
           const getdocuser = await getDoc(refuser);
@@ -26,7 +26,7 @@ const AppwithRoutes = () => {
             setRol("cliente"); // fallback por si falta rol
           }
         } catch (err) {
-          console.error("Error obteniendo el rol:", err);
+          
           setRol("cliente"); // fallback por error
         }
       } else {

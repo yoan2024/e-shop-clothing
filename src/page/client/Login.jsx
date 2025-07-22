@@ -9,11 +9,11 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(email, password);
+    
     navigate("/");
     try {
       await login(email, password);
-      console.log("login con exito");
+      
     } catch (e) {
       console.log(e);
     }

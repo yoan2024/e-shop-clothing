@@ -15,7 +15,7 @@ const FavoritesProvider = ({ children }) => {
     const unSubscribe = onAuthStateChanged(auth, (user) => {
       async function dataUser() {
         if (!user) {
-          console.log("user not logueado");
+          /*usuario sin iniciar sesión*/
           return null;
         }
         const uid = user.uid;
@@ -26,9 +26,7 @@ const FavoritesProvider = ({ children }) => {
           const itemsFavorites = favorites.favorites;
           setFavorites(itemsFavorites);
         } else {
-          console.log(
-            "user no tiene favorites en firestorage haci q un aaray sosla [["
-          );
+         
           setFavorites([]);
         }
       }

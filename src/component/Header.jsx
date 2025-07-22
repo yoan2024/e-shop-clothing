@@ -49,10 +49,10 @@ const Header = ({ togle, settogle }) => {
           .slice(0, 6);
 
         setSuggest(newSuggest);
-        console.log("current suggest", suggest);
+        
         setHighlightedIndex(-1);
       } else {
-        console.log("escribe algo en el search");
+       
         setSuggest([]);
       }
     }, 1000);
@@ -86,7 +86,7 @@ const Header = ({ togle, settogle }) => {
 
   return (
     <header className="w-full bg-white/90 shadow-md flex flex-col justify-center p-3">
-      <div className="flex flex-row items-center relative  justify-between mb-2">
+      <div className="flex flex-row items-center relative header justify-between mb-2">
         <div>
           <img src="/images/marca.png" alt="" className="w-28 h-28" />
         </div>

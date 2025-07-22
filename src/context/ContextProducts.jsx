@@ -14,11 +14,10 @@ const UserProviderProductos = ({ children }) => {
       const getproducts = await getDoc(refproducts);
       if (getproducts.exists()) {
         const produ = getproducts.data();
-        console.log("jajaja", produ);
+       
         const p = produ.productos;
         setProducts(p);
-        console.log("curent prodtc hay", p);
-        console.log("entra varias veces");
+       
       } else {
         let productos;
         const data = await fetch("https://fakestoreapi.com/products")
@@ -31,7 +30,7 @@ const UserProviderProductos = ({ children }) => {
         setDoc(refproducts, {
           productos: productos,
         });
-        console.log("solo entro una ves");
+        
       }
     }
 

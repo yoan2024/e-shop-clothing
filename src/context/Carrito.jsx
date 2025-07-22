@@ -15,7 +15,7 @@ const CarritoProvider = ({ children }) => {
     const unSubscribe = onAuthStateChanged(auth, (user) => {
       async function dataUser() {
         if (!user) {
-          console.log("user not logueado");
+          /*usuario sin iniciar sesión*/
           return null;
         }
         const uid = user.uid;
@@ -26,9 +26,7 @@ const CarritoProvider = ({ children }) => {
           const itemsCars = carrito.carrito;
           setCarrito(itemsCars);
         } else {
-          console.log(
-            "user no tiene carrito en firestorage haci q un aaray sosla [["
-          );
+         
           setCarrito([]);
         }
       }

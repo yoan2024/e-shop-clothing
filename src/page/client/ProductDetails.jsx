@@ -33,34 +33,28 @@ const ProductDetails = () => {
 
   useEffect(() => {
     if (!products) return;
-    async function getProduct(params) {
+    async function getProduct() {
       if (products.length > 0) {
-        console.log("entro aca en el useefecttttt");
+    
         const currentProduct = products.find((p) => p.id === Number(id));
         setProduct(currentProduct);
 
-        const iduser = user.uid;
-
+        const iduser = user?.uid;
+         if(!user){
+          return
+         }
         const refdata = doc(db, "favorites", iduser);
         const getdata = await getDoc(refdata);
-        console.log("collllllllllllll", getdata);
+       
         if (getdata.exists()) {
           const f = getdata.data();
-          const d = f.favorites;
-          console.log("current id produt", id);
-          const findI = d.find((i) => i.id === Number(id));
-          console.log(
-            "se incontro el itemssssssssssssssssssssssssssssssssssssssssssssssss",
-            findI
-          );
+         let favorites = Array.isArray(f.favorites) ? f.favorites : []
+          const findI = favorites.find((i) => i.id === Number(id));
           if (findI) {
             setLiked(true);
           } else if (!findI) {
             setLiked(false);
-            console.log(
-              "actualizado a false correctamente el liked en product details",
-              false
-            );
+           
           }
         }
         if (isSearch && currentProduct) {
@@ -104,10 +98,9 @@ const ProductDetails = () => {
       if (getDocument.exists()) {
         const data = getDocument.data();
         const carritosAll = data.carrito;
-        console.log("carrito current del firestorage", carritosAll);
-        console.log("esta es los current carritos", data);
+       
         const findItem = carritosAll.find((i) => i.id === product.id);
-        console.log("Se incontro el item", findItem);
+       
         if (findItem) {
           const cars = carritosAll.map((i) => {
             if (i.id === product.id && i.cantidad <= 6) {
@@ -132,7 +125,7 @@ const ProductDetails = () => {
         setCarrito(currenCars);
       } else {
         const item = { ...product, cantidad: 1, total: product.price };
-        console.log("entro en el else", product.price);
+       
 
         try {
           setDoc(doc(db, "Carrito", uid), {
@@ -140,10 +133,7 @@ const ProductDetails = () => {
           });
           setCarrito([item]);
         } catch (e) {
-          console.log(
-            "hubo un eeror al intentar agregar iten al caarrito e ¿n firestorage",
-            e
-          );
+        
         }
       }
     } catch (e) {
@@ -152,7 +142,7 @@ const ProductDetails = () => {
   };
 
   <ClipLoader />;
-  console.log("ccuren liked en page detailsproduct", liked);
+  
   if (!product)
     return (
       <div className="w-full mt-14  min-h-screen flex flex-row justify-center items-center p-2">

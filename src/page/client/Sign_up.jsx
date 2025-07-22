@@ -9,11 +9,10 @@ const Sign_up = () => {
   const [name, setName] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(email, password, name);
+   
     try {
       const registrar = await signup(email, password, name);
-      console.log("Registrado con exito");
-      console.log(registrar);
+    
       navegate("/");
     } catch (e) {
       console.log("hubo un error", e);

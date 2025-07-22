@@ -100,7 +100,7 @@ const PerfilUsuario = () => {
           setTelefono(data.telefono);
           setDirection(data.direction);
         } else {
-          console.log("no existe un usuario actual please sign in or login in");
+          
         }
 
         const refped = query(
@@ -131,9 +131,9 @@ const PerfilUsuario = () => {
             p.push(data);
           });
           setPedidos(p);
-          console.log("setpedidos correctamente eitosos");
+         
         } else {
-          console.log("no hay pedidos encontrados");
+         
         }
 
         {
@@ -146,9 +146,9 @@ const PerfilUsuario = () => {
             const data = d.data();
             pH.push(data);
           });
-          console.log("H-P JUSTO ANTES DE AGREGAR: ", pH);
+         
           setHistorialPedidos(pH);
-          console.log("Sethistorial pedidos exitoso");
+          
         }
       }
     }
@@ -204,12 +204,12 @@ const PerfilUsuario = () => {
     const iduser = user.uid;
     const refdata = doc(db, "usuarios", iduser);
     const getdata = await getDoc(refdata);
-    console.log("entrooooooooooooooooooooooooooo aquiiiiii");
+   
     if (getdata.exists()) {
       const datauser = getdata.data();
       newData = datauser;
     } else {
-      console.log("ususario no existe en base de datos");
+    
       return;
     }
 
@@ -259,7 +259,7 @@ const PerfilUsuario = () => {
         if (getdoc.exists()) {
           await setDoc(refdoc, newDoc);
         } else {
-          console.log("no exixste un doc en forEach intentelo de nuevo");
+          
         }
       }
 
@@ -267,9 +267,9 @@ const PerfilUsuario = () => {
         ActualizarDoc(d);
       });
 
-      console.log("todods los pedidos se actualiaron con exito");
+    
     } else {
-      console.log("no existen pedidos echos por este usuario");
+  
     }
     setDisable(newDisables);
     if (e === "name") {

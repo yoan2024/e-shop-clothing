@@ -21,7 +21,7 @@ const InputUser = ({
               type="text"
               value={value}
               onChange={(e) => {
-                console.log("current value del nane", e.target.value);
+                
                 setstate(e.target.value);
               }}
               className="rounded-xl"

@@ -10,7 +10,7 @@ const CartProductFavorite = ({ p }) => {
     navegate(`/product/${id}`);
   };
 
-  console.log("curunet liked", liked);
+  
   return (
     <div
       className="w-48 h-80 flex flex-col items-center text-center transition-transform duration-300 transform hover:scale-105 hover:shadow-lg border rounded-xl p-2 cursor-pointer"

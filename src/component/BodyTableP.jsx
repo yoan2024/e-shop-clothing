@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
 
 const BodyTableP = ({ itemspedidos }) => {
-  useEffect(() => {
-    console.log("cureeeeeeeeeeee", itemspedidos);
-  }, [itemspedidos]);
+
 
   return (
     <>

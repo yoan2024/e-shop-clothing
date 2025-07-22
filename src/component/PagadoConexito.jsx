@@ -6,7 +6,7 @@ import { CheckCircle } from "lucide-react";
 const PagadoConexito = ({ onClose }) => {
   // Cierra el popup después de 3 segundos
   useEffect(() => {
-    console.log("entro aquiiii");
+  
     const timer = setTimeout(onClose, 3000);
     return () => clearTimeout(timer);
   }, [onClose]);
