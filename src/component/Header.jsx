@@ -172,10 +172,10 @@ const Header = ({ togle, settogle }) => {
                       setInputValue("");
                       setSearch("");
                     } else {
-                      console.log("no se incontro", findProdut);
+                      
                     }
                   } else {
-                    console.log("buscando producto", inpuValue);
+                  
                     navegate();
                   }
                 }
