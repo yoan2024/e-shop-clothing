@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useUser } from "../context/User";
 import Nav from "./Nav";
@@ -19,6 +20,7 @@ const Header = ({ togle, settogle }) => {
   const [suggestion, setSuggestionOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [suplentSearch, setSuplentSearch] = useState("");
+ const navegacion = useNavigate()
   const [mouseEnter, setMouseEnter] = useState(false);
   const { user, setUser } = useUser();
   const location = useLocation();
@@ -87,7 +89,9 @@ const Header = ({ togle, settogle }) => {
   return (
     <header className="w-full bg-white/90 shadow-md flex flex-col justify-center p-3">
       <div className="flex flex-row items-center relative header justify-between mb-2">
-        <div>
+        <div onClick={() => {
+          navegacion("/")
+        }} className="cursor-pointer">
           <img src="/images/marca.png" alt="" className="w-28 h-28" />
         </div>
 
