@@ -5,7 +5,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import CartProduct from "../../component/CartProduct";
 import { useParams } from "react-router-dom";
 
-const Catalogo = () => {
+const Catalog = () => {
   const { category } = useParams();
   const [categ, setCateg] = useState(category);
   const { products, setProduts } = useProducts();
@@ -53,4 +53,4 @@ const Catalogo = () => {
   );
 };
 
-export default Catalogo;
+export default Catalog;

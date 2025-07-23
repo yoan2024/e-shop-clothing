@@ -19,7 +19,7 @@ export const signup = async (email: string, password: string, name: string) => {
     displayName: name,
   });
   const idUser = user.uid;
-  const refDoc = doc(db, "usuarios", idUser);
+  const refUserDoc = doc(db, "users", idUser);
 
   let rol = "";
   if (email === "admin@gmail.com") {
@@ -28,12 +28,12 @@ export const signup = async (email: string, password: string, name: string) => {
     rol = "user";
   }
 
-  await setDoc(refDoc, {
+  await setDoc(refUserDoc, {
     name,
-    correo: email,
+    email: email,
     createAt: new Date().toLocaleDateString(),
-    telefono: "sin confirmar",
-    direction: "sin confirmar",
+    phone: "unconfirmed",
+    address: "unconfirmed",
     image: "",
     imageDefault: "/images/perfilimg.avif",
     rol,

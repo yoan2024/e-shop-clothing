@@ -3,7 +3,7 @@ import { CheckCircle } from "lucide-react";
 {
   /*""*/
 }
-const PagadoConexito = ({ onClose }) => {
+const PaymentSuccess = ({ onClose }) => {
   // Cierra el popup después de 3 segundos
   useEffect(() => {
   
@@ -26,4 +26,4 @@ const PagadoConexito = ({ onClose }) => {
   );
 };
 
-export default PagadoConexito;
+export default PaymentSuccess;

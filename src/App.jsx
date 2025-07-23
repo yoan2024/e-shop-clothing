@@ -1,30 +1,30 @@
 import UserProvider from "./context/User.jsx";
 import UserProviderProductos from "./context/ContextProducts.jsx";
-import CarritoProvider from "./context/Carrito.jsx";
-import PedidosProvider from "./context/PedidosProvider.jsx";
+import CarProvider from "./context/Car.jsx";
+import OrdersProvider from "./context/OrdersProvider.jsx";
 import FavoritesProvider from "./context/Favorites.jsx";
 import LikedProvider from "./context/Liked.jsx";
 import ImageProvider from "./context/Image.jsx";
-import { useUser } from "./context/User.jsx";
-import { useProducts } from "./context/ContextProducts.jsx";
+
+
 import AppwithRoutes from "./routes/AppwithRoutes.jsx";
 const App = () => {
   return (
-    <PedidosProvider>
+    <OrdersProvider>
       <ImageProvider>
         <LikedProvider>
           <FavoritesProvider>
-            <CarritoProvider>
+            <CarProvider>
               <UserProviderProductos>
                 <UserProvider>
                   <AppwithRoutes />
                 </UserProvider>
               </UserProviderProductos>
-            </CarritoProvider>
+            </CarProvider>
           </FavoritesProvider>
         </LikedProvider>
       </ImageProvider>
-    </PedidosProvider>
+    </OrdersProvider>
   );
 };
 

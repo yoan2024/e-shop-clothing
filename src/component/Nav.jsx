@@ -17,17 +17,17 @@ const Nav = ({ tog, settog }) => {
 
   const handleClick = (prom) => {
     if (prom === "MAN") {
-      navigate("/catalogo/men");
+      navigate("/catalog/men");
     } else if (prom === "WOMEN") {
-      navigate("/catalogo/women");
+      navigate("/catalog/women");
     } else if (prom === "JEWELERY") {
-      navigate("/catalogo/jewelery");
+      navigate("/catalog/jewelery");
     } else if (prom === "ELECTRONICS") {
-      navigate("/catalogo/electronics");
+      navigate("/catalog/electronics");
     } else if (prom === "HOME") {
       navigate("/");
-    } else if (prom === "PERFIL") {
-      navigate("/perfilUser");
+    } else if (prom === "PROFILE") {
+      navigate("/userProfile");
     } else if (prom === "heart") {
       navigate("/favorites");
     }
@@ -102,7 +102,10 @@ const Nav = ({ tog, settog }) => {
                 </div>
                 <div className="flex flex-col gap-2">
                   <button
-                    onClick={() => navigate("/perfilUser")}
+                    onClick={() => {
+                      navigate("/userProfile")
+                      setOpen(false)
+                    }}
                     className="text-left px-4 py-2 rounded-md hover:bg-gray-100"
                   >
                     Ver perfil

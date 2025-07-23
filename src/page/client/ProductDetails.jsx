@@ -14,13 +14,13 @@ import { addDoc, collection } from "firebase/firestore";
 import { updateDoc } from "firebase/firestore";
 import { deleteField } from "firebase/firestore";
 import { getDoc } from "firebase/firestore";
-import { useCarrito } from "../../context/Carrito";
+import { useCar } from "../../context/Car";
 import { useLocation } from "react-router-dom";
 import { useFavorite } from "../../context/Favorites";
 import { useLiked } from "../../context/Liked";
 const ProductDetails = () => {
   const { favorites, setFavorites } = useFavorite();
-  const { carrito, setCarrito } = useCarrito();
+  const { car, setCar } = useCar();
   const { user, setUser } = useUser();
   const { id } = useParams();
   const { products, setProducts } = useProducts();
@@ -122,7 +122,7 @@ const ProductDetails = () => {
         setDoc(doc(db, "Carrito", uid), {
           carrito: currenCars,
         });
-        setCarrito(currenCars);
+        setCar(currenCars);
       } else {
         const item = { ...product, cantidad: 1, total: product.price };
        

@@ -5,30 +5,29 @@ import {
   Route,
   useLocation,
 } from "react-router-dom";
-import { collection, doc, getDoc, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, setDoc, addDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase-config";
-import { useCarrito } from "../context/Carrito";
+import { useCar } from "../context/Car";
 import { useUser } from "../context/User";
 
 import Home from "../page/client/Home";
-import PagadoConexito from "./PagadoConexito";
+import PaymentSuccess from "./PagadoConexito";
 import Header from "./Header";
 import Footer from "./Footer";
 import ProductDetails from "../page/client/ProductDetails";
-import Catalogo from "../page/client/Catalogo";
+import Catalog from "../page/client/Catalog";
 import Login from "../page/client/Login";
-import Sign_up from "../page/client/Sign_up";
-import PerfilUser from "../page/client/PerfilUser";
-import Favoritess from "../page/client/Favoritess";
-import { addDoc } from "firebase/firestore";
+import SignUp from "../page/client/Sign_up";
+import UserProfile from "../page/client/UserProfile";
+import Favorites from "../page/client/Favoritess";
 
 const LayoutClient = () => {
-  const { carrito, setCarrito } = useCarrito();
+  const { car, setCar } = useCar();
   const { user } = useUser();
-  const [cantidades, setCantidades] = useState({});
+  const [quantities, setQuantities] = useState({});
   const [total, setTotal] = useState(0);
   const [toggle, setToggle] = useState(false);
-  const [pagado, setPagado] = useState(false);
+  const [paid, setPaid] = useState(false);
 
   const location = useLocation();
   const hiddenRoutes = ["/sign_up", "/login_in"];
@@ -36,51 +35,47 @@ const LayoutClient = () => {
   useEffect(() => {
     if (!user) return;
 
-    const fetchCarrito = async () => {
+    const fetchCart = async () => {
       const refDoc = doc(db, "Carrito", user.uid);
       const docSnap = await getDoc(refDoc);
 
       if (docSnap.exists()) {
         const items = docSnap.data().carrito || [];
-        let newCantidades = {},
+        let newQuantities = {},
           newTotal = 0;
 
         items.forEach(({ id, cantidad, total }) => {
-          newCantidades[id] = cantidad;
+          newQuantities[id] = cantidad;
           newTotal += total;
         });
 
-        setCantidades(newCantidades);
-    
-        let total = Number(newTotal)
-        setTotal(total.toFixed(2));
+        setQuantities(newQuantities);
+        setTotal(Number(newTotal).toFixed(2));
       }
     };
 
-    fetchCarrito();
-  }, [user, carrito]);
+    fetchCart();
+  }, [user, car]);
 
-  const handleCantidad = async (id, cantidad) => {
+  const handleQuantityChange = async (id, quantity) => {
     if (!user) return;
 
     const ref = doc(db, "Carrito", user.uid);
     const docSnap = await getDoc(ref);
 
     if (docSnap.exists()) {
-      const items = docSnap
-        .data()
-        .carrito.map((item) =>
-          item.id === id
-            ? { ...item, cantidad, total: item.price * cantidad }
-            : item
-        );
+      const items = docSnap.data().carrito.map((item) =>
+        item.id === id
+          ? { ...item, cantidad: quantity, total: item.price * quantity }
+          : item
+      );
       await setDoc(ref, { carrito: items });
-      setCarrito(items);
-      setCantidades((prev) => ({ ...prev, [id]: cantidad }));
+      setCar(items);
+      setQuantities((prev) => ({ ...prev, [id]: quantity }));
     }
   };
 
-  const handleEliminarItem = async (id) => {
+  const handleRemoveItem = async (id) => {
     if (!user) return;
 
     const ref = doc(db, "Carrito", user.uid);
@@ -89,20 +84,20 @@ const LayoutClient = () => {
     if (docSnap.exists()) {
       const filtered = docSnap.data().carrito.filter((item) => item.id !== id);
       await setDoc(ref, { carrito: filtered });
-      setCarrito(filtered);
+      setCar(filtered);
     }
   };
 
-  const generarID = () => {
+  const generateOrderID = () => {
     const now = new Date();
-    return `PED-${now.getFullYear()}${now.getMonth()}${now.getDate()}${now.getHours()}${now.getMinutes()}${now.getSeconds()}${now.getMilliseconds()}`;
+    return `ORD-${now.getFullYear()}${now.getMonth()}${now.getDate()}${now.getHours()}${now.getMinutes()}${now.getSeconds()}${now.getMilliseconds()}`;
   };
 
-  const handlePagar = async () => {
-    if (!user || carrito.length === 0) return;
+  const handleCheckout = async () => {
+    if (!user || car.length === 0) return;
 
-    const idPedido = generarID();
-    const fechaPedido = new Date().toLocaleDateString();
+    const orderId = generateOrderID();
+    const orderDate = new Date().toLocaleDateString();
     const refUser = doc(db, "usuarios", user.uid);
     const userSnap = await getDoc(refUser);
 
@@ -110,45 +105,32 @@ const LayoutClient = () => {
 
     const userData = userSnap.data();
 
-    const pedido = {
-      idPedido,
-      metodoPago: "Cart Credit",
-      fechaPedido,
-      envio: "Preparando",
-      itemsPedido: carrito,
-      correo: userData.correo,
-      totalPagado: total,
-      estado: "Pendiente",
-      rol: userData.rol,
-      direction: userData.direction,
-      telefono: userData.telefono,
-      nombre: userData.name,
-      iduser: user.uid,
+    const order = {
+      orderId,
+      paymentMethod: "Credit Card",
+      orderDate,
+      shippingStatus: "Processing",
+      orderedItems: car,
+      email: userData.correo,
+      totalPaid: total,
+      status: "Pending",
+      role: userData.rol,
+      address: userData.direction,
+      phone: userData.telefono,
+      name: userData.name,
+      userId: user.uid,
     };
 
-    {
-      /*const refPedidos = doc(db, "pedidos", user.uid);
-    const pedidosSnap = await getDoc(refPedidos);
-
-    if (pedidosSnap.exists()) {
-      const prevPedidos = pedidosSnap.data().pedidos || [];
-      await updateDoc(refPedidos, { pedidos: [...prevPedidos, pedido] });
-    } else {
-      await setDoc(refPedidos, { pedidos: [pedido], historialPedidos: [] });
-    }*/
-    }
-
-    await addDoc(collection(db, "todosPedidos"), pedido);
-
+    await addDoc(collection(db, "todosPedidos"), order);
     await setDoc(doc(db, "Carrito", user.uid), { carrito: [] });
-    setCarrito([]);
-    setPagado(true);
+    setCar([]);
+    setPaid(true);
   };
 
   return (
     <>
       {!hiddenRoutes.includes(location.pathname) && (
-        <Header togle={toggle} settogle={setToggle} />
+        <Header toggle={toggle} setToggle={setToggle} />
       )}
 
       {toggle && (
@@ -160,7 +142,7 @@ const LayoutClient = () => {
             </div>
 
             <div className="mt-4">
-              {carrito.map((item, idx) => (
+              {car.map((item, idx) => (
                 <div key={idx} className="flex gap-4 mb-4">
                   <img
                     src={item.image}
@@ -171,9 +153,9 @@ const LayoutClient = () => {
                     <p className="font-semibold line-clamp-2">{item.title}</p>
                     <select
                       className="border mt-2"
-                      value={cantidades[item.id] || 1}
+                      value={quantities[item.id] || 1}
                       onChange={(e) =>
-                        handleCantidad(item.id, Number(e.target.value))
+                        handleQuantityChange(item.id, Number(e.target.value))
                       }
                     >
                       {[...Array(10)].map((_, i) => (
@@ -185,7 +167,7 @@ const LayoutClient = () => {
                     <p className="text-gray-500">${item.price} USD per unit</p>
                     <p className="font-bold">${item.total}</p>
                   </div>
-                  <button onClick={() => handleEliminarItem(item.id)}>
+                  <button onClick={() => handleRemoveItem(item.id)}>
                     🗑️
                   </button>
                 </div>
@@ -194,28 +176,28 @@ const LayoutClient = () => {
 
             <div className="border-t pt-4 mt-4">
               <p>Subtotal: ${total}</p>
-              <p>Descuento: $0</p>
+              <p>Discount: $0</p>
               <p className="font-bold">Total: ${total}</p>
               <button
                 className="bg-green-500 text-white px-4 py-2 rounded mt-2"
-                onClick={handlePagar}
+                onClick={handleCheckout}
               >
-                PAGAR
+                PAY
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {pagado && <PagadoConexito onClose={() => setPagado(false)} />}
+      {paid && <PaymentSuccess onClose={() => setPaid(false)} />}
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/favorites" element={<Favoritess />} />
-        <Route path="/perfilUser" element={<PerfilUser />} />
-        <Route path="/catalogo/:category" element={<Catalogo />} />
+        <Route path="/favorites" element={<Favorites />} />
+        <Route path="/userProfile" element={<UserProfile />} />
+        <Route path="/catalog/:category" element={<Catalog />} />
         <Route path="/product/:id" element={<ProductDetails />} />
-        <Route path="/sign_up" element={<Sign_up />} />
+        <Route path="/sign_up" element={<SignUp />} />
         <Route path="/login_in" element={<Login />} />
       </Routes>
 

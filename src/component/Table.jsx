@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import BodyTableP from "./BodyTableP";
 
+
 const Table = ({ label, ped }) => {
-  useEffect(() => {}, []);
+
   return (
     <section className="flex flex-col items-center mt-32">
       <div className="text-3xl mb-10 font-bold ">{label}</div>

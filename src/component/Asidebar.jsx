@@ -1,7 +1,12 @@
+
+// React imports
 import { useEffect, useState } from "react";
+// UI imports
 import { useProducts } from "../context/ContextProducts";
 
 const Asidebar = ({ setFilterProducts, categ }) => {
+
+// States
   const { products } = useProducts();
   const [category, setCategory] = useState("all");
   const [filterPrice, setFilterPrice] = useState("all");

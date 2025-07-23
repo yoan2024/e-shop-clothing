@@ -8,8 +8,8 @@ import { onAuthStateChanged } from "firebase/auth";
 
 const Context = createContext();
 
-const CarritoProvider = ({ children }) => {
-  const [carrito, setCarrito] = useState([]);
+const CarProvider = ({ children }) => {
+  const [car, setCar] = useState([]);
 
   useEffect(() => {
     const unSubscribe = onAuthStateChanged(auth, (user) => {
@@ -24,10 +24,10 @@ const CarritoProvider = ({ children }) => {
         if (document.exists()) {
           const carrito = document.data();
           const itemsCars = carrito.carrito;
-          setCarrito(itemsCars);
+          setCar(itemsCars);
         } else {
          
-          setCarrito([]);
+          setCar([]);
         }
       }
       dataUser();
@@ -37,19 +37,19 @@ const CarritoProvider = ({ children }) => {
   }, []);
 
   return (
-    <Context.Provider value={{ carrito, setCarrito }}>
+    <Context.Provider value={{ car, setCar }}>
       {children}
     </Context.Provider>
   );
 };
 
-export default CarritoProvider;
+export default CarProvider;
 
-export function useCarrito() {
-  const contextCarrito = useContext(Context);
+export function useCar() {
+  const contextCar = useContext(Context);
   if (!Context) {
-    throw new Error(" useCarrito solo se puede usar dentro CarritoProvider");
+    throw new Error(" useCar can only be used within CarProvider");
   }
 
-  return contextCarrito;
+  return contextCar;
 }

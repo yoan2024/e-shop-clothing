@@ -1,5 +1,9 @@
 import React, { useEffect } from "react";
 
+
+
+
+
 const BodyTableP = ({ itemspedidos }) => {
 
 
