@@ -1,25 +1,20 @@
-// PerfilUsuario component:
+// --- PerfilUsuario component:
 // This component displays and allows editing of the logged-in user's personal information,
 // such as full name, email, phone number, address, and profile picture.
 // It also shows a list of active orders and the user's order history.
 // All data is fetched from Firebase Firestore, and changes are saved in real time.
 
-
-
-
-
-// React imports
+// --- React imports ---
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-// Context imports
-
+// --- Context imports ---
 import { useUser } from "../../context/User";
 import { useCar } from "../../context/Car";
 import { useImage } from "../../context/Image";
 import { useOrders } from "../../context/OrdersProvider";
 
-// Firebase Firestore imports
+// --- Firebase Firestore imports ---
 import {
   doc,
   where,
@@ -31,33 +26,27 @@ import {
   getDoc,
   setDoc,
 } from "firebase/firestore";
+import { db } from "../../firebase/firebase-config";
 
-// Auth imports
+// --- Auth imports ---
 import { logout } from "../../firebase/authService";
 
-
-// UI imports
+// --- UI imports ---
 import ClipLoader from "react-spinners/ClipLoader";
 import Table from "../../component/Table";
 import InputUser from "../../component/InputUser";
-import { db } from "../../firebase/firebase-config";
 import ProfilePhotoUpdater from "../../component/ProfilePhotoUpdater";
 
-
-
-
-// -- Main component -- 
+// --- Main component --- 
 const UserProfile = () => {
-
-  // Hooks from custom context providers 
+  // --- Hooks from custom context providers --- 
   const { url, setUrl } = useImage();
   const { cart, setCart } = useCar();
   const { user, setUser } = useUser();
-  const { orders, setOrders, orderHistory, setOrderHistory } =
-    useOrders();
+  const { orders, setOrders, orderHistory, setOrderHistory } = useOrders();
   const navigate = useNavigate();
-  
-  // State variables for user data and UI control
+
+  // --- State variables for user data and UI control ---
   const [name, setName] = useState("");
   const [cName, setCName] = useState(false);
   const [email, setEmail] = useState("");
@@ -66,32 +55,31 @@ const UserProfile = () => {
   const [cPhone, setCPhone] = useState(false);
   const [address, setAddress] = useState("");
   const [cAddress, setCAddress] = useState(false);
-  const [disable, setDisable] = useState([]); // State to track which fields are being edited
-  const [showHP, setShowHP] = useState(false);// State to toggle order history visibility
+  const [disable, setDisable] = useState([]); // --- State to track which fields are being edited ---
+  const [showHP, setShowHP] = useState(false); // --- State to toggle order history visibility ---
 
-
-  // Load user data and orders from Firebase when the user change or the component mounts
+  // --- Load user data and orders from Firebase when the user changes or the component mounts ---
   useEffect(() => {
     if (!user) return;
 
-    // Fetch user profile and  orders
+    // --- Fetch user profile and orders ---
     async function fetchUserDataAndOrders() {
       if (user) {
-      const iduser = user.uid;
-      const userDocRef = doc(db, "users", iduser);
-      const userDocSnap = await getDoc(userDocRef);
+        const iduser = user.uid;
+        const userDocRef = doc(db, "users", iduser);
+        const userDocSnap = await getDoc(userDocRef);
 
-    // Set user profile info
+        // --- Set user profile info ---
         if (userDocSnap.exists()) {
-        const data = userDocSnap.data();
+          const data = userDocSnap.data();
           setUrl(data.image || data.imageDefault);
           setName(data.name);
           setEmail(data.email);
           setPhone(data.phone);
           setAddress(data.address);
-         }
+        }
 
-    // Fetch active orders
+        // --- Fetch active orders ---
         const currentOrdersQuery = query(
           collection(db, "allOrders"),
           where("iduser", "==", iduser),
@@ -100,19 +88,16 @@ const UserProfile = () => {
         );
         const currentOrdersSnap = await getDocs(currentOrdersQuery);
 
-         if (!currentOrdersSnap.empty) {
+        if (!currentOrdersSnap.empty) {
           let p = [];
-
           currentOrdersSnap.forEach((d) => {
             const data = d.data();
             p.push(data);
           });
           setOrders(p);
-         
         }
 
-    // Fetch order history
-    
+        // --- Fetch order history ---
         const historyOrdersQuery = query(
           collection(db, "allOrders"),
           where("iduser", "==", iduser),
@@ -121,23 +106,19 @@ const UserProfile = () => {
         );
         const historyOrdersSnap = await getDocs(historyOrdersQuery);
 
-
-        //Set orders history 
+        // --- Set orders history ---
         if (!historyOrdersSnap.empty) {
           let pH = [];
-
           historyOrdersSnap.forEach((d) => {
             const data = d.data();
             pH.push(data);
           });
-         
           setOrderHistory(pH);
-          
         }
       }
     }
-    
-    // Real-time listener for user's orders
+
+    // --- Real-time listener for user's orders ---
     const ref = query(
       collection(db, "allOrders"),
       where("iduser", "==", user.uid),
@@ -154,24 +135,19 @@ const UserProfile = () => {
       setOrders(actuales);
       setOrderHistory(historical);
     });
-   
-   
+
     fetchUserDataAndOrders();
-    return () => unsubscribe();  // Clean up listener on unmount
+    return () => unsubscribe(); // --- Clean up listener on unmount ---
   }, [user]);
 
-
-
-  // Enable editing for a specific input field
+  // --- Enable editing for a specific input field ---
   const handleClick = (field) => {
-    setDisable((previos)=> [...previos, field])
+    setDisable((previos) => [...previos, field]);
   };
 
-
-  // Save updated user data and propagate changes to related orders
+  // --- Save updated user data and propagate changes to related orders ---
   const handleSave = async (field) => {
-
-    //Show the loading spinner for the saving field
+    // --- Show the loading spinner for the saving field ---
     if (field === "name") setCName(true);
     if (field === "phone") setCPhone(true);
     if (field === "email") setCEmail(true);
@@ -180,23 +156,18 @@ const UserProfile = () => {
     const iduser = user.uid;
     const userDocRef = doc(db, "usuarios", iduser);
     const userSnap = await getDoc(userDocRef);
-
     if (!userSnap.exists()) return;
-    
+
     let newData = userSnap.data();
 
-
-
-    // Update only the selected field
+    // --- Update only the selected field ---
     if (field === "name") newData.name = name;
     if (field === "phone") newData.telefono = phone;
     if (field === "email") newData.correo = email;
     if (field === "address") newData.direction = address;
-    await setDoc(userDocRef, newData); // Save changes to user profile
+    await setDoc(userDocRef, newData); // --- Save changes to user profile ---
 
-
-
-    // Update the field in all user orders
+    // --- Update the field in all user orders ---
     const ordersQuery = query(
       collection(db, "allOrders"),
       where("iduser", "==", iduser)
@@ -206,7 +177,6 @@ const UserProfile = () => {
     ordersSnap.forEach(async (docSnap) => {
       const orderData = docSnap.data();
       const orderRef = doc(db, "allOrders", docSnap.id);
-
       if (!orderData) return;
 
       if (field === "name") orderData.nombre = name;
@@ -214,23 +184,22 @@ const UserProfile = () => {
       if (field === "email") orderData.emil = email;
       if (field === "address") orderData.address = address;
 
-      await setDoc(orderRef, orderData); // Save changes in each order
+      await setDoc(orderRef, orderData); // --- Save changes in each order ---
     });
 
-
-
-    // Disable editing
+    // --- Disable editing ---
     setDisable((prev) => prev.filter((f) => f !== field));
     if (field === "name") setCName(false);
     if (field === "phone") setCPhone(false);
     if (field === "email") setCEmail(false);
     if (field === "address") setCAddress(false);
   };
+
   return (
     <div className="bg-slate-300 min-h-screen flex flex-col">
       {user ? (
         <>
-          {/* Section: User profile info and picture */}
+          {/* --- Section: User profile info and picture --- */}
           <section className="flex flex-row justify-center items-start">
             <div className="flex flex-col items-center">
               <section className="mt-2  items-center  flex flex-col  gap-5 ">
@@ -239,10 +208,9 @@ const UserProfile = () => {
                 </div>
                 <div className="flex flex-row mt-5 justify-center ">
                   <ProfilePhotoUpdater />
-                  {/* */}
                 </div>
 
-                {/* Editable input fields */}
+                {/* --- Editable input fields --- */}
                 <InputUser
                   disable={disable}
                   field={"name"}
@@ -285,7 +253,7 @@ const UserProfile = () => {
                 />
               </section>
 
-              {/* Logout button */}
+              {/* --- Logout button --- */}
               <button
                 className="mt-5 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
                 onClick={() => {
@@ -293,37 +261,29 @@ const UserProfile = () => {
                   navigate("/");
                 }}
               >
-                
                 Sign out
               </button>
             </div>
           </section>
-          
 
-          {/* Current orders table */}
+          {/* --- Current orders table --- */}
           <Table label={"Orders"} ped={orders} />
 
-
-          {/*Toggle order history */}
+          {/* --- Toggle order history --- */}
           <div className="flex flex-row justify-center mb-5">
             <button
               className="mt-5 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
               onClick={() => setShowHP(!showHP)}
             >
-              {!showHP
-                ? "Show Order History"
-                : "Close Order History"}
+              {!showHP ? "Show Order History" : "Close Order History"}
             </button>
           </div>
 
-
-          {/* Displays historical orders if 'showHP' is true */}
-          {showHP && (
-            <Table label={"Order history"} ped={orderHistory} />
-          )}
+          {/* --- Displays historical orders if 'showHP' is true --- */}
+          {showHP && <Table label={"Order history"} ped={orderHistory} />}
         </>
       ) : (
-        // Loading spinner while user data is fetched
+        // --- Loading spinner while user data is fetched ---
         <div className="flex flex-row justify-center items-center h-screen ">
           <ClipLoader color="#36d7b7" size={50} />
         </div>

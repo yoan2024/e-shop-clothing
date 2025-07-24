@@ -20,7 +20,7 @@ const ImageProvider = ({ children }) => {
             return null;
           }
           const uid = user.uid;
-          const refDoc = doc(db, "usuarios", uid);
+          const refDoc = doc(db, "users", uid);
           const document = await getDoc(refDoc);
           if (document.exists()) {
             const userdata = document.data();

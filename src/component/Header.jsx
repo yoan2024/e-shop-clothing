@@ -9,7 +9,7 @@ import { useProducts } from "../context/ContextProducts";
 import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
 
-const Header = ({ togle, settogle }) => {
+const Header = ({ toggle, setToggle }) => {
   const wrapperRef = useRef(null); // 1️⃣ Creamos una referencia al contenedor
   const [sugerenciasVisibles, setSugerenciasVisibles] = React.useState(true);
   const navegate = useNavigate();
@@ -230,7 +230,7 @@ const Header = ({ togle, settogle }) => {
           </>
         )}
       </div>
-      {!includesUrls && <Nav tog={togle} settog={settogle} />}
+      {!includesUrls && <Nav tog={toggle} settog={setToggle} />}
     </header>
   );
 };

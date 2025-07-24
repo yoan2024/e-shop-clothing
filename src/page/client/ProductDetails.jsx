@@ -2,7 +2,6 @@ import { useParams } from "react-router-dom";
 import { useProducts } from "../../context/ContextProducts";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-
 import ClipLoader from "react-spinners/ClipLoader";
 import { StarRating } from "../../component/Starts";
 import { FavoriteButton } from "../../component/Heart";
@@ -93,45 +92,45 @@ const ProductDetails = () => {
 
     try {
       const uid = await user.uid;
-      const refDocument = doc(db, "Carrito", uid);
+      const refDocument = doc(db, "Car", uid);
       const getDocument = await getDoc(refDocument);
       if (getDocument.exists()) {
-        const data = getDocument.data();
-        const carritosAll = data.carrito;
+        const carData = getDocument.data();
+       const currentCarData = carData.car
        
-        const findItem = carritosAll.find((i) => i.id === product.id);
+        const findItem = currentCarData.find((i) => i.id === product.id);
        
         if (findItem) {
-          const cars = carritosAll.map((i) => {
+          const cars = currentCarData.map((i) => {
             if (i.id === product.id && i.cantidad <= 6) {
-              const cant = i.cantidad + 1;
-              return { ...i, cantidad: cant, total: cant * i.price };
+              const cant = i.quantity + 1;
+              return { ...i, quantity: cant, total: cant * i.price };
             }
             return i;
           });
 
-          setDoc(doc(db, "Carrito", uid), {
-            carrito: cars,
+          setDoc(doc(db, "Car", uid), {
+            car: cars,
           });
-          setCarrito(cars);
+          setCar(cars);
           return;
         }
 
-        const newItem = { ...product, cantidad: 1, total: product.price };
-        const currenCars = [...carritosAll, newItem];
-        setDoc(doc(db, "Carrito", uid), {
-          carrito: currenCars,
+        const newItem = { ...product, quantity: 1, total: product.price };
+        const currenCars = [...currentCarData, newItem];
+        setDoc(doc(db, "Car", uid), {
+          car: currenCars,
         });
         setCar(currenCars);
       } else {
-        const item = { ...product, cantidad: 1, total: product.price };
+        const item = { ...product,  quantity: 1, total: product.price };
        
 
         try {
-          setDoc(doc(db, "Carrito", uid), {
-            carrito: [item],
+          setDoc(doc(db, "Car", uid), {
+           car: [item]
           });
-          setCarrito([item]);
+          setCar([item]);
         } catch (e) {
         
         }

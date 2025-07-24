@@ -1,8 +1,6 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { CheckCircle } from "lucide-react";
-{
-  /*""*/
-}
+
 const PaymentSuccess = ({ onClose }) => {
   // Cierra el popup después de 3 segundos
   useEffect(() => {

@@ -10,25 +10,25 @@ const UserProviderProductos = ({ children }) => {
 
   useEffect(() => {
     async function usarFecht() {
-      const refproducts = doc(db, "productos", "productos1088272651");
+      const refproducts = doc(db, "products", "products1088272651");
       const getproducts = await getDoc(refproducts);
       if (getproducts.exists()) {
         const produ = getproducts.data();
        
-        const p = produ.productos;
+        const p = produ.products;
         setProducts(p);
        
       } else {
-        let productos;
+        let products;
         const data = await fetch("https://fakestoreapi.com/products")
           .then((response) => response.json())
           .then((data) => {
-            productos = data;
+            products = data;
             setProducts(data);
           });
 
         setDoc(refproducts, {
-          productos: productos,
+          products: products,
         });
         
       }

@@ -19,11 +19,11 @@ const CarProvider = ({ children }) => {
           return null;
         }
         const uid = user.uid;
-        const refDoc = doc(db, "Carrito", uid);
+        const refDoc = doc(db, "Car", uid);
         const document = await getDoc(refDoc);
         if (document.exists()) {
-          const carrito = document.data();
-          const itemsCars = carrito.carrito;
+          const car = document.data();
+          const itemsCars = car.car;
           setCar(itemsCars);
         } else {
          
