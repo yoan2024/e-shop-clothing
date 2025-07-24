@@ -1,3 +1,8 @@
+// --- Login page:
+// --- Handles user login with Firebase authentication. --- //
+
+
+
 import React, { useState } from "react";
 // --- Import login function from Firebase authentication service --- //
 import { login } from "../../firebase/authService";

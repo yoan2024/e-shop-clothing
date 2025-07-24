@@ -1,3 +1,6 @@
+// --- Sign_up page:
+// --- Handles user sign-up with Firebase authentication. --- //
+
 import React, { useState } from "react";
 // --- Import signup function from Firebase auth service --- //
 import { signup } from "../../firebase/authService";

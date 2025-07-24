@@ -1,4 +1,4 @@
-// --- PerfilUsuario component:
+// --- PerfilUsuario page:
 // This component displays and allows editing of the logged-in user's personal information,
 // such as full name, email, phone number, address, and profile picture.
 // It also shows a list of active orders and the user's order history.

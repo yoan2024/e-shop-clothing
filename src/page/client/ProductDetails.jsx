@@ -1,8 +1,17 @@
+// --- ProductDetails page:
+// --- This component displays detailed information about a selected product,
+// including its image, name, description, price, and an option to add it to the cart. --- //
+// --- Display some products related to the one seleted by the user --- //
+
+
+// --- React imports ---
 import { useEffect, useState } from "react";
 import { useParams, useLocation, Link } from "react-router-dom";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import ClipLoader from "react-spinners/ClipLoader";
 
+
+// --- Context  imports ---
 import { db } from "../../firebase/firebase-config";
 import { useProducts } from "../../context/ContextProducts";
 import { useUser } from "../../context/User";
@@ -10,6 +19,8 @@ import { useCar } from "../../context/Car";
 import { useFavorite } from "../../context/Favorites";
 import { useLiked } from "../../context/Liked";
 
+
+// --- UI imports ---
 import { StarRating } from "../../component/Starts";
 import { FavoriteButton } from "../../component/Heart";
 import Modal from "../../component/Modal";
