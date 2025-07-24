@@ -1,31 +1,37 @@
-import { useState } from "react";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom"; ///
-import { useProducts } from "../context/ContextProducts";
+// External libraries
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 
-///
-const Tendenciaa = () => {
-  const navegate = useNavigate();
-  const { products, setProducts } = useProducts();
-  const [topProducts, setTopProducts] = useState([]);
-  const [img, setImg] = useState(null);
-  const [currentProduct, setCurrentProduct] = useState([]);
+// Context
+import { useProducts } from "../context/ContextProducts";
 
+/// Component: Tendenciaa
+/// Purpose: Displays a top trending product carousel based on high product ratings
+const Tendenciaa = () => {
+  const navigate = useNavigate();
+
+  // Global products state from context
+  const { products } = useProducts();
+
+  // Local states
+  const [topProducts, setTopProducts] = useState([]); // Stores products with rating >= 4.5
+  const [img, setImg] = useState(null); // Current image being displayed
+  const [currentProduct, setCurrentProduct] = useState([]); // Stores the current selected product
+
+  // Filter top-rated products from the full list
   useEffect(() => {
-    async function name(params) {
+    async function fetchTopProducts() {
       const productos = await products;
-      if (productos) {
-        if (productos.length > 0) {
-          const top = products.filter((p) => p.rating?.rate >= 4.5);
-          setTopProducts(top); // ⬅️ guardar los productos con rating 5
-        }
-      } else {
+      if (productos?.length > 0) {
+        const top = products.filter((p) => p.rating?.rate >= 4.5);
+        setTopProducts(top);
       }
     }
-    name();
+    fetchTopProducts();
   }, [products]);
 
+  // Find the product that matches the current image and set it as current
   useEffect(() => {
     if (img && topProducts) {
       const findCurrent = topProducts.find((p) => p.image === img);
@@ -35,6 +41,7 @@ const Tendenciaa = () => {
     }
   }, [img]);
 
+  // When top products are ready, set the first one as current image
   useEffect(() => {
     if (topProducts.length > 0) {
       const img1 = topProducts[0].image;
@@ -42,79 +49,82 @@ const Tendenciaa = () => {
     }
   }, [topProducts]);
 
+  // Show loading spinner while products are not available
   if (!products) return <ClipLoader color="#36d7b7" size={50} />;
 
+  // Handle clicking the left or right navigation arrows
   const handleOnClick = (direction) => {
     const currentIndex = topProducts.findIndex((p) => p.image === img);
     if (currentIndex === -1) return;
 
-    let newIndex =
-      direction === "izquierda" ? currentIndex - 1 : currentIndex + 1;
+    const newIndex = direction === "izquierda" ? currentIndex - 1 : currentIndex + 1;
 
-    // Validamos que esté dentro de los límites
+    // Prevent going out of bounds
     if (newIndex >= 0 && newIndex < topProducts.length) {
       setImg(topProducts[newIndex].image);
     } else {
-      console.log("No hay más productos en esa dirección");
+      console.log("No more products in that direction");
     }
   };
 
-  const curren = topProducts.find((p) => p.image === img);
+  // Find current selected product by image
+  const current = topProducts.find((p) => p.image === img);
 
+  // Navigate to product detail page
   const handleRouter = (id) => {
     if (!id) return;
-    navegate(`/product/${id}`);
+    navigate(`/product/${id}`);
   };
+
   return (
     <div>
       <div className="flex flex-col justify-center items-center">
-        <h2>Top mas populares</h2>
+        <h2>Top Most Popular</h2>
+
+        {/* Image slider container */}
         <div className="min-w-2/3 flex flex-row justify-center">
           <div>
             <div
-              className=" relative cursor-pointer "
-              onClick={() => handleRouter(curren.id)}
+              className="relative cursor-pointer"
+              onClick={() => handleRouter(current.id)}
             >
+              {/* Product image */}
               <div className="flex flex-row justify-center items-center">
-                <img src={img} alt="" className="w-96 h-80" />
+                <img src={img} alt="product" className="w-96 h-80" />
               </div>
+
+              {/* Right arrow */}
               <span
-                className="absolute top-1/2 cursor-pointer right-0"
+                className="absolute top-1/2 right-0 cursor-pointer"
                 onClick={(e) => {
-                  e.stopPropagation();
+                  e.stopPropagation(); // Prevent triggering navigation
                   handleOnClick("correcta");
                 }}
               >
-                <img
-                  src="/images/flecha-correcta.png"
-                  alt=""
-                  className=" w-10 h-10"
-                />
+                <img src="/images/flecha-correcta.png" alt="next" className="w-10 h-10" />
               </span>
+
+              {/* Left arrow */}
               <span
-                className=" cursor-pointer absolute top-1/2"
+                className="absolute top-1/2 cursor-pointer"
                 onClick={(e) => {
-                  e.stopPropagation();
+                  e.stopPropagation(); // Prevent triggering navigation
                   handleOnClick("izquierda");
                 }}
               >
-                <img
-                  src="/images/flecha-izquierda.png"
-                  alt=""
-                  className="  w-10 h-10"
-                />
+                <img src="/images/flecha-izquierda.png" alt="previous" className="w-10 h-10" />
               </span>
             </div>
           </div>
         </div>
-        {currentProduct.map((p) => {
-          return (
-            <ol key={p.id} className="bg-red">
-              <li>{p.title}</li>
-              <li className="font-bold">$ {p.price} </li>
-            </ol>
-          );
-        })}
+
+        {/* Product details below the image */}
+        {currentProduct.map((p) => (
+          <ol key={p.id} className="bg-red">
+            <li>{p.title}</li>
+            <li className="font-bold">$ {p.price}</li>
+          </ol>
+        ))}
       </div>
     </div>
   );

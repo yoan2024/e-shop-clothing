@@ -1,64 +1,72 @@
+/**
+ * This component displays categorized product listings:
+ * - Men's clothing
+ * - Women's clothing
+ * - Electronics
+ * - Jewelry
+ * It filters products from context and shows them in categorized sections.
+ */
+
 import { useEffect, useState } from "react";
 import { useProducts } from "../context/ContextProducts";
-import { useNavigate } from "react-router-dom"; ///
+import { useNavigate } from "react-router-dom";
+
 
 const ProductsShow = () => {
-  const navegate = useNavigate();
+  const navigate = useNavigate();
   const { products, setProducts } = useProducts();
+
+  // State to store categorized product lists
   const [productHombre, setProductsHombre] = useState([]);
   const [productMujer, setProductsMujer] = useState([]);
   const [electronics, setElectronics] = useState([]);
   const [joyeria, setJoyeria] = useState([]);
 
+  // Categorize products when `products` changes
   useEffect(() => {
-    async function name(params) {
+    async function categorizeProducts() {
       const productos = await products;
+
       if (productos) {
         const productsMujer = [...productos].filter(
           (p) => p.category === "women's clothing"
         );
-        if (productsMujer) {
-          setProductsMujer(productsMujer);
-        }
+        if (productsMujer) setProductsMujer(productsMujer);
+
         const productsHombre = [...productos].filter(
           (p) => p.category === "men's clothing"
         );
-        if (productsHombre) {
-          setProductsHombre(productsHombre);
-        }
+        if (productsHombre) setProductsHombre(productsHombre);
+
         const electronicos = [...productos].filter(
           (p) => p.category === "electronics"
         );
+        if (electronicos) setElectronics(electronicos);
 
-        if (electronicos) {
-          setElectronics(electronicos);
-        }
-
-        const jowery = [...productos].filter((p) => p.category === "jewelery");
-
-        if (jowery) {
-          setJoyeria(jowery);
-        }
+        const jowery = [...productos].filter(
+          (p) => p.category === "jewelery"
+        );
+        if (jowery) setJoyeria(jowery);
       }
     }
 
-    name();
+    categorizeProducts();
   }, [products]);
 
+  // Navigates to the product detail page
   const handleRouter = (id) => {
     if (!id) return;
-    navegate(`/product/${id}`);
+    navigate(`/product/${id}`);
   };
 
-  if (!productHombre) return <li>Cargando...</li>;
-  if (!productMujer) return <li>Cargando...</li>;
+  // Render loading state if products are not ready
+  if (!productHombre || !productMujer) return <li>Loading...</li>;
 
   return (
-    <div className="w-full flex items-center flex-col   mt-28 border-solid border-t-2 border-slate-200 ">
-      <div className="text-3xl  self-center">
-        productos relevantes de hombre
-      </div>
+    <div className="w-full flex items-center flex-col mt-28 border-solid border-t-2 border-slate-200">
 
+      {/* Men's Clothing Section */}
+      <div className="text-3xl self-center">Relevant Men's Products</div>
       <div className="flex flex-wrap justify-center flex-row items-center gap-5">
         {productHombre.map((p) => (
           <div
@@ -81,9 +89,8 @@ const ProductsShow = () => {
         ))}
       </div>
 
-      <div className="text-3xl  self-center mt-10">
-        productos relevantes de Mujer
-      </div>
+      {/* Women's Clothing Section */}
+      <div className="text-3xl self-center mt-10">Relevant Women's Products</div>
       <div className="flex flex-wrap justify-center flex-row items-center gap-5">
         {productMujer.map((p) => (
           <div
@@ -105,9 +112,9 @@ const ProductsShow = () => {
           </div>
         ))}
       </div>
-      <div className="text-3xl  self-center mt-10">
-        productos relevantes de electronics
-      </div>
+
+      {/* Electronics Section */}
+      <div className="text-3xl self-center mt-10">Relevant Electronics</div>
       <div className="flex flex-wrap justify-center flex-row items-center gap-5">
         {electronics.map((p) => (
           <div
@@ -129,9 +136,9 @@ const ProductsShow = () => {
           </div>
         ))}
       </div>
-      <div className="text-3xl  self-center mt-10">
-        productos relevantes de jowery
-      </div>
+
+      {/* Jewelry Section */}
+      <div className="text-3xl self-center mt-10">Relevant Jewelry</div>
       <div className="flex flex-wrap justify-center flex-row items-center gap-5">
         {joyeria.map((p) => (
           <div

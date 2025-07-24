@@ -1,58 +1,63 @@
-import { createContext, useContext, useEffect } from "react";
-import { useState } from "react";
-import { auth } from "../firebase/firebase-config";
-import { db } from "../firebase/firebase-config";
+import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { getDoc } from "firebase/firestore";
-import { setDoc } from "firebase/firestore";
-import { doc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../firebase/firebase-config";
+
+// 1. Create context for image URL
 const Context = createContext();
 
+// 2. Provider component for managing user profile image
 const ImageProvider = ({ children }) => {
-  const [url, setUrl] = useState(null);
+  const [url, setUrl] = useState(null); // State to store image URL
 
   useEffect(() => {
+    // Listen for authentication state changes
     const unSubscribe = onAuthStateChanged(auth, (user) => {
-      async function dataUser() {
+      async function fetchUserImage() {
         try {
           if (!user) {
-            /*usuario sin iniciar sesión*/
-            return null;
+            // If user is not logged in, do nothing
+            return;
           }
-          const uid = user.uid;
-          const refDoc = doc(db, "users", uid);
-          const document = await getDoc(refDoc);
-          if (document.exists()) {
-            const userdata = document.data();
 
-            const image = userdata.image || userdata.imageDefault;
+          const uid = user.uid;
+          const userDocRef = doc(db, "users", uid);
+          const userDoc = await getDoc(userDocRef);
+
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+
+            // Use custom uploaded image or fallback to default
+            const image = userData.image || userData.imageDefault;
             setUrl(image);
           } else {
-            console.log("no existe un ususario actual");
+            console.warn("User document does not exist.");
           }
-        } catch (e) {
-          console.log("error", e);
+        } catch (error) {
+          console.error("Error fetching user image:", error);
         }
       }
-      dataUser();
+
+      fetchUserImage();
     });
 
-    return () => {
-      unSubscribe();
-    };
+    // Cleanup the listener on unmount
+    return () => unSubscribe();
   }, []);
 
   return (
-    <Context.Provider value={{ url, setUrl }}>{children}</Context.Provider>
+    <Context.Provider value={{ url, setUrl }}>
+      {children}
+    </Context.Provider>
   );
 };
 
+// 3. Custom hook for using the image context
 export function useImage() {
   const context = useContext(Context);
   if (!context) {
-    throw new Error("no se puede userlo fuera de img provider");
+    throw new Error("useImage must be used within ImageProvider");
   }
-
   return context;
 }
 

@@ -1,38 +1,41 @@
-import { createContext, useContext } from "react";
-import { useState } from "react";
-import { auth } from "../firebase/firebase-config";
+import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { getDoc } from "firebase/firestore";
-import { useEffect } from "react";
-import { doc } from "firebase/firestore";
-import { db } from "../firebase/firebase-config";
+import { getDoc, doc } from "firebase/firestore";
+import { auth, db } from "../firebase/firebase-config";
+
+// 1. Create the context
 const Context = createContext();
 
+// 2. Provider component for managing user's favorite products
 const FavoritesProvider = ({ children }) => {
   const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
+    // Listen to authentication state changes
     const unSubscribe = onAuthStateChanged(auth, (user) => {
-      async function dataUser() {
+      async function fetchUserFavorites() {
         if (!user) {
-          /*usuario sin iniciar sesión*/
-          return null;
+          // If no user is logged in, clear the favorites
+          setFavorites([]);
+          return;
         }
+
         const uid = user.uid;
-        const refDoc = doc(db, "favorites", uid);
-        const document = await getDoc(refDoc);
-        if (document.exists()) {
-          const favorites = document.data();
-          const itemsFavorites = favorites.favorites;
-          setFavorites(itemsFavorites);
+        const userDocRef = doc(db, "favorites", uid);
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+          const data = userDoc.data();
+          setFavorites(data.favorites || []);
         } else {
-         
           setFavorites([]);
         }
       }
-      dataUser();
+
+      fetchUserFavorites();
     });
 
+    // Clean up the subscription when the component unmounts
     return () => unSubscribe();
   }, []);
 
@@ -43,10 +46,11 @@ const FavoritesProvider = ({ children }) => {
   );
 };
 
+// 3. Custom hook to consume favorites context
 export function useFavorite() {
   const context = useContext(Context);
   if (!context) {
-    throw new Error("no se puede usar favorites fuera del provider favorites");
+    throw new Error("useFavorite must be used within FavoritesProvider");
   }
   return context;
 }
