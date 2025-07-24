@@ -1,96 +1,101 @@
 import { useState } from "react";
-import { query, setDoc, where } from "firebase/firestore";
-import { collection } from "firebase/firestore";
+import {
+  query,
+  setDoc,
+  where,
+  collection,
+  doc,
+  getDocs,
+  getDoc,
+} from "firebase/firestore";
 import { db } from "../firebase/firebase-config";
-import { doc } from "firebase/firestore";
-import { getDocs } from "firebase/firestore";
-import { getDoc } from "firebase/firestore";
 
+/**
+ * EditarUser component
+ * 
+ * This component shows a button that opens a modal allowing the admin
+ * to update a user's name, email, and role in the Firestore database.
+ */
 const EditarUser = ({ user, setu }) => {
-  const [pop, setPop] = useState(false);
+  const [isOpen, setIsOpen] = useState(false); // Modal visibility
   const [nombre, setNombre] = useState(user.name);
   const [correo, setCorreo] = useState(user.correo);
-  const [guardando, setGuardando] = useState(false);
   const [rol, setRol] = useState(user.rol);
+  const [saving, setSaving] = useState(false);
 
+  // Handles user data update in Firestore
   const handleGuardarCambios = async (e) => {
-    setGuardando(true);
     e.preventDefault();
-    if (nombre && correo) {
-      try {
-        console.log("asegurandome de datos", nombre, correo, rol, user.idUser);
-        /*actualizando collecion de usuarios*/
+    setSaving(true);
 
-        const refusuario = doc(db, "usuarios", user.idUser);
-        const getref = await getDoc(refusuario);
-        let data = getref.data();
+    if (!nombre || !correo) return;
 
-        data = { ...data, name: nombre, correo: correo, rol: rol };
-        console.log("data en este momentoooooooooooooooooooooooooooooo", data);
-        await setDoc(refusuario, {
-          ...data,
-        });
+    try {
+      // 1. Update user info in "usuarios" collection
+      const userRef = doc(db, "usuarios", user.idUser);
+      const snapshot = await getDoc(userRef);
+      let userData = snapshot.data();
 
-        setu(data);
+      userData = { ...userData, name: nombre, correo, rol };
+      await setDoc(userRef, userData);
+      setu(userData); // Update local user state
 
-        console.log("updateuserrr", data);
-        console.log("usuario actualizado con exito");
+      // 2. Update all related documents in "todosPedidos"
+      const pedidosQuery = query(
+        collection(db, "todosPedidos"),
+        where("iduser", "==", user.idUser)
+      );
+      const pedidosSnapshot = await getDocs(pedidosQuery);
 
-        /*actualizando collecion de todosPedidos*/
-        const reftodospedidos = query(
-          collection(db, "todosPedidos"),
-          where("iduser", "==", user.idUser)
-        );
-        const getreftodospedidos = await getDocs(reftodospedidos);
-        if (!getreftodospedidos.empty) {
-          async function ActualizarTodoPedido(D) {
-            let iddoc = D.id;
+      if (!pedidosSnapshot.empty) {
+        pedidosSnapshot.forEach(async (docSnap) => {
+          const pedidoData = docSnap.data();
+          const pedidoRef = doc(db, "todosPedidos", docSnap.id);
 
-            let data = D.data();
-
-            await setDoc(doc(db, "todosPedidos", iddoc), {
-              ...data,
-              nombre: nombre,
-              correo: correo,
-              rol: rol,
-            });
-          }
-          getreftodospedidos.forEach((D) => {
-            ActualizarTodoPedido(D);
+          await setDoc(pedidoRef, {
+            ...pedidoData,
+            nombre,
+            correo,
+            rol,
           });
-          console.log("todo actualizado correctamente");
-          setGuardando(false);
-          setPop(false);
-        } else {
-          console.log("no se incontrarondocs");
-        }
-      } catch (e) {
-        console.log("errror", e);
+        });
+        console.log("User and related orders updated successfully");
+      } else {
+        console.log("No related documents found in 'todosPedidos'");
       }
+
+      // Close modal and reset saving state
+      setSaving(false);
+      setIsOpen(false);
+    } catch (error) {
+      console.log("Error updating user:", error);
     }
   };
+
   return (
     <section>
       <h2 className="text-xl font-semibold mb-2 text-slate-700">
-        🛠️ Editar usuario
+        🛠️ Edit User
       </h2>
-      <div>
-        {/* Aquí puedes añadir botones o selects para cambiar el estado del pedido */}
-        <button
-          className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
-          onClick={() => setPop(true)}
-        >
-          Editar user
-        </button>
-      </div>
 
-      {pop && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex flex-row justify-center items-center">
-          <div className="bg-white rounded-2xl flex flex-col justify-center relative shadow-2xl   h-3/6 w-full max-w-xs ">
+      {/* Button to open edit modal */}
+      <button
+        className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
+        onClick={() => setIsOpen(true)}
+      >
+        Edit User
+      </button>
+
+      {/* Modal for editing user */}
+      {isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white rounded-2xl shadow-2xl h-3/6 w-full max-w-xs flex flex-col justify-center relative">
+            
+            {/* Close button */}
             <div
-              className="absolute top-2 right-2 border-2 p-1 hover:bg-slate-600 cursor-pointer border-solid border-black rounded-full "
+              className="absolute top-2 right-2 border-2 p-1 hover:bg-slate-600 cursor-pointer border-black rounded-full"
               onClick={() => {
-                setPop(false);
+                setIsOpen(false);
                 setNombre("");
                 setCorreo("");
                 setRol("");
@@ -98,48 +103,54 @@ const EditarUser = ({ user, setu }) => {
             >
               X
             </div>
-            <div className="p-2">
-              <form
-                onSubmit={handleGuardarCambios}
-                className="flex flex-col gap-4"
-              >
-                <div>Cambiar nombre:</div>
+
+            {/* Edit form */}
+            <form
+              onSubmit={handleGuardarCambios}
+              className="p-4 flex flex-col gap-4"
+            >
+              <label>
+                Change name:
                 <input
-                  className="border-2 border-solid border-black rounded-xl"
                   type="text"
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
-                  placeholder="Nombre"
+                  placeholder="Name"
+                  className="border-2 border-black rounded-xl w-full mt-1"
                 />
-                <div>Cambiar email:</div>
+              </label>
 
+              <label>
+                Change email:
                 <input
-                  className="border-2 border-solid border-black rounded-xl"
                   type="email"
                   value={correo}
                   onChange={(e) => setCorreo(e.target.value)}
-                  placeholder="Correo"
+                  placeholder="Email"
+                  className="border-2 border-black rounded-xl w-full mt-1"
                 />
+              </label>
 
-                <div>Cambiar rol:</div>
+              <label>
+                Change role:
                 <select
-                  className="border-2 border-solid border-black"
                   value={rol}
                   onChange={(e) => setRol(e.target.value)}
+                  className="border-2 border-black w-full mt-1"
                 >
-                  <option value="user">Usuario</option>
-                  <option value="admin">Administrador</option>
+                  <option value="user">User</option>
+                  <option value="admin">Admin</option>
                 </select>
+              </label>
 
-                <button
-                  disabled={guardando === true}
-                  type="submit"
-                  className="bg-green-600"
-                >
-                  {guardando ? "Guardando...." : "Guardar cambios"}
-                </button>
-              </form>
-            </div>
+              <button
+                type="submit"
+                disabled={saving}
+                className="bg-green-600 text-white rounded-xl py-2 mt-2"
+              >
+                {saving ? "Saving..." : "Save Changes"}
+              </button>
+            </form>
           </div>
         </div>
       )}

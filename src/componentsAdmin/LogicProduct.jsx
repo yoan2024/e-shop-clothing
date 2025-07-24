@@ -1,154 +1,143 @@
-import { getDoc, updateDoc } from "firebase/firestore";
-import React, { useState, useEffect } from "react";
-import { setDoc } from "firebase/firestore";
-import { doc } from "firebase/firestore";
+// LogicProduct.tsx
+
+import { getDoc, setDoc, doc } from "firebase/firestore";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useProducts } from "../context/ContextProducts";
 import { db } from "../firebase/firebase-config";
 
+/**
+ * LogicProduct handles both adding and editing product logic.
+ * @param onClose - function to close the modal
+ * @param p - current product to edit (if any)
+ * @param logica - string: "editar" or anything else for add
+ */
 const LogicProduct = ({ onClose, p, logica }) => {
-  const [titulo, setTitulo] = useState("");
-  const [precio, setPrecio] = useState("");
-  const { products, setProducts } = useProducts();
-  const [categoria, setCategoria] = useState("");
-  const [descripcion, setDescripcion] = useState("");
+  const [title, setTitle] = useState("");
+  const [price, setPrice] = useState("");
+  const [category, setCategory] = useState("");
+  const [description, setDescription] = useState("");
   const [file, setFile] = useState("");
-  const [imagenPreview, setImagenPreview] = useState("");
+  const [imagePreview, setImagePreview] = useState("");
 
+  const { products, setProducts } = useProducts();
+
+  // Load product details if editing
   useEffect(() => {
     if (p) {
-      setTitulo(p.title || "");
-      setPrecio(p.price || "");
-      setCategoria(p.category || "");
-      setDescripcion(p.description || "");
-      setImagenPreview(p.image || "");
+      setTitle(p.title || "");
+      setPrice(p.price || "");
+      setCategory(p.category || "");
+      setDescription(p.description || "");
+      setImagePreview(p.image || "");
     }
-    console.log("ppppppp", p);
   }, [p]);
 
-  const handleImagenChange = (e) => {
+  // Handle image input and preview
+  const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file && file.size > 1 * 1024 * 1024) {
-      console.log("imagen muy grande tiene q ser mayor a 2 MB");
+    if (file && file.size > 2 * 1024 * 1024) {
+      console.warn("❌ Image too large, must be under 2MB");
     } else {
-      console.log(file, "se guardo la imagen");
       setFile(file);
-      setImagenPreview(URL.createObjectURL(file));
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
-  const handleGuardar = async (prod) => {
-    console.log({
-      titulo,
-      precio,
-      categoria,
-      descripcion,
-      imagenPreview,
-    });
-
+  // Handle form submission to save or update a product
+  const handleSave = async (prod) => {
     if (
-      titulo.length > 5 &&
-      precio > 0 &&
-      categoria.length > 5 &&
-      descripcion.length > 5 &&
-      imagenPreview
+      title.length > 5 &&
+      price > 0 &&
+      category.length > 5 &&
+      description.length > 5 &&
+      imagePreview
     ) {
       const formData = new FormData();
-      const imagenRuta = "/images/sinimagen.webp";
-      const response = await fetch(imagenRuta);
-      const blog = await response.blob();
-      const image = file || imagenPreview || blog;
-      formData.append("file", image);
+      const defaultImagePath = "/images/sinimagen.webp";
+
+      const defaultResponse = await fetch(defaultImagePath);
+      const defaultBlob = await defaultResponse.blob();
+      const imageToUpload = file || imagePreview || defaultBlob;
+
+      formData.append("file", imageToUpload);
       formData.append("upload_preset", "ecomerce");
-      let img;
+
+      let imageUrl;
+
       try {
-        const res = await axios.post(
+        const uploadResponse = await axios.post(
           "https://api.cloudinary.com/v1_1/dcqsgyyax/image/upload",
           formData
         );
-
-        img = res.data.secure_url;
-
-        alert("✅ Imagen subida correctamente");
+        imageUrl = uploadResponse.data.secure_url;
+        alert("✅ Image uploaded successfully");
       } catch (error) {
-        console.error("Error uploading:", error);
-        alert("❌ Falló la subida");
+        console.error("Image upload failed:", error);
+        alert("❌ Image upload failed");
+        return;
       }
 
-      const refP = doc(db, "productos", "productos1088272651");
-      const getP = await getDoc(refP);
-      const dataP = getP.data();
-      let p = dataP.productos;
+      const productRef = doc(db, "productos", "productos1088272651");
+      const snapshot = await getDoc(productRef);
+      const productData = snapshot.data();
+      let productList = productData.productos;
+
       if (logica === "editar") {
-        const editarP = p.map((p) => {
-          if (p.id === prod.id) {
-            return {
-              ...p,
-              title: titulo,
-              category: categoria,
-              price: precio,
-              description: descripcion,
-              image: img,
-            };
-          }
-          return p;
-        });
-        console.log("curenttt productos ya editassssssssss", editarP);
-        setDoc(refP, {
-          productos: editarP,
-        });
-
-        setProducts(editarP);
-        console.log(
-          "todo el producto se edito correctamente gracias por usar trendora"
+        // Update existing product
+        const updatedList = productList.map((item) =>
+          item.id === prod.id
+            ? {
+                ...item,
+                title,
+                category,
+                price,
+                description,
+                image: imageUrl,
+              }
+            : item
         );
+
+        await setDoc(productRef, { productos: updatedList });
+        setProducts(updatedList);
       } else {
-        const randomRate = Math.random() * 6;
-        const randomCount = Math.random() * 200;
-        const floatrate = Math.floor(randomRate);
-        const floatCount = Math.floor(randomCount);
-
-        const sorProducts = p.sort((a, b) => b.id - a.id);
-        const newId = sorProducts[0].id + 1;
-
-        const newProducto = {
-          category: categoria,
-          description: descripcion,
-          title: titulo,
+        // Create new product
+        const newId = Math.max(...productList.map((p) => p.id)) + 1;
+        const newProduct = {
           id: newId,
-          image: img,
-          price: precio,
-          rating: { count: floatCount, rate: floatrate },
+          title,
+          category,
+          price,
+          description,
+          image: imageUrl,
+          rating: {
+            count: Math.floor(Math.random() * 200),
+            rate: Math.floor(Math.random() * 6),
+          },
         };
 
-        p.push(newProducto);
-        setDoc(refP, {
-          productos: p,
-        });
-        setProducts(p);
+        productList.push(newProduct);
+        await setDoc(productRef, { productos: productList });
+        setProducts(productList);
 
-        console.log(
-          "se agregaron correctamente el producto",
-          newProducto,
-          "p actualizados: ",
-          p
-        );
+        // Clear form
+        setTitle("");
+        setPrice("");
+        setCategory("");
+        setDescription("");
 
-        setTitulo("");
-        setPrecio("");
-        setCategoria("");
-        setDescripcion("");
+        // Delay closing the modal
         setTimeout(onClose(), 600);
       }
     } else {
-      return;
+      console.warn("❌ Please complete all fields properly.");
     }
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md relative">
-        {/* Botón cerrar */}
+        {/* Close button */}
         <button
           onClick={onClose}
           className="absolute top-2 right-2 text-gray-500 hover:text-black text-xl font-bold"
@@ -156,57 +145,57 @@ const LogicProduct = ({ onClose, p, logica }) => {
           ×
         </button>
 
-        {/* Imagen actual */}
+        {/* Image preview */}
         <div className="w-full h-40 mb-4 flex items-center justify-center overflow-hidden rounded-md border bg-gray-100">
-          {imagenPreview ? (
+          {imagePreview ? (
             <img
-              src={imagenPreview}
-              alt="Vista previa"
+              src={imagePreview}
+              alt="Preview"
               className="max-h-full max-w-full object-contain"
             />
           ) : (
-            <span className="text-sm text-gray-400">Sin imagen</span>
+            <span className="text-sm text-gray-400">No image</span>
           )}
         </div>
 
-        {/* Formulario */}
+        {/* Product form */}
         <div className="space-y-3">
           <input
-            value={titulo}
-            onChange={(e) => setTitulo(e.target.value)}
-            placeholder="Nombre del producto"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Product Name"
             className="w-full border rounded px-3 py-2 text-sm"
           />
           <input
-            value={precio}
-            onChange={(e) => setPrecio(e.target.value)}
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
             type="number"
-            placeholder="Precio"
+            placeholder="Price"
             className="w-full border rounded px-3 py-2 text-sm"
           />
           <input
-            value={categoria}
-            onChange={(e) => setCategoria(e.target.value)}
-            placeholder="Categoría"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            placeholder="Category"
             className="w-full border rounded px-3 py-2 text-sm"
           />
           <textarea
-            value={descripcion}
-            onChange={(e) => setDescripcion(e.target.value)}
-            placeholder="Descripción"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Description"
             rows={3}
             className="w-full border rounded px-3 py-2 text-sm"
           />
           <input
             type="file"
-            onChange={handleImagenChange}
+            onChange={handleImageChange}
             className="w-full text-sm"
           />
           <button
-            onClick={() => handleGuardar(p)}
+            onClick={() => handleSave(p)}
             className="w-full mt-4 bg-blue-600 text-white rounded py-2 hover:bg-blue-700 transition"
           >
-            {logica === "editar" ? "Guardar Cambios" : "Guardar Producto"}
+            {logica === "editar" ? "Save Changes" : "Add Product"}
           </button>
         </div>
       </div>

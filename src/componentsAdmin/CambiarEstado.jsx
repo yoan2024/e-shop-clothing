@@ -1,121 +1,131 @@
 import { useState } from "react";
 import { db } from "../firebase/firebase-config";
-import { collection, where } from "firebase/firestore";
-import { query } from "firebase/firestore";
-import { getDocs } from "firebase/firestore";
-import { getDoc } from "firebase/firestore";
-import { doc } from "firebase/firestore";
-import { orderBy } from "firebase/firestore";
-import { setDoc } from "firebase/firestore";
+import {
+  collection,
+  where,
+  query,
+  getDocs,
+  doc,
+  orderBy,
+  setDoc,
+} from "firebase/firestore";
 
-{
-  /**/
-}
-
+/**
+ * Component to change the shipping and order status of a specific order.
+ * It retrieves the order from Firestore, updates it, and refreshes the full list.
+ */
 const CambiarEstado = ({ onclose, pedido, setPedidos, setpd }) => {
-  const [envio, setEnvio] = useState(pedido.envio);
-  const [estado, setEstado] = useState(pedido.estado);
+  // Local state for shipping and order status
+  const [shippingStatus, setShippingStatus] = useState(pedido.envio);
+  const [orderStatus, setOrderStatus] = useState(pedido.estado);
 
-  const handleGuardar = async () => {
-    const iduser = pedido.iduser;
-    const refdoc = query(
+  /**
+   * Handle saving the updated shipping and order status to Firestore.
+   */
+  const handleSave = async () => {
+    const userId = pedido.iduser;
+
+    // Find the matching order document by its ID
+    const refQuery = query(
       collection(db, "todosPedidos"),
       where("idPedido", "==", pedido.idPedido)
     );
-    const getdoc = await getDocs(refdoc);
+    const snapshot = await getDocs(refQuery);
 
-    let p = {};
-    let iddoc;
-    getdoc.forEach((d) => {
-      if (d.exists()) {
-        const data = d.data();
-        p = data;
-        iddoc = d.id;
+    let updatedOrder = {};
+    let docId;
+
+    snapshot.forEach((docSnap) => {
+      if (docSnap.exists()) {
+        updatedOrder = docSnap.data();
+        docId = docSnap.id;
       } else {
-        console.log("el documento no existe");
+        console.log("Document not found");
       }
     });
-    const refuserpedido = doc(db, "todosPedidos", iddoc);
 
-    console.log("pedido antes de guargarrr", p);
-    const pedidoActualizado = { ...p, envio, estado };
-    setpd(pedidoActualizado);
-    await setDoc(refuserpedido, pedidoActualizado);
-    console.log("actuaizado con exito en todos pedidos");
+    const orderRef = doc(db, "todosPedidos", docId);
 
-    const refdocument = collection(db, "todosPedidos");
-    const organizardocs = query(refdocument, orderBy("fechaPedido", "desc"));
-    let peds = [];
-    const getdocs = await getDocs(organizardocs);
-    getdocs.forEach((d) => {
-      const data = d.data();
-      console.log("dataaaaaaa de un pedido", data);
-      peds.push(data);
+    // Merge and save the updated order
+    const newOrder = { ...updatedOrder, envio: shippingStatus, estado: orderStatus };
+    setpd(newOrder);
+    await setDoc(orderRef, newOrder);
+    console.log("Order successfully updated in Firestore");
+
+    // Refresh full orders list after update
+    const allOrdersRef = collection(db, "todosPedidos");
+    const orderedQuery = query(allOrdersRef, orderBy("fechaPedido", "desc"));
+    const allOrdersSnap = await getDocs(orderedQuery);
+
+    const ordersArray = [];
+    allOrdersSnap.forEach((d) => {
+      ordersArray.push(d.data());
     });
 
-    console.log("pedidos justo ante de actualizarlo", peds);
-    setPedidos(peds);
+    setPedidos(ordersArray);
+    console.log("Orders updated in state successfully");
 
-    console.log("pedidos acyualizados estate correctamente");
+    // Close modal
     onclose();
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex flex-row  justify-center items-center">
-      <div className="bg-white rounded-2xl    shadow-2xl p-6 h-4/6 w-full max-w-xs   animate-fade-in-up relative flex flex-col justify-center">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+      <div className="bg-white rounded-2xl shadow-2xl p-6 h-4/6 w-full max-w-xs animate-fade-in-up relative flex flex-col justify-center">
+        {/* Close button */}
         <div
-          className="absolute top-0 right-0 p-2 cursor-pointer hover:bg-slate-400 "
+          className="absolute top-0 right-0 p-2 cursor-pointer hover:bg-slate-400"
           onClick={onclose}
         >
           X
         </div>
 
-        <div className="flex flex-col  justify-center items-center gap-3 h-full">
-          <div className="flex flex-row justify-center">
-            <div className="text-xl flex-1">Cambiar estado de envio</div>
+        {/* Dropdown selectors */}
+        <div className="flex flex-col justify-center items-center gap-3 h-full">
+          {/* Shipping status selector */}
+          <div className="flex flex-row justify-center w-full gap-2">
+            <div className="text-xl flex-1">Shipping status</div>
             <select
-              name="envio"
-              value={envio}
-              onChange={(e) => {
-                setEnvio(e.target.value);
-                console.log("valuess", e.target.value);
-              }}
-              id=""
-              className="border-2 flex-1 border-solid  border-black"
+              name="shippingStatus"
+              value={shippingStatus}
+              onChange={(e) => setShippingStatus(e.target.value)}
+              className="border-2 border-solid border-black flex-1"
             >
-              <option value="Preparando">Preparando</option>
-              <option value="No enviado">No enviado</option>
-              <option value="Repartidor Asignado">Repartidor Asignado</option>
-              <option value="En camino">En camino</option>
-              <option value="En zona de entrega">En zona de entrega</option>
-              <option value="Intento fallido">Intento fallido</option>
-              <option value="Reprogramado">Reprogramado</option>
-              <option value="Entregado">Entregado</option>
-              <option value="Devuelto">Devuelto</option>
+              <option value="Preparando">Preparing</option>
+              <option value="No enviado">Not shipped</option>
+              <option value="Repartidor Asignado">Courier assigned</option>
+              <option value="En camino">On the way</option>
+              <option value="En zona de entrega">In delivery zone</option>
+              <option value="Intento fallido">Failed attempt</option>
+              <option value="Reprogramado">Rescheduled</option>
+              <option value="Entregado">Delivered</option>
+              <option value="Devuelto">Returned</option>
             </select>
           </div>
-          <div className="flex flex-row justify-center">
-            <div className="text-xl flex-1">Cambiar estado de pedido</div>
+
+          {/* Order status selector */}
+          <div className="flex flex-row justify-center w-full gap-2">
+            <div className="text-xl flex-1">Order status</div>
             <select
-              value={estado}
-              name="estado"
-              onChange={(e) => setEstado(e.target.value)}
-              id=""
-              className="border-2 flex-1  border-solid  border-black"
+              name="orderStatus"
+              value={orderStatus}
+              onChange={(e) => setOrderStatus(e.target.value)}
+              className="border-2 border-solid border-black flex-1"
             >
-              <option value="Pendiente">Pendiente</option>
-              <option value="En camino">En camino</option>
-              <option value="Entregado">Entregado</option>
-              <option value="Cancelado">Cancelado</option>
+              <option value="Pendiente">Pending</option>
+              <option value="En camino">On the way</option>
+              <option value="Entregado">Delivered</option>
+              <option value="Cancelado">Cancelled</option>
             </select>
           </div>
-          <div></div>
         </div>
+
+        {/* Save button */}
         <button
-          className="p-2 bg-green-400 w-fit m-auto rounded-xl"
-          onClick={handleGuardar}
+          className="p-2 bg-green-400 w-fit m-auto mt-6 rounded-xl hover:bg-green-500 transition"
+          onClick={handleSave}
         >
-          Guardar
+          Save
         </button>
       </div>
     </div>
@@ -123,8 +133,3 @@ const CambiarEstado = ({ onclose, pedido, setPedidos, setpd }) => {
 };
 
 export default CambiarEstado;
-<select
-  name=""
-  id=""
-  className="border-2 border-solid flex-1  border-black"
-></select>;
