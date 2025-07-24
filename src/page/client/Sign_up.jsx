@@ -95,7 +95,7 @@ const Sign_up = () => {
 
           {/* --- Link to login page if user already has an account --- */}
           <span>
-            Ya tienes cuenta?{" "}
+            Already have an account?{" "}
             <a
               className="hover:text-blue-600  border-b-2 border-black"
               href="/login_in"
@@ -108,8 +108,8 @@ const Sign_up = () => {
         {/* --- Decorative image in bottom corner --- */}
         <div className="w-96 h-60 sm:absolute sm:bottom-0 sm:left-0">
           <img
-            src="/images/personaC.png"
-            alt="persona"
+            src="/images/personC.png"
+            alt="person"
             className="w-full h-full object-contain"
           />
         </div>
