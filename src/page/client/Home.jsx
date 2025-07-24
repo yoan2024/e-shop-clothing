@@ -1,3 +1,13 @@
+// -- Home page: 
+// --- This component is the main homepage that displays trending and relevant products,
+// along with a call-to-action to visit the product catalog --- //
+
+
+
+
+
+
+
 // --- Import required components and navigation hook --- //
 import Tendenciaa from "../../component/Tendencita";
 import ProductsShow from "../../component/ProductsShow";

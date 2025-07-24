@@ -1,3 +1,4 @@
+// --- Favoritess page:
 // --- This component displays all the user's favorite products saved in FireBase --- //
 
 import { useEffect, useState } from "react";
