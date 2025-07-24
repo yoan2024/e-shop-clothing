@@ -36,7 +36,7 @@ const LayoutClient = () => {
 
   // Local component state
   const [quantities, setQuantities] = useState({});
-  const [total, setTotal] = useState(0);
+  const [total, setTotal] = useState(0); 
   const [toggle, setToggle] = useState(false); // Toggle for shopping bag view
   const [paid, setPaid] = useState(false);     // State to show success payment screen
 

@@ -19,7 +19,7 @@ import { Search } from "lucide-react";
 import { useProducts } from "../context/ContextProducts";
 import Nav from "./Nav";
 
-const Header = ({ toggle, setToggle }) => {
+const Header = ({ toggle, setToggle}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useUser();

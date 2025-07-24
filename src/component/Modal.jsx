@@ -9,7 +9,7 @@
  * Props:
  * - isOpen (boolean): Controls the visibility of the modal.
  * - onClose (function): Function to call when closing the modal.
- * - children (ReactNode): Content to display inside the modal (title, message, buttons, etc).
+ * - children : Content to display inside the modal (title, message, buttons, etc).
  */
 
 const Modal = ({ isOpen, onClose, children }) => {

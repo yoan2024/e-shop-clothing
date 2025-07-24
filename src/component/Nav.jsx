@@ -2,14 +2,14 @@
 
 // React hooks
 import { useEffect, useState } from "react";
-// Navigation hook from React Router
 import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
+
 // Custom context hooks
 import { useUser } from "../context/User";
 import { useImage } from "../context/Image";
-// Firebase service for logout
+
 import { logout } from "../firebase/authService";
-// Spinner used while avatar is loading
 import ClipLoader from "react-spinners/ClipLoader";
 
 /**
@@ -29,6 +29,25 @@ const Nav = ({ tog, settog }) => {
   const { user, setUser } = useUser();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false); // Controls avatar dropdown visibility
+
+  const drownMenu = useRef() 
+  const userAvatar = useRef() 
+
+useEffect(() => {
+
+ const handleClickOutSite = (e) => {
+
+// Close the dropdown menu only if the user clicks outside the dropdown menu and not on the user's avatar icon in the navbar
+  if(drownMenu.current && !drownMenu.current.contains(e.target) && !userAvatar.current.contains(e.target)){
+    setOpen(false)
+  }
+ }
+document.addEventListener("mousedown", handleClickOutSite)
+  return () => {
+   document.removeEventListener("mousedown", handleClickOutSite)
+  }
+},[])
+
 
   // Logs out the user and redirects to home
   const handleLogout = () => {
@@ -103,7 +122,7 @@ const Nav = ({ tog, settog }) => {
         <div className="flex flex-row items-center gap-4">
           {/* Avatar button */}
           <div className="relative mt-2">
-            <button
+            <button ref={userAvatar}
               onClick={() => setOpen(!open)}
               className="focus:outline-none"
             >
@@ -123,7 +142,7 @@ const Nav = ({ tog, settog }) => {
 
             {/* Dropdown panel */}
             {open && (
-              <div className="absolute right-0 mt-2 w-64 bg-white border rounded-xl shadow-xl p-4 z-50">
+              <div ref={drownMenu} className="absolute right-0 mt-2 w-64 bg-white border rounded-xl shadow-xl p-4 z-50">
                 <div className="flex items-center gap-3 mb-4">
                   <img
                     src={url}
