@@ -1,42 +1,77 @@
-import { useNavigate } from "react-router-dom";
-import { useUser } from "../context/User";
-import { logout } from "../firebase/authService";
-import { useImage } from "../context/Image";
+// components/Nav.jsx
+
+// React hooks
 import { useEffect, useState } from "react";
+// Navigation hook from React Router
+import { useNavigate } from "react-router-dom";
+// Custom context hooks
+import { useUser } from "../context/User";
+import { useImage } from "../context/Image";
+// Firebase service for logout
+import { logout } from "../firebase/authService";
+// Spinner used while avatar is loading
 import ClipLoader from "react-spinners/ClipLoader";
+
+/**
+ * Nav Component
+ *
+ * This is the main navigation bar of the app, shown only when a user is logged in.
+ * It allows navigating through product categories, profile, favorites, and logout.
+ * It also shows the user avatar and a dropdown menu with profile and logout options.
+ *
+ * Props:
+ * - tog (boolean): Controls the visibility of the shopping cart.
+ * - settog (function): Function to toggle the shopping cart view.
+ */
+
 const Nav = ({ tog, settog }) => {
-  const { url, setUrl } = useImage();
+  const { url } = useImage();
   const { user, setUser } = useUser();
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false); // Controls avatar dropdown visibility
 
+  // Logs out the user and redirects to home
   const handleLogout = () => {
     logout();
     navigate("/");
   };
 
-  const handleClick = (prom) => {
-    if (prom === "MAN") {
-      navigate("/catalog/men");
-    } else if (prom === "WOMEN") {
-      navigate("/catalog/women");
-    } else if (prom === "JEWELERY") {
-      navigate("/catalog/jewelery");
-    } else if (prom === "ELECTRONICS") {
-      navigate("/catalog/electronics");
-    } else if (prom === "HOME") {
-      navigate("/");
-    } else if (prom === "PROFILE") {
-      navigate("/userProfile");
-    } else if (prom === "heart") {
-      navigate("/favorites");
+  // Handles navigation to different sections
+  const handleClick = (section) => {
+    switch (section) {
+      case "MAN":
+        navigate("/catalog/men");
+        break;
+      case "WOMEN":
+        navigate("/catalog/women");
+        break;
+      case "JEWELERY":
+        navigate("/catalog/jewelery");
+        break;
+      case "ELECTRONICS":
+        navigate("/catalog/electronics");
+        break;
+      case "HOME":
+        navigate("/");
+        break;
+      case "PROFILE":
+        navigate("/userProfile");
+        break;
+      case "heart":
+        navigate("/favorites");
+        break;
+      default:
+        break;
     }
   };
 
+  // Do not render the navbar if user is not logged in
   if (!user) return null;
+
   return (
     <nav>
-      <div className="flex  w-11/12  flex-row  justify-between items-center">
+      <div className="flex w-11/12 justify-between items-center">
+        {/* Navigation links */}
         <div className="flex flex-row gap-2 text-xl">
           <div
             className="cursor-pointer font-bold"
@@ -64,9 +99,10 @@ const Nav = ({ tog, settog }) => {
           </div>
         </div>
 
-        <div className="flex flex-row items-center  gap-4">
+        {/* User profile, shopping bag, and favorites icons */}
+        <div className="flex flex-row items-center gap-4">
+          {/* Avatar button */}
           <div className="relative mt-2">
-            {/* Ícono del usuario */}
             <button
               onClick={() => setOpen(!open)}
               className="focus:outline-none"
@@ -85,7 +121,7 @@ const Nav = ({ tog, settog }) => {
               )}
             </button>
 
-            {/* Panel desplegable */}
+            {/* Dropdown panel */}
             {open && (
               <div className="absolute right-0 mt-2 w-64 bg-white border rounded-xl shadow-xl p-4 z-50">
                 <div className="flex items-center gap-3 mb-4">
@@ -94,7 +130,6 @@ const Nav = ({ tog, settog }) => {
                     alt="Avatar"
                     className="w-12 h-12 rounded-full"
                   />
-
                   <div>
                     <p className="font-semibold text-lg">{user.name}</p>
                     <p className="text-sm text-gray-500">{user.email}</p>
@@ -103,12 +138,12 @@ const Nav = ({ tog, settog }) => {
                 <div className="flex flex-col gap-2">
                   <button
                     onClick={() => {
-                      navigate("/userProfile")
-                      setOpen(false)
+                      navigate("/userProfile");
+                      setOpen(false);
                     }}
                     className="text-left px-4 py-2 rounded-md hover:bg-gray-100"
                   >
-                    Ver perfil
+                    View Profile
                   </button>
                   <button
                     onClick={handleLogout}
@@ -120,17 +155,20 @@ const Nav = ({ tog, settog }) => {
               </div>
             )}
           </div>
+
+          {/* Shopping bag icon */}
           <div className="w-5 h-5 cursor-pointer" onClick={() => settog(!tog)}>
-            {" "}
-            <img src="/images/bolsa.png" alt="" className="w-full h-full" />
+            <img src="/images/bolsa.png" alt="Bag" className="w-full h-full" />
           </div>
+
+          {/* Favorites icon */}
           <div
             className="w-5 h-5 cursor-pointer"
             onClick={() => handleClick("heart")}
           >
             <img
               src="/images/heart.png"
-              alt="Avatar"
+              alt="Favorites"
               className="w-full h-full"
             />
           </div>
