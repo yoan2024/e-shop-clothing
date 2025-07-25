@@ -82,15 +82,15 @@ const Tendenciaa = () => {
         <h2>Top Most Popular</h2>
 
         {/* Image slider container */}
-        <div className="min-w-2/3 flex flex-row justify-center">
+        <div className="flex  flex-row justify-center">
           <div>
             <div
               className="relative cursor-pointer"
               onClick={() => handleRouter(current.id)}
             >
               {/* Product image */}
-              <div className="flex flex-row justify-center items-center">
-                <img src={img} alt="product" className="w-96 h-80" />
+              <div className="w-96 aspect-square overflow-hidden rounded-xl shadow-md">
+                <img src={img} alt="product" className="object-contain w-full h-full"  />
               </div>
 
               {/* Right arrow */}
