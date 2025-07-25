@@ -37,8 +37,8 @@ const Sign_up = () => {
   };
 
   return (
-    <div className="w-full px-0  bg-yellow-500  min-w-96">
-      <div className="bg-amber-500 min-h-screen  relative max-sm:flex-col  flex justify-center items-center gap-10">
+    <div className="min-h-screen w-full bg-amber-500 relative flex items-center justify-center px-4 py-10">
+<div className="flex flex-wrap sm:flex-nowrap items-center justify-center gap-10 max-w-5xl w-full">
         {/* --- Logo section --- */}
         <div className="max-sm:mt-7">
           <div className="text-6xl font-bold text-white">Trendora</div>
@@ -51,7 +51,7 @@ const Sign_up = () => {
               <label className="block text-sm font-medium text-gray-700">
                 Name
               </label>
-              {/* --- Input for name --- */}
+            
               <input
                 type="text"
                 value={name}
@@ -64,7 +64,7 @@ const Sign_up = () => {
               <label className="block text-sm font-medium text-gray-700">
                 Email
               </label>
-              {/* --- Input for email --- */}
+             
               <input
                 type="email"
                 value={email}
@@ -77,7 +77,7 @@ const Sign_up = () => {
               <label className="block text-sm font-medium text-gray-700">
                 Password
               </label>
-              {/* --- Input for password --- */}
+              
               <input
                 type="password"
                 value={password}
@@ -87,7 +87,7 @@ const Sign_up = () => {
               />
             </div>
 
-            {/* --- Submit button --- */}
+         
             <button
               type="submit"
               className="bg-amber-500 text-white px-4 py-2 rounded hover:bg-amber-600"
