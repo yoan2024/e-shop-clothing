@@ -89,7 +89,7 @@ const Tendenciaa = () => {
               onClick={() => handleRouter(current.id)}
             >
               {/* Product image */}
-              <div className="w-96 aspect-square overflow-hidden rounded-xl shadow-md">
+              <div className="w-96 max-sm:w-72 aspect-square overflow-hidden rounded-xl shadow-md">
                 <img src={img} alt="product" className="object-contain w-full h-full"  />
               </div>
 
@@ -120,7 +120,7 @@ const Tendenciaa = () => {
 
         {/* Product details below the image */}
         {currentProduct.map((p) => (
-          <ol key={p.id} className="bg-red">
+          <ol key={p.id} className="text-center mt-4">
             <li>{p.title}</li>
             <li className="font-bold">$ {p.price}</li>
           </ol>

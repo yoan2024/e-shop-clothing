@@ -66,12 +66,12 @@ const ProductsShow = () => {
     <div className="w-full flex items-center flex-col mt-28 border-solid border-t-2 border-slate-200">
 
       {/* Men's Clothing Section */}
-      <div className="text-3xl self-center">Relevant Men's Products</div>
-      <div className="flex flex-wrap justify-center flex-row items-center gap-5">
+      <div className="text-3xl max-sm:text-xl mb-4 self-center">Relevant Men's Products</div>
+      <div className="flex flex-wrap justify-center   flex-row items-center lg:gap-2">
         {productHombre.map((p) => (
           <div
             key={p.id}
-            className="w-48 h-64 flex flex-col items-center text-center transition-transform duration-300 transform hover:scale-105 hover:shadow-lg border rounded-xl p-2"
+            className="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6 h-64 flex flex-col items-center text-center transition-transform duration-300 transform hover:scale-105 hover:shadow-lg border rounded-xl p-2"
             onClick={() => handleRouter(p.id)}
           >
             <div className="bg-white w-full h-40 flex items-center justify-center overflow-hidden rounded-md">
@@ -90,12 +90,12 @@ const ProductsShow = () => {
       </div>
 
       {/* Women's Clothing Section */}
-      <div className="text-3xl self-center mt-10">Relevant Women's Products</div>
-      <div className="flex flex-wrap justify-center flex-row items-center gap-5">
+      <div className="text-3xl max-sm:text-xl mb-4  self-center mt-10">Relevant Women's Products</div>
+      <div className="flex flex-wrap justify-center  lg:gap-2   flex-row items-center ">
         {productMujer.map((p) => (
           <div
             key={p.id}
-            className="w-48 h-64 flex flex-col items-center text-center transition-transform duration-300 transform hover:scale-105 hover:shadow-lg border rounded-xl p-2"
+            className="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6 flex flex-col items-center text-center transition-transform duration-300 transform hover:scale-105 hover:shadow-lg border rounded-xl p-2"
             onClick={() => handleRouter(p.id)}
           >
             <div className="bg-white w-full h-40 flex items-center justify-center overflow-hidden rounded-md">
@@ -114,12 +114,12 @@ const ProductsShow = () => {
       </div>
 
       {/* Electronics Section */}
-      <div className="text-3xl self-center mt-10">Relevant Electronics</div>
-      <div className="flex flex-wrap justify-center flex-row items-center gap-5">
+      <div className="text-3xl max-sm:text-xl mb-4 self-center mt-10">Relevant Electronics</div>
+      <div className="flex flex-wrap justify-center  lg:gap-2 flex-row items-center ">
         {electronics.map((p) => (
           <div
             key={p.id}
-            className="w-48 h-64 flex flex-col items-center text-center transition-transform duration-300 transform hover:scale-105 hover:shadow-lg border rounded-xl p-2"
+            className="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6 flex flex-col items-center text-center transition-transform duration-300 transform hover:scale-105 hover:shadow-lg border rounded-xl p-2"
             onClick={() => handleRouter(p.id)}
           >
             <div className="bg-white w-full h-40 flex items-center justify-center overflow-hidden rounded-md">
@@ -138,12 +138,12 @@ const ProductsShow = () => {
       </div>
 
       {/* Jewelry Section */}
-      <div className="text-3xl self-center mt-10">Relevant Jewelry</div>
-      <div className="flex flex-wrap justify-center flex-row items-center gap-5">
+      <div className="text-3xl max-sm:text-xl mb-2 self-center mt-10">Relevant Jewelry</div>
+      <div className="flex flex-wrap justify-center  lg:gap-2 flex-row items-center ">
         {joyeria.map((p) => (
           <div
             key={p.id}
-            className="w-48 h-64 flex flex-col items-center text-center transition-transform duration-300 transform hover:scale-105 hover:shadow-lg border rounded-xl p-2"
+            className="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6 flex flex-col items-center text-center transition-transform duration-300 transform hover:scale-105 hover:shadow-lg border rounded-xl p-2"
             onClick={() => handleRouter(p.id)}
           >
             <div className="bg-white w-full h-40 flex items-center justify-center overflow-hidden rounded-md">
