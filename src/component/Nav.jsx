@@ -58,6 +58,12 @@ document.addEventListener("mousedown", handleClickOutSite)
   // Handles navigation to different sections
   const handleClick = (section) => {
     switch (section) {
+      case "LOGIN":
+        navigate("/login_in")
+        break
+      case "SIGN":
+        navigate("/sign_up")
+        break
       case "MAN":
         navigate("/catalog/men");
         break;
@@ -85,7 +91,16 @@ document.addEventListener("mousedown", handleClickOutSite)
   };
 
   // Do not render the navbar if user is not logged in
-  if (!user) return null;
+  if (!user){
+    return <div className="flex-row flex justify-end gap-2 mt-5">
+      
+        <div className="bg-orange-400 p-2 rounded-2xl cursor-pointer hover:text-white" onClick={() => handleClick("LOGIN")}>
+          Login in
+        </div>
+        <div className="bg-orange-400 p-2 rounded-2xl cursor-pointer hover:text-white" onClick={() => handleClick("SIGN")}>Sign up</div>
+      
+    </div>
+  };
 
   return (
     <nav>
