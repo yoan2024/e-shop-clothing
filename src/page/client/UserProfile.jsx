@@ -154,7 +154,7 @@ const UserProfile = () => {
     if (field === "address") setCAddress(true);
 
     const iduser = user.uid;
-    const userDocRef = doc(db, "usuarios", iduser);
+    const userDocRef = doc(db, "users", iduser);
     const userSnap = await getDoc(userDocRef);
     if (!userSnap.exists()) return;
 
@@ -162,9 +162,9 @@ const UserProfile = () => {
 
     // --- Update only the selected field ---
     if (field === "name") newData.name = name;
-    if (field === "phone") newData.telefono = phone;
-    if (field === "email") newData.correo = email;
-    if (field === "address") newData.direction = address;
+    if (field === "phone") newData.phone = phone;
+    if (field === "email") newData.email = email;
+    if (field === "address") newData.address = address;
     await setDoc(userDocRef, newData); // --- Save changes to user profile ---
 
     // --- Update the field in all user orders ---
@@ -181,7 +181,7 @@ const UserProfile = () => {
 
       if (field === "name") orderData.nombre = name;
       if (field === "phone") orderData.phone = phone;
-      if (field === "email") orderData.emil = email;
+      if (field === "email") orderData.email = email;
       if (field === "address") orderData.address = address;
 
       await setDoc(orderRef, orderData); // --- Save changes in each order ---

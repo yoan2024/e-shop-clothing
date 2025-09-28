@@ -92,7 +92,7 @@ const Header = ({ toggle, setToggle}) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
+ console.log("el search es ", search)
   return (
     <header className="w-full bg-white/90 shadow-md flex flex-col justify-center p-3">
       
@@ -214,6 +214,36 @@ const Header = ({ toggle, setToggle}) => {
               );
             })}
           </>
+        )}
+        {search.length > 0 && suggest.length == 0 && (
+        <>
+        <div className="flex flex-col items-center justify-center py-20 px-4 text-center bg-white rounded-md shadow-sm">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-16 w-16 text-gray-400 mb-4"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+    />
+  </svg>
+  <h2 className="text-xl font-semibold text-gray-700 mb-2">Product not found</h2>
+  <p className="text-gray-500 mb-4">
+    We couldn’t find the product you’re looking for. Please try a different search.
+  </p>
+  <a
+    href="/"
+    className="inline-block px-6 py-2 bg-black text-white text-sm font-medium rounded hover:bg-gray-800 transition"
+  >
+    Back to Home
+  </a>
+         </div>     
+        </>
         )}
       </div>
 

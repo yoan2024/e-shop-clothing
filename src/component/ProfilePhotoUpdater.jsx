@@ -48,7 +48,7 @@ function ProfilePhotoUploader() {
       );
 
       const iduser = user.uid;
-      const refdoc = doc(db, "usuarios", iduser);
+      const refdoc = doc(db, "users", iduser);
       const getdata = await getDoc(refdoc);
 
       if (getdata.exists()) {
