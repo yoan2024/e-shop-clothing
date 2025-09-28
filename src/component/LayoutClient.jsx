@@ -68,6 +68,9 @@ const LayoutClient = () => {
 
         setQuantities(updatedQuantities);
         setTotal(Number(updatedTotal).toFixed(2));
+      }else{
+        setTotal(0)
+        
       }
     };
 
@@ -142,7 +145,7 @@ const LayoutClient = () => {
       orderId,
       paymentMethod: "Credit Card",
       orderDate,
-      shippingStatus: "Processing",
+      shippingStatus: "🚚 Processing",
       orderedItems: car,
       email: userData.email,
       totalPaid: total,

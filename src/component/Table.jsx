@@ -12,6 +12,9 @@ import BodyTableP from "./BodyTableP"; // Component responsible for rendering or
 
 // ===== Component =====
 const Table = ({ label, ped }) => {
+
+  
+
   return (
     <section className="flex flex-col items-center mt-32">
       {/* Section title */}
@@ -29,15 +32,15 @@ const Table = ({ label, ped }) => {
               <thead>
                 <tr>
                   <th className="border-solid border-2 border-slate-900">
-                    {p.idPedido}
+                    {p.orderId}
                   </th>
                   <th className="border-solid border-2 border-slate-900">
-                    {p.fechaPedido}
+                    {p.orderDate}
                   </th>
                   <th className="border-solid border-2 border-slate-900">ITEM</th>
                   <th className="border-solid border-2 border-slate-900">NAME</th>
                   <th className="border-solid border-2 border-slate-900">QUANTITY</th>
-                  <th className="border-solid border-2 border-slate-900">TOTAL</th>
+                  <th className="border-solid border-2 border-slate-900 ">TOTAL</th>
                   <th className="border-solid border-2 border-slate-900">STATUS</th>
                   <th className="border-solid border-2 border-slate-900">SHIPPING</th>
                 </tr>
@@ -46,38 +49,45 @@ const Table = ({ label, ped }) => {
               {/* ===== Table Body ===== */}
               <tbody>
                 {/* Render the list of ordered items using BodyTableP component */}
-                <BodyTableP itemspedidos={p.itemsPedido} />
+                <BodyTableP itemspedidos={p.orderedItems} status={p.status} shippingStatus={p.shippingStatus}/>
 
                 {/* Footer row with summary and status info */}
-                <tr>
-                  <th className="bg-slate-800">Total</th>
+              <tr>
+  <td colSpan="8" className="h-4"></td>
+               </tr>
+              <tr>
+  <td colSpan="8" className="h-4"></td>
+               </tr>
+              <tr className="mt-5">
+                 
+                  <th className="bg-black text-white">Total</th>
                   <th></th>
                   <th></th>
                   <th></th>
                   <th></th>
 
                   {/* Total amount paid */}
-                  <th className="bg-slate-700 p-2">
-                    ${p.totalPagado} USD
+                  <th className="bg-black text-white px-3 py-1 rounded">
+                    ${p.totalPaid} USD
                   </th>
 
-                  {/* Dynamic background color depending on the status */}
-                  <th
-                    className={
-                      p.estado === "Pendiente"
-                        ? "bg-yellow-300 p-2"
-                        : p.estado === "En camino"
-                        ? "bg-blue-400 p-2"
-                        : p.estado === "Entregado"
-                        ? "bg-green-300 p-2"
-                        : "bg-red-300"
-                    }
-                  >
-                    {p.estado}
-                  </th>
+   {/* Order status with dynamic background color */}
+              <th
+                
+                  className={
+                    p.status === "Pendiente"
+                      ? "bg-red-500"
+                      : p.status === "En camino"
+                      ? "bg-blue-500"
+                      : "bg-green-500"
+                  }>
+                
+                  {p.status}
+                
+              </th>
 
                   {/* Shipping information with animation */}
-                  <th className="p-2 animate-pulse">{p.envio}</th>
+                  <th className="p-2 animate-pulse">{p.shippingStatus}</th>
                 </tr>
               </tbody>
             </table>

@@ -92,7 +92,7 @@ const Header = ({ toggle, setToggle}) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
- console.log("el search es ", search)
+
   return (
     <header className="w-full bg-white/90 shadow-md flex flex-col justify-center p-3">
       

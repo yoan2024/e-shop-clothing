@@ -25,7 +25,7 @@ const MainUsers = () => {
     async function fetchUsers() {
       try {
         const ref = query(
-          collection(db, "usuarios"),
+          collection(db, "users"),
           orderBy("createAt", "desc") // Newest users first
         );
         const snapshot = await getDocs(ref);
@@ -68,9 +68,9 @@ const MainUsers = () => {
                 }}
               >
                 <td className="border-2 p-1 border-black">{user.name}</td>
-                <td className="border-2 p-1 border-black">{user.correo}</td>
+                <td className="border-2 p-1 border-black">{user.email}</td>
                 <td className="border-2 p-1 border-black">{user.rol}</td>
-                <td className="border-2 p-1 border-black">{user.estatus}</td>
+                <td className="border-2 p-1 border-black">{user.status}</td>
               </tr>
             ))}
           </tbody>

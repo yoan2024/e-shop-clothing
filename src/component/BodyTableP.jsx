@@ -3,7 +3,7 @@
 
 import React from "react";
 
-const BodyTableP = ({ itemspedidos }) => {
+const BodyTableP = ({ itemspedidos,  status, shippingStatus }) => {
   return (
     <>
       {itemspedidos.map((p, index) => {
@@ -23,25 +23,13 @@ const BodyTableP = ({ itemspedidos }) => {
               <td className="max-w-[200px] truncate">{p.title}</td>
 
               {/* Quantity of the product ordered */}
-              <td>{p.cantidad}</td>
+              <td>{p.quantity}</td>
 
               {/* Total price for that product (price * quantity) */}
               <td>{p.total}</td>
 
-              {/* Order status with dynamic background color */}
-              <td>
-                <span
-                  className={
-                    p.estado === "Pendiente"
-                      ? "bg-red-500"
-                      : p.estado === "En camino"
-                      ? "bg-blue-500"
-                      : "bg-green-500"
-                  }
-                >
-                  {p.estado}
-                </span>
-              </td>
+              
+              
             </tr>
           </React.Fragment>
         );

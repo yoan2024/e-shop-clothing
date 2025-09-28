@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import CambiarEstado from "./CambiarEstado";
 
-const ModalDetailsPedido = ({ onclose, p, setpedidos, setpd }) => {
-  const [estado, setEstado] = useState("");
-  const [envio, setEnvio] = useState("");
+const ModalDetailsPedido = ({ onclose, p, setorders, setpd }) => {
+  const [status, setStatus] = useState("");
+  const [shipping, setShipping] = useState("");
   const [showES, setShowED] = useState(false);
 
   const handleEditarEstado = () => {
@@ -28,16 +28,16 @@ const ModalDetailsPedido = ({ onclose, p, setpedidos, setpd }) => {
           </h2>
           <div className="space-y-1 text-gray-600">
             <div>
-              <strong>Name:</strong> {p.nombre}
+              <strong>Name:</strong> {p.name}
             </div>
             <div>
-              <strong>Email:</strong> {p.correo}
+              <strong>Email:</strong> {p.email}
             </div>
             <div>
-              <strong>Phone:</strong> {p.telefono}
+              <strong>Phone:</strong> {p.phone}
             </div>
             <div>
-              <strong>Address:</strong> {p.direction}
+              <strong>Address:</strong> {p.address}
             </div>
           </div>
         </section>
@@ -48,13 +48,13 @@ const ModalDetailsPedido = ({ onclose, p, setpedidos, setpd }) => {
             🛒 Order
           </h2>
           <ul className="space-y-4">
-            {p.itemsPedido.map((item, index) => (
+            {p.orderedItems.map((item, index) => (
               <li key={index} className="border rounded-md p-3 bg-slate-50">
                 <div>
                   <strong>Product:</strong> {item.title}
                 </div>
                 <div>
-                  <strong>Quantity:</strong> {item.cantidad}
+                  <strong>Quantity:</strong> {item.quantity}
                 </div>
                 <div>
                   <strong>Unit price:</strong> ${item.price}
@@ -74,10 +74,10 @@ const ModalDetailsPedido = ({ onclose, p, setpedidos, setpd }) => {
           </h2>
           <div className="space-y-1 text-gray-600">
             <div>
-              <strong>Address:</strong> {p.direction}
+              <strong>Address:</strong> {p.address}
             </div>
             <div>
-              <strong>Shipping status:</strong> {p.estado}
+              <strong>Shipping status:</strong> {p.status}
             </div>
           </div>
         </section>
@@ -102,9 +102,9 @@ const ModalDetailsPedido = ({ onclose, p, setpedidos, setpd }) => {
       {showES && (
         <CambiarEstado
           onclose={() => setShowED(false)}
-          pedido={p}
+          order={p}
           setpd={setpd}
-          setPedidos={setpedidos}
+          setorders={setorders}
         />
       )}
     </div>

@@ -13,15 +13,30 @@ const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("")
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate("/");
+    
 
     try {
       await login(email, password);
+      navigate("/");
+      
     } catch (e) {
-      console.log(e);
+      
+    const errorCode = e.code;
+    const errorMessage = e.message;
+    if (errorCode === "auth/invalid-credential") {
+      setError("The credentials are not valid");
+    } else if (errorCode === "auth/user-not-found") {
+      setError("User not found");
+
+    } else if (errorCode === "auth/wrong-password") {
+      setError("Incorrect password");
+    } else {
+      console.log("error:", errorMessage);
+    }
     }
   };
 
@@ -35,7 +50,7 @@ const Login = () => {
         </div>
 
         {/* Login Form */}
-        <div className="bg-white p-6 sm:p-8 rounded-lg shadow-lg w-full sm:w-[400px]">
+        <div className="bg-white p-6 sm:p-8 rounded-lg shadow-lg  w-full sm:w-[400px]">
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 mb-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -80,6 +95,8 @@ const Login = () => {
               Sign up here
             </a>
           </span>
+
+          <div className="text-red-500 text-center">{error}</div>
         </div>
 
         {/* Image */}

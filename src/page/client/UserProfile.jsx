@@ -82,26 +82,27 @@ const UserProfile = () => {
         // --- Fetch active orders ---
         const currentOrdersQuery = query(
           collection(db, "allOrders"),
-          where("iduser", "==", iduser),
-          where("state", "in", ["Pending", "On the way"]),
+          where("userId", "==", iduser),
+          where("status", "in", ["Pending", "On the way"]),
           orderBy("orderDate", "desc")
         );
         const currentOrdersSnap = await getDocs(currentOrdersQuery);
 
-        if (!currentOrdersSnap.empty) {
+        if (!currentOrdersSnap.empty) { 
           let p = [];
           currentOrdersSnap.forEach((d) => {
             const data = d.data();
             p.push(data);
           });
+          
           setOrders(p);
         }
 
         // --- Fetch order history ---
         const historyOrdersQuery = query(
           collection(db, "allOrders"),
-          where("iduser", "==", iduser),
-          where("estado", "in", ["Delivered", "Cancelled"]),
+          where("userId", "==", iduser),
+          where("status", "in", ["Delivered", "Cancelled"]),
           orderBy("orderDate", "desc")
         );
         const historyOrdersSnap = await getDocs(historyOrdersQuery);
@@ -121,7 +122,7 @@ const UserProfile = () => {
     // --- Real-time listener for user's orders ---
     const ref = query(
       collection(db, "allOrders"),
-      where("iduser", "==", user.uid),
+      where("userId", "==", user.uid),
       orderBy("ordersDate", "desc")
     );
 
@@ -129,8 +130,8 @@ const UserProfile = () => {
       const orders = snapshot.docs.map((doc) => ({
         ...doc.data(),
       }));
-      const actuales = orders.filter((p) => p.estado !== "Delivered");
-      const historical = orders.filter((p) => p.estado === "Delivered");
+      const actuales = orders.filter((p) => p.status !== "Delivered");
+      const historical = orders.filter((p) => p.status === "Delivered");
 
       setOrders(actuales);
       setOrderHistory(historical);
@@ -170,7 +171,7 @@ const UserProfile = () => {
     // --- Update the field in all user orders ---
     const ordersQuery = query(
       collection(db, "allOrders"),
-      where("iduser", "==", iduser)
+      where("userId", "==", iduser)
     );
     const ordersSnap = await getDocs(ordersQuery);
 
@@ -194,6 +195,8 @@ const UserProfile = () => {
     if (field === "email") setCEmail(false);
     if (field === "address") setCAddress(false);
   };
+
+  console.log("orders", orders)
 
   return (
     <div className="bg-slate-300 min-h-screen flex flex-col">

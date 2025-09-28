@@ -13,19 +13,19 @@ const ChangeRol = ({ setchangerol, u, setu }) => {
   const [rolChange, setRolChange] = useState(u.rol);
 
   // State to show "saving" status
-  const [guardando, setGuardando] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   // State to show success message after saving
-  const [guardado, setGuardado] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   // Function to save the new role in Firestore
-  const handleguardarrole = async () => {
-    setGuardado(false);
-    setGuardando(true);
+  const handlesaverole = async () => {
+    setSaved(false);
+    setSaving(true);
 
     try {
       // Find the user by email in Firestore
-      const refdoc = query(collection(db, "usuarios"), where("correo", "==", u.correo));
+      const refdoc = query(collection(db, "users"), where("email", "==", u.email));
       const getdoc = await getDocs(refdoc);
 
       const user = [];
@@ -38,7 +38,7 @@ const ChangeRol = ({ setchangerol, u, setu }) => {
 
       // Update the role field
       const updatedUser = user.map((us) => ({ ...us, rol: rolChange }))[0];
-      const refuser = doc(db, "usuarios", iddoc);
+      const refuser = doc(db, "users", iddoc);
 
       // Save the updated user data
       await setDoc(refuser, updatedUser);
@@ -46,8 +46,8 @@ const ChangeRol = ({ setchangerol, u, setu }) => {
       // Update local states with the new data
       setRole(updatedUser.rol);
       setu(updatedUser);
-      setGuardando(false);
-      setGuardado(true);
+      setSaving(false);
+      setSaved(true);
     } catch (e) {
       console.log("Error updating role:", e);
     }
@@ -55,12 +55,12 @@ const ChangeRol = ({ setchangerol, u, setu }) => {
 
   // After successful save, hide the success message after 800ms
   useEffect(() => {
-    if (guardado) {
+    if (saved) {
       setTimeout(() => {
-        setGuardado(false);
+        setSaved(false);
       }, 800);
     }
-  }, [guardado]);
+  }, [saved]);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex flex-row justify-center items-center z-50">
@@ -109,14 +109,14 @@ const ChangeRol = ({ setchangerol, u, setu }) => {
         </div>
 
         {/* Save status messages */}
-        {guardando ? (
+        {saving ? (
           <li className="text-slate-600 font-bold animate-pulse">Saving changes...</li>
-        ) : guardado ? (
+        ) : saved ? (
           <div className="bg-green-600 font-bold">Saved successfully ✅</div>
         ) : (
           <button
             className="bg-green-700 w-fit m-auto rounded-2xl p-2"
-            onClick={handleguardarrole}
+            onClick={handlesaverole}
           >
             Save
           </button>

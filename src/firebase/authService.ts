@@ -23,16 +23,20 @@ export const signup = async (email: string, password: string, name: string) => {
   const credentials = await createUserWithEmailAndPassword(auth, email, password);
   const user = credentials.user;
 
-  // Set user's display name in Firebase Authentication
-  await updateProfile(user, {
-    displayName: name,
-  });
+ 
 
   const userId = user.uid;
   const userRef = doc(db, "users", userId);
 
   // Assign role based on email
   const role = email === "admin@gmail.com" ? "admin" : "user";
+
+  // Set user's display name in Firebase Authentication
+  await updateProfile(user, {
+    displayName: name,
+    
+  });
+
 
   // Store user information in Firestore
   await setDoc(userRef, {
@@ -44,8 +48,8 @@ export const signup = async (email: string, password: string, name: string) => {
     image: "",
     imageDefault: "/images/perfilimg.avif",
     rol: role,
-    estatus: "Active",
-    idUser: userId,
+    status: "Active",
+    userId: userId,
   });
 
   return user;
@@ -58,8 +62,9 @@ export const signup = async (email: string, password: string, name: string) => {
  * @param password - User's password
  * @returns A promise that resolves with the user credentials
  */
-export const login = (email: string, password: string) =>
-  signInWithEmailAndPassword(auth, email, password);
+export const login = async (email: string, password: string)=>signInWithEmailAndPassword(auth, email, password);
+  
+  
 
 /**
  * Logs out the currently authenticated user.

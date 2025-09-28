@@ -20,6 +20,10 @@ const Sign_up = () => {
   // --- State for user's name --- //
   const [name, setName] = useState("");
 
+
+  // --- State for error -- //
+  const [error, setError] = useState("")
+
   // --- Handles form submission --- //
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,7 +36,10 @@ const Sign_up = () => {
       navegate("/");
     } catch (e) {
       // --- Logs any error that occurs during signup --- //
-      console.log("hubo un error", e);
+      if(e.code === "auth/email-already-in-use"){
+        setError("credentials already in use")
+      }
+      console.log("error:", e);
     }
   };
 
@@ -46,7 +53,7 @@ const Sign_up = () => {
 
         {/* --- Form container --- */}
         <div className="bg-white p-8  rounded-lg shadow-lg">
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <form onSubmit={handleSubmit} className="flex flex-col mb-5 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Name
@@ -97,7 +104,7 @@ const Sign_up = () => {
           </form>
 
           {/* --- Link to login page if user already has an account --- */}
-          <span>
+          <span >
             Already have an account?{" "}
             <a
               className="hover:text-blue-600  border-b-2 border-black"
@@ -106,6 +113,7 @@ const Sign_up = () => {
               Login in here
             </a>
           </span>
+          <div className="text-red-500 text-center">{error}</div>
         </div>
 
         {/* --- Decorative image in bottom corner --- */}

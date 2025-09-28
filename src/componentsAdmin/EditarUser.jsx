@@ -18,44 +18,44 @@ import { db } from "../firebase/firebase-config";
  */
 const EditarUser = ({ user, setu }) => {
   const [isOpen, setIsOpen] = useState(false); // Modal visibility
-  const [nombre, setNombre] = useState(user.name);
-  const [correo, setCorreo] = useState(user.correo);
+  const [name, setName] = useState(user.name);
+  const [email, setEmail] = useState(user.email);
   const [rol, setRol] = useState(user.rol);
   const [saving, setSaving] = useState(false);
 
   // Handles user data update in Firestore
-  const handleGuardarCambios = async (e) => {
+  const handleSaveChanges = async (e) => {
     e.preventDefault();
     setSaving(true);
 
-    if (!nombre || !correo) return;
+    if (!name || !email) return;
 
     try {
       // 1. Update user info in "usuarios" collection
-      const userRef = doc(db, "usuarios", user.idUser);
+      const userRef = doc(db, "users", user.userId);
       const snapshot = await getDoc(userRef);
       let userData = snapshot.data();
 
-      userData = { ...userData, name: nombre, correo, rol };
+      userData = { ...userData, name: name, email, rol };
       await setDoc(userRef, userData);
       setu(userData); // Update local user state
 
       // 2. Update all related documents in "todosPedidos"
       const pedidosQuery = query(
-        collection(db, "todosPedidos"),
-        where("iduser", "==", user.idUser)
+        collection(db, "allOrders"),
+        where("userId", "==", user.userId)
       );
       const pedidosSnapshot = await getDocs(pedidosQuery);
 
       if (!pedidosSnapshot.empty) {
         pedidosSnapshot.forEach(async (docSnap) => {
           const pedidoData = docSnap.data();
-          const pedidoRef = doc(db, "todosPedidos", docSnap.id);
+          const pedidoRef = doc(db, "allOrders", docSnap.id);
 
           await setDoc(pedidoRef, {
             ...pedidoData,
-            nombre,
-            correo,
+            name,
+            email,
             rol,
           });
         });
@@ -96,8 +96,8 @@ const EditarUser = ({ user, setu }) => {
               className="absolute top-2 right-2 border-2 p-1 hover:bg-slate-600 cursor-pointer border-black rounded-full"
               onClick={() => {
                 setIsOpen(false);
-                setNombre("");
-                setCorreo("");
+                setName("");
+                setEmail("");
                 setRol("");
               }}
             >
@@ -106,14 +106,14 @@ const EditarUser = ({ user, setu }) => {
 
             {/* Edit form */}
             <form
-              onSubmit={handleGuardarCambios}
+              onSubmit={handleSaveChanges}
               className="p-4 flex flex-col gap-4"
             >
               <label>
                 Change name:
                 <input
                   type="text"
-                  value={nombre}
+                  value={name}
                   onChange={(e) => setNombre(e.target.value)}
                   placeholder="Name"
                   className="border-2 border-black rounded-xl w-full mt-1"
@@ -124,7 +124,7 @@ const EditarUser = ({ user, setu }) => {
                 Change email:
                 <input
                   type="email"
-                  value={correo}
+                  value={email}
                   onChange={(e) => setCorreo(e.target.value)}
                   placeholder="Email"
                   className="border-2 border-black rounded-xl w-full mt-1"

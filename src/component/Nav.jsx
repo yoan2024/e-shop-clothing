@@ -101,7 +101,7 @@ document.addEventListener("mousedown", handleClickOutSite)
       
     </div>
   };
-   console.log("user",  user)
+   
   return (
     <nav>
       <div className="flex w-11/12 justify-between items-center">

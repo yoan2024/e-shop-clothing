@@ -7,7 +7,7 @@ import ModalDetailsPedido from "./ModalDetailsPedido.jsx";
 
 const MainPedidos = () => {
   // State to hold all fetched orders
-  const [pedidos, setPedidos] = useState([]);
+  const [orders, setOrders] = useState([]);
 
   // Controls the visibility of the modal
   const [onClose, setOnClose] = useState(false);
@@ -19,23 +19,23 @@ const MainPedidos = () => {
   useEffect(() => {
     async function fetchOrders() {
       try {
-        const refdoc = collection(db, "todosPedidos");
-        const organizardocs = query(refdoc, orderBy("fechaPedido", "desc"));
-        const getdocs = await getDocs(organizardocs);
+        const refdoc = collection(db, "allOrders");
+        const orderdocs = query(refdoc, orderBy("orderDate", "desc"));
+        const getdocs = await getDocs(orderdocs);
         let peds = [];
 
         if (getdocs.empty) {
-          console.log("No documents found in todosPedidos collection.");
+          console.log("No documents found in allOrders collection.");
         }
 
         getdocs.forEach((doc) => {
           const data = doc.data();
-          console.log("Fetched order:", data);
+      
           peds.push(data);
         });
 
-        console.log("Final orders array:", peds);
-        setPedidos(peds);
+        
+        setOrders(peds);
       } catch (error) {
         console.error("Error fetching orders:", error);
       }
@@ -52,7 +52,7 @@ const MainPedidos = () => {
 
   return (
     <div className="w-4/5 flex flex-col items-center">
-      {pedidos.length > 0 ? (
+      {orders.length > 0 ? (
         <>
           <div className="text-center mt-7 text-4xl">ORDERS</div>
           <div>
@@ -70,32 +70,32 @@ const MainPedidos = () => {
                 </tr>
               </thead>
               <tbody className="bg-slate-200">
-                {pedidos.map((p, index) => (
+                {orders.map((p, index) => (
                   <tr
                     key={index}
                     onClick={() => handleClickDetails(p)}
                     className="cursor-pointer"
                   >
                     <td className="border-2 p-1 border-solid border-black">
-                      {p.idPedido}
+                      {p.orderId}
                     </td>
                     <td className="border-2 p-1 border-solid border-black">
-                      {p.nombre}
+                      {p.name}
                     </td>
                     <td className="border-2 p-1 border-solid border-black">
-                      {p.fechaPedido}
+                      {p.orderDate}
                     </td>
                     <td className="border-2 p-1 border-solid border-black">
-                      {p.estado}
+                      {p.status}
                     </td>
                     <td className="border-2 p-1 border-solid border-black">
-                      {p.totalPagado}
+                      {p.totalPaid}
                     </td>
                     <td className="border-2 p-1 border-solid border-black">
-                      {p.metodoPago}
+                      {p.paymentMethod}
                     </td>
                     <td className="border-2 p-1 border-solid border-black">
-                      {p.envio || "Preparing"}
+                      { p.shippingStatus || "Preparing"}
                     </td>
                     <td className="border-2 p-1 border-solid border-black">
                       Edit/View
@@ -111,7 +111,7 @@ const MainPedidos = () => {
                 onclose={() => setOnClose(false)}
                 setpd={setpd}
                 p={pd}
-                setpedidos={setPedidos}
+                setorders={setOrders}
               />
             )}
           </div>

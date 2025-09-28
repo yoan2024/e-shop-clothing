@@ -23,20 +23,20 @@ const AppwithRoutes = () => {
     async function getRol() {
       if (user) {
         try {
-          const refUser = doc(db, "usuarios", user.uid);
+          const refUser = doc(db, "users", user.uid);
           const getDocUser = await getDoc(refUser);
           const userData = getDocUser.data();
 
           if (userData && userData.rol) {
             setRol(userData.rol);
           } else {
-            setRol("cliente"); // fallback in case role is missing
+            setRol("client"); // fallback in case role is missing
           }
         } catch (err) {
-          setRol("cliente"); // fallback in case of error
+          setRol("client"); // fallback in case of error
         }
       } else {
-        setRol("cliente"); // fallback for non-logged-in user
+        setRol("client"); // fallback for non-logged-in user
       }
 
       setLoading(false);

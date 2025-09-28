@@ -15,19 +15,22 @@ import { db } from "../firebase/firebase-config";
 import ChangeRol from "./ChangeRol";
 import EditarUser from "./EditarUser";
 
+
 // List of all possible order statuses to filter orders by
 const orderStatuses = [
   "All",
-  "Preparando",
-  "No enviado",
-  "Repartidor asignado",
-  "En camino",
-  "En zona de entrega",
-  "Intento fallido",
-  "Reprogramado",
-  "Entregado",
-  "Devuelto",
+  "Preparing",
+  "Not shipped",
+  "Processing",
+  "Courier assigned",
+  "On the way",
+  "In delivery zone",
+  "Failed attempt",
+  "Rescheduled",
+  "Delivered",
+  "Returned",
 ];
+
 
 // Main component to display a modal with user details and admin actions
 const ModalUserDetail = ({ user, onclose, setu }) => {
@@ -45,8 +48,8 @@ const ModalUserDetail = ({ user, onclose, setu }) => {
     async function fetchOrders() {
       try {
         const ref = query(
-          collection(db, "todosPedidos"),
-          where("correo", "==", user.correo)
+          collection(db, "allOrders"),
+          where("email", "==", user.email)
         );
         const snap = await getDocs(ref);
         if (!snap.empty) {
@@ -56,7 +59,7 @@ const ModalUserDetail = ({ user, onclose, setu }) => {
           const filtered =
             selected === "All"
               ? allOrders
-              : allOrders.filter((o) => o.envio === selected);
+              : allOrders.filter((o) => o.shippingStatus === selected);
 
           setOrders(filtered);
         }
@@ -83,14 +86,18 @@ const ModalUserDetail = ({ user, onclose, setu }) => {
   const handleAction = async () => {
     setSaving(true);
     try {
-      const ref = doc(db, "usuarios", user.idUser);
+        
+      const ref = doc(db, "users", user.userId);
       const snap = await getDoc(ref);
 
       if (confirmationAction === "ban") {
         const updated = { ...snap.data(), estatus: "Banned" };
         await setDoc(ref, updated);
       } else if (confirmationAction === "delete") {
+        console.log("user", user)
+   
         await deleteDoc(ref);
+       
       }
 
       setTimeout(() => {
@@ -129,9 +136,9 @@ const ModalUserDetail = ({ user, onclose, setu }) => {
           </div>
           <div className="space-y-1 text-gray-600">
             <div><strong>Name: </strong>{user.name}</div>
-            <div><strong>Email: </strong>{user.correo}</div>
-            <div><strong>Phone: </strong>{user.telefono}</div>
-            <div><strong>Address: </strong>{user.direction}</div>
+            <div><strong>Email: </strong>{user.email}</div>
+            <div><strong>Phone: </strong>{user.phone}</div>
+            <div><strong>Address: </strong>{user.address}</div>
           </div>
         </section>
 
@@ -168,10 +175,10 @@ const ModalUserDetail = ({ user, onclose, setu }) => {
               <tbody>
                 {orders.map((order, index) => (
                   <tr key={index} className="bg-slate-300">
-                    <td className="border-r border-2 border-black">{order.idPedido}</td>
-                    <td className="border-r border-2 border-black">{order.nombre}</td>
-                    <td className="border-r border-2 border-black">{order.envio}</td>
-                    <td className="border-r border-2 border-black">${order.totalPagado}</td>
+                    <td className="border-r border-2 border-black">{order.orderId}</td>
+                    <td className="border-r border-2 border-black">{order.name}</td>
+                    <td className="border-r border-2 border-black">{order.shippingStatus}</td>
+                    <td className="border-r border-2 border-black">${order.totalPaid}</td>
                   </tr>
                 ))}
               </tbody>
