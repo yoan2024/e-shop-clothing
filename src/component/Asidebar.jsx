@@ -63,7 +63,7 @@ const Asidebar = ({ setFilterProducts, categ }) => {
   }, [categ]);
 
   return (
-    <div className="p-2 flex flex-col gap-6 w-1/6 bg-slate-100 rounded-xl shadow-2xl">
+    <div className="p-2 flex flex-col gap-6 w-1/6 max-sm:w-auto bg-slate-100 rounded-xl shadow-2xl">
       {/* Category Filter */}
       <div>
         <div className="text-xl font-semibold">Category</div>

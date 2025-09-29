@@ -85,6 +85,9 @@ document.addEventListener("mousedown", handleClickOutSite)
       case "heart":
         navigate("/favorites");
         break;
+      case "CATALOG":
+        navigate("/catalog/all");
+        break;
       default:
         break;
     }
@@ -104,11 +107,11 @@ document.addEventListener("mousedown", handleClickOutSite)
    
   return (
     <nav>
-      <div className="flex w-11/12 justify-between items-center">
+      <div className="flex w-11/12 max-sm:w-full mt-3  justify-between items-center">
         {/* Navigation links */}
-        <div className="flex flex-row gap-2 text-xl">
+        <div className="flex flex-row gap-2 max-sm:hidden text-xl">
           <div
-            className="cursor-pointer font-bold"
+            className="cursor-pointer  font-bold"
             onClick={() => handleClick("HOME")}
           >
             HOME
@@ -132,9 +135,14 @@ document.addEventListener("mousedown", handleClickOutSite)
             ELECTRONICS
           </div>
         </div>
-
+         <div
+            className="p-2 cursor-pointer hidden max-sm:flex mt-2 rounded-lg bg-red-100 font-semibold w-fit self-center"
+            onClick={() => handleClick("CATALOG")}
+          >
+            View catalog
+          </div>
         {/* User profile, shopping bag, and favorites icons */}
-        <div className="flex flex-row items-center gap-4">
+        <div className="flex flex-row  items-center gap-4">
           {/* Avatar button */}
           <div className="relative mt-2">
             <button ref={userAvatar}

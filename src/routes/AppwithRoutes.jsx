@@ -47,6 +47,8 @@ const AppwithRoutes = () => {
     return () => clearTimeout(timer);
   }, [user]);
 
+  console.log("hola desde appwihroutes ajaj")
+
   // Loading screen while fetching user role
   if (loading) {
     return (

@@ -92,7 +92,7 @@ const ModalUserDetail = ({ user, onclose, setu, users, setusers }) => {
       const snap = await getDoc(ref);
 
       if (confirmationAction === "ban") {
-        const updated = { ...snap.data(), estatus: "Banned" };
+        const updated = { ...snap.data(), status: "Banned" };
         await setDoc(ref, updated);
       } else if (confirmationAction === "delete") {
         console.log("user", user)

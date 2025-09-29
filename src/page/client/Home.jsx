@@ -43,7 +43,7 @@ const Home = () => {
           {/* --- Button that navigates to the full catalog page --- */}
           <div
             className="p-2 cursor-pointer rounded-lg bg-red-100 font-semibold w-fit self-center"
-            onClick={() => navegation("/catalogo/all")}
+            onClick={() => navegation("/catalog/all")}
           >
             View catalog
           </div>

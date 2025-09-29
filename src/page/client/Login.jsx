@@ -8,6 +8,10 @@
 import React, { useState } from "react";
 import { login } from "../../firebase/authService";
 import { useNavigate } from "react-router-dom";
+import { collection, getDoc } from "firebase/firestore";
+import { doc } from "firebase/firestore";
+import { db } from "../../firebase/firebase-config";
+import { logout } from "../../firebase/authService";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -17,12 +21,28 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-
     try {
-      await login(email, password);
-      navigate("/");
-      
+      const res = await login(email, password);
+      if(res){
+        const userId = res.user.uid 
+        const refUser = doc(db, "users", userId)
+        const query = await  getDoc(refUser)
+        if((await query).exists()){
+          const infUser = query.data()
+          const status = infUser.status
+          if(status === "Active"){
+          navigate("/");
+          }else{
+            setError("this account was banned")
+            logout()
+            return
+          }
+          
+        }else{
+          setError("this account was deleted")
+          logout()
+        }
+      }
     } catch (e) {
       
     const errorCode = e.code;
