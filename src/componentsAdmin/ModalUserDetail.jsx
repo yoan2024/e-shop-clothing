@@ -7,13 +7,14 @@ import {
   setDoc,
   where,
   doc,
-  getDocs,
+  getDocs,updateDoc
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useImage } from "../context/Image";
 import { db } from "../firebase/firebase-config";
 import ChangeRol from "./ChangeRol";
 import EditarUser from "./EditarUser";
+
 
 
 // List of all possible order statuses to filter orders by
@@ -33,7 +34,7 @@ const orderStatuses = [
 
 
 // Main component to display a modal with user details and admin actions
-const ModalUserDetail = ({ user, onclose, setu }) => {
+const ModalUserDetail = ({ user, onclose, setu, users, setusers }) => {
   // States
   const [changeRol, setChangeRol] = useState(false);
   const [selected, setSelected] = useState("All");
@@ -95,9 +96,30 @@ const ModalUserDetail = ({ user, onclose, setu }) => {
         await setDoc(ref, updated);
       } else if (confirmationAction === "delete") {
         console.log("user", user)
-   
-        await deleteDoc(ref);
-       
+        await updateDoc(doc(db, "users", user.userId), {
+        forceLogout: true,
+      });
+     await deleteDoc(ref);
+     const ordersRef = collection(db, "allOrders");
+     const q = query(ordersRef, where("userId", "==", user.userId));
+     const querySnapshot = await getDocs(q);
+     querySnapshot.forEach( async (d) => {
+      const iddoc = d.id
+      const refdoc = doc(db, "allOrders", iddoc)
+      await deleteDoc(refdoc)
+     })
+
+          const kordersRef = collection(db, "users");
+     const k = query(kordersRef, where("userId", "!=", user.userId));
+     const kquerySnapShot = await getDocs(k);
+     let newUsers = []
+     kquerySnapShot.forEach((D) => {
+      const data = D.data()
+      console.log("datas", data)
+      newUsers.push(data)
+     })
+     console.log("usuarios en este moento", newUsers)
+     setusers(newUsers)
       }
 
       setTimeout(() => {

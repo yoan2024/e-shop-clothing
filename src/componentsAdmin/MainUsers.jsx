@@ -80,6 +80,8 @@ const MainUsers = () => {
       {/* Modal with user details (edit/view) */}
       {onShowModal && (
         <ModalUserDetail
+          users={users}
+          setusers={setUsers}
           user={selectedUser}
           setu={setSelectedUser}
           onclose={() => setOnShowModal(false)}

@@ -13,8 +13,11 @@ import { useCar } from "../context/Car";
 
 // --- Firebase Firestore imports ---
 import { collection, doc, getDoc, setDoc, addDoc } from "firebase/firestore";
+import { auth } from "../firebase/firebase-config";
 import { db } from "../firebase/firebase-config";
-
+import { logout } from "../firebase/authService";
+import { onSnapshot } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
 // --- UI Components ---
 import Home from "../page/client/Home";
@@ -74,6 +77,20 @@ const LayoutClient = () => {
       }
     };
 
+    onAuthStateChanged(auth, (user) => {
+    if (user) {
+    const userDocRef = doc(db, "users", user.uid);
+    onSnapshot(userDocRef, async (docSnap)  =>  {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        if (data.forceLogout === true) {
+       
+          logout(auth);
+        }
+      }
+    });
+  }
+    });
     fetchCart();
   }, [user, car]);
 
@@ -162,6 +179,12 @@ const LayoutClient = () => {
     setCar([]);
     setPaid(true);
   };
+
+
+  
+
+
+
 
   return (
     <>
