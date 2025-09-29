@@ -199,7 +199,7 @@ const UserProfile = () => {
   console.log("orders", orders)
 
   return (
-    <div className="bg-slate-300 min-h-screen flex flex-col">
+    <div className="bg-slate-300 min-h-screen flex flex-col overflow-hidden ">
       {user ? (
         <>
           {/* --- Section: User profile info and picture --- */}

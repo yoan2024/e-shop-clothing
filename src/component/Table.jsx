@@ -16,17 +16,17 @@ const Table = ({ label, ped }) => {
   
 
   return (
-    <section className="flex flex-col items-center mt-32">
+    <section className="flex flex-col items-center  mt-32 ">
       {/* Section title */}
       <div className="text-3xl mb-10 font-bold">{label}</div>
 
       {/* Loop through each order (pedido) */}
-      <div>
+      <div className="overflow-x-auto max-w-full">
         {ped.map((p, index) => {
           return (
             <table
               key={index}
-              className="border-solid border-2 border-slate-900 mb-5"
+              className="border-solid table-auto border-2 min-w-full  border-slate-900 mb-5"
             >
               {/* ===== Table Head ===== */}
               <thead>
