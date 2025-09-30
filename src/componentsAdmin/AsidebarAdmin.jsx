@@ -64,7 +64,7 @@ const AsidebarAdmin = () => {
           } rounded-2xl text-xl`}
           onClick={() => handleClick("productos")}
         >
-          PRODUCTOS        </div>
+          PRODUCTS        </div>
         <div
           style={{ cursor: "pointer" }}
           className={`p-2 ${
@@ -72,7 +72,7 @@ const AsidebarAdmin = () => {
           } rounded-2xl text-xl`}
           onClick={() => handleClick("pedidos")}
         >
-          PEDIDOS
+          ORDERS
         </div>
         <div
           style={{ cursor: "pointer" }}
@@ -81,7 +81,7 @@ const AsidebarAdmin = () => {
           } rounded-2xl text-xl`}
           onClick={() => handleClick("usuarios")}
         >
-          USUARIOS
+          USERS
         </div>
       </div>
 

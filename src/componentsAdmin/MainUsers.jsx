@@ -1,3 +1,5 @@
+//w-4/5 flex flex-row overflow-x-auto justify-center
+
 /**
  * MainUsers Component
  * --------------------
@@ -45,7 +47,8 @@ const MainUsers = () => {
   }, []);
 
   return (
-    <div className="w-4/5 flex flex-row overflow-x-auto justify-center">
+    <div className="max-lg:w-auto  flex flex-col  lg:ml-3">
+      <div className="text-center mt-7 mb-7  font-serif text-4xl">USERS</div>
       <div className="min-w-full max-w-full flex flex-col items-center">
         {/* Table displaying user data */}
         <table className="text-xl text-center">
