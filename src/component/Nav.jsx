@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
+import { useCar } from "../context/Car";
 
 // Custom context hooks
 import { useUser } from "../context/User";
@@ -27,11 +28,14 @@ import ClipLoader from "react-spinners/ClipLoader";
 const Nav = ({ tog, settog }) => {
   const { url } = useImage();
   const { user, setUser } = useUser();
+  const [nCar, setNCar] = useState(0)
   const navigate = useNavigate();
   const [open, setOpen] = useState(false); // Controls avatar dropdown visibility
 
   const drownMenu = useRef() 
   const userAvatar = useRef() 
+
+  const {car, setCar} = useCar()
 
 useEffect(() => {
 
@@ -48,6 +52,12 @@ document.addEventListener("mousedown", handleClickOutSite)
   }
 },[])
 
+useEffect(() => {
+  if(car){
+const n = car.length
+setNCar(n)
+  }
+},[car])
 
   // Logs out the user and redirects to home
   const handleLogout = () => {
@@ -199,8 +209,9 @@ document.addEventListener("mousedown", handleClickOutSite)
           </div>
 
           {/* Shopping bag icon */}
-          <div className="w-5 h-5 cursor-pointer" onClick={() => settog(!tog)}>
+          <div className="w-5 h-5  relative cursor-pointer" onClick={() => settog(!tog)}>
             <img src="/images/bolsa.png" alt="Bag" className="w-full h-full" />
+            <span className="top-2 w-5 left-2 h-5 text-center  bg-green-200 text-black rounded-full absolute">{nCar} </span>
           </div>
 
           {/* Favorites icon */}

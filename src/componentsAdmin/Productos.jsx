@@ -77,7 +77,7 @@ const Productos = () => {
 
   return (
     <>
-      <div className="flex flex-row justify-center bg-red-600  flex-wrap  gap-4 relative">
+      <div className="flex flex-row justify-center   flex-wrap  gap-4 relative">
         {products.map((product, index) => (
           <div
             key={index}

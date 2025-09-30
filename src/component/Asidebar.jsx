@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 // UI imports
 import { useProducts } from "../context/ContextProducts";
+import { Bars3Icon } from '@heroicons/react/24/solid';
 
 const Asidebar = ({ setFilterProducts, categ }) => {
 
@@ -11,6 +12,7 @@ const Asidebar = ({ setFilterProducts, categ }) => {
   const [category, setCategory] = useState("all");
   const [filterPrice, setFilterPrice] = useState("all");
   const [filterRating, setFilterRating] = useState("all");
+  const [toggle, setToggle] = useState(false)
 
   useEffect(() => {
     /**
@@ -63,7 +65,15 @@ const Asidebar = ({ setFilterProducts, categ }) => {
   }, [categ]);
 
   return (
-    <div className="p-2 flex flex-col gap-6 w-1/6 max-sm:w-auto bg-slate-100 rounded-xl shadow-2xl">
+    <>{toggle ?    <Bars3Icon
+          className="h-8 w-8 z-10 absolute  left-0  border-solid border-2 border-black hover:bg-gray-300    cursor-pointer"
+          
+        onClick={() => setToggle(!toggle)} /> : 
+         <div className="p-2 flex flex-col gap-6 w-fit h-fit max-sm:w-auto bg-slate-100 rounded-xl shadow-2xl">
+       <Bars3Icon
+          className="h-8 w-8    border-solid border-2  hover:bg-gray-300    cursor-pointer"
+          
+        onClick={() => setToggle(!toggle)} />
       {/* Category Filter */}
       <div>
         <div className="text-xl font-semibold">Category</div>
@@ -137,7 +147,9 @@ const Asidebar = ({ setFilterProducts, categ }) => {
           </div>
         ))}
       </div>
-    </div>
+    </div>}
+   
+    </>
   );
 };
 

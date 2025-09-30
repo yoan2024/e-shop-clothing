@@ -15,7 +15,7 @@ const MainProduct = () => {
   const [add, setAdd] = useState(false);
 
   return (
-    <div className="bg-black">
+    <div className="">
       <main className="">
         {/* Add Product button is only shown if add === false */}
         {!add && (

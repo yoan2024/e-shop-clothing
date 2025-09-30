@@ -30,9 +30,9 @@ const Catalog = () => {
   }, [products]);
 
  
-
+console.log("productos fil", filterProducts,  products)
   return (
-    <div className="w-full flex flex-row justify-end mt-14 p-2">
+    <div className="w-full relative  flex   flex-row   mt-14 p-2">
       {/* Sidebar component for filtering by category or other options */}
       <Asidebar
         categ={categ}
@@ -47,14 +47,22 @@ const Catalog = () => {
         </div>
       )}
 
+      {filterProducts.length === 0 && <div class="flex min-w-full justify-center items-center   bg-gray-100 text-center text-gray-700 p-6 rounded-lg shadow-md">
+        <div>
+         <h2 class="text-xl font-semibold mb-2">No Products Found</h2>
+         <p class="text-sm">Sorry, we couldn't find any products matching your filter. Please try again with different criteria.</p>
+        </div>
+        </div>}
+
       {/* Product cards grid */}
-      <div className="w-11/12 flex flex-row gap-1 justify-center flex-wrap border-solid border-t-2 border-slate-200">
+      <div className="flex     flex-row gap-1 h-fit justify-center  flex-wrap border-solid border-t-2 border-slate-200">
         {products &&
           filterProducts.map((p, index) => (
-            <div id={p.id} key={index}>
+            <div id={p.id} key={index} >
               <CartProduct p={p} />
             </div>
           ))}
+          
       </div>
     </div>
   );
