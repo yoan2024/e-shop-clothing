@@ -77,14 +77,14 @@ const Productos = () => {
 
   return (
     <>
-      <div className="flex flex-row justify-center flex-wrap gap-4 relative">
+      <div className="flex flex-row justify-center bg-red-600  flex-wrap  gap-4 relative">
         {products.map((product, index) => (
           <div
             key={index}
-            className="w-52 h-auto flex flex-col items-center text-center transition-transform duration-300 transform hover:scale-105 hover:shadow-lg border rounded-xl p-3 cursor-pointer bg-white"
+            className="w-52 max-md:w-20  h-auto flex flex-col items-center text-center transition-transform duration-300 transform hover:scale-105 hover:shadow-lg border rounded-xl p-3 cursor-pointer bg-white"
           >
             {/* Product image */}
-            <div className="bg-white w-full h-40 flex items-center justify-center overflow-hidden rounded-md">
+            <div className="bg-white w-full h-40 max-md:h-20   flex items-center justify-center overflow-hidden rounded-md">
               <img
                 src={product.image}
                 alt={product.title}
@@ -111,7 +111,7 @@ const Productos = () => {
             )}
 
             {/* Action buttons */}
-            <div className="flex gap-2 mt-2">
+            <div className="flex max-md:flex-col  gap-2 mt-2">
               <button
                 className="px-2 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600"
                 onClick={() => handleEditar(product)}

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { collection, query, orderBy, getDocs } from "firebase/firestore";
 import { db } from "../firebase/firebase-config";
 import ModalDetailsPedido from "./ModalDetailsPedido.jsx";
+import { Bars3Icon } from '@heroicons/react/24/solid';
 
 const MainPedidos = () => {
   // State to hold all fetched orders
@@ -51,14 +52,16 @@ const MainPedidos = () => {
   };
 
   return (
-    <div className="w-4/5 flex flex-col items-center">
+    <div className="max-lg:w-auto  flex flex-col  lg:ml-3">
       {orders.length > 0 ? (
         <>
-          <div className="text-center mt-7 text-4xl">ORDERS</div>
-          <div>
-            <table className="text-xl text-center">
+         
+          <div className="text-center mt-7 mb-7  font-serif text-4xl">ORDERS</div>
+          <div className="w-full">
+            <table className="text-xl  text-center">
               <thead className="bg-slate-300">
                 <tr>
+             
                   <th>Order ID</th>
                   <th>Client</th>
                   <th>Date</th>

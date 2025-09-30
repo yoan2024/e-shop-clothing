@@ -75,7 +75,7 @@ const CambiarEstado = ({ onclose, order, setorders, setpd }) => {
   console.log(order)
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white rounded-2xl shadow-2xl p-6 h-4/6 w-full max-w-xs animate-fade-in-up relative flex flex-col justify-center">
+      <div className="bg-white rounded-2xl shadow-2xl p-6 h-4/6 max-lg:h-auto w-full max-w-xs animate-fade-in-up relative flex flex-col justify-center">
         {/* Close button */}
         <div
           className="absolute top-0 right-0 p-2 cursor-pointer hover:bg-slate-400"

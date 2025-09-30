@@ -16,7 +16,7 @@ const Dashboard = () => {
   return (
     <>
       {/* Admin layout: sidebar + main content */}
-      <div className="w-full flex flex-row justify-end p-2">
+      <div className="w-full flex relative gap-2  min-w-fit max-lg:justify-center flex-row  p-4">
         <AsidebarAdmin />
         
         {/* Admin Routes */}

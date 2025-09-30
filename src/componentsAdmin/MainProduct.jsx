@@ -15,12 +15,12 @@ const MainProduct = () => {
   const [add, setAdd] = useState(false);
 
   return (
-    <div className="w-4/5">
-      <main>
+    <div className="bg-black">
+      <main className="">
         {/* Add Product button is only shown if add === false */}
         {!add && (
           <div
-            className="fixed top-0 cursor-pointer bg-green-500 p-3 rounded-2xl z-10"
+            className="fixed top-0 cursor-pointer left-1/2 bg-green-500 p-3 rounded-2xl z-10"
             onClick={() => setAdd(true)}
           >
             +Add Product
@@ -28,9 +28,9 @@ const MainProduct = () => {
         )}
 
         {/* Section to display list of products */}
-        <section>
+        
           <Productos />
-        </section>
+        
 
         {/* Conditional rendering of AddProduct form */}
         <section>

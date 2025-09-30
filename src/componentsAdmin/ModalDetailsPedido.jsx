@@ -11,8 +11,8 @@ const ModalDetailsPedido = ({ onclose, p, setorders, setpd }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-      <div className="bg-white rounded-2xl shadow-2xl p-6 h-5/6 w-full max-w-xl animate-fade-in-up relative overflow-y-scroll">
+    <div className="fixed inset-0 z-50 flex items-center  justify-center bg-black bg-opacity-40">
+      <div className="bg-white rounded-2xl shadow-2xl p-6  max-lg:h-auto w-full max-w-xl animate-fade-in-up relative overflow-y-scroll">
         {/* Close button */}
         <button
           onClick={onclose}
