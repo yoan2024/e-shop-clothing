@@ -69,7 +69,7 @@ const Asidebar = ({ setFilterProducts, categ }) => {
           className="h-8 w-8 z-10 absolute  left-0  border-solid border-2 border-black hover:bg-gray-300    cursor-pointer"
           
         onClick={() => setToggle(!toggle)} /> : 
-         <div className="p-2 flex flex-col gap-6 w-fit h-fit max-sm:w-auto bg-slate-100 rounded-xl shadow-2xl">
+         <div className="p-2 flex flex-col sticky top-0  gap-6 w-fit max-h-screen z-10 max-sm:w-auto bg-slate-100 rounded-xl shadow-2xl">
        <Bars3Icon
           className="h-8 w-8    border-solid border-2  hover:bg-gray-300    cursor-pointer"
           
