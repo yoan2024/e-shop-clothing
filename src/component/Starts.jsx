@@ -21,7 +21,7 @@ export function StarRating({ rating }) {
   const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
 
   return (
-    <div className="flex gap-1 text-yellow-400">
+    <div className="flex  text-yellow-400">
       {/* Render full stars */}
       {[...Array(fullStars)].map((_, i) => (
         <FaStar key={`full-${i}`} />

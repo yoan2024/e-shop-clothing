@@ -55,7 +55,7 @@ console.log("productos fil", filterProducts,  products)
         </div>}
 
       {/* Product cards grid */}
-      <div className="flex     flex-row gap-1 h-fit justify-center  flex-wrap border-solid border-t-2 border-slate-200">
+      <div className="flex    flex-row gap-5 h-fit justify-center  flex-wrap border-solid border-t-2 border-slate-200">
         {products &&
           filterProducts.map((p, index) => (
             <div id={p.id} key={index} >

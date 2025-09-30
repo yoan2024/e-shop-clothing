@@ -15,7 +15,7 @@ const CartProduct = ({ p }) => {
 
   return (
     <div
-      className="w-48 h-64 max-sm:w-20 max-sm:h-36 flex flex-col items-center text-center transition-transform duration-300 transform hover:scale-105 hover:shadow-lg border rounded-xl p-2 cursor-pointer"
+      className="w-48 h-64  max-sm:w-20 max-sm:h-36 flex flex-col items-center text-center transition-transform duration-300 transform hover:scale-105 hover:shadow-lg border rounded-xl  cursor-pointer"
       onClick={() => handleRouter(p.id)}
     >
       {/* Product image with hover zoom effect */}
@@ -28,7 +28,7 @@ const CartProduct = ({ p }) => {
       </div>
 
       {/* Product title (limited to 2 lines) */}
-      <div className="mt-2 text-sm font-medium line-clamp-2 h-10">
+      <div className="mt-2  font-medium line-clamp-2 h-fit">
         {p.title}
       </div>
 
