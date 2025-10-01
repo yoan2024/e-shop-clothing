@@ -75,9 +75,61 @@ Admin panel includes:
 
 ## 📸 Screenshots
 
-> *(Add screenshots or GIFs of your app here: homepage, cart, profile, admin panel, etc.)*
+### 👤 Client Side
+
+#### 🔑 Authentication
+- *Login Page*  
+![Login](assets/screenshots/login.png)
+
+- *Sign Up Page*  
+![Sign Up](assets/screenshots/sign_up.png)
+
+#### 🛒 Shopping
+- *Cart*  
+![Cart](assets/screenshots/car.png)
+
+- *Order Details*  
+![Order Details](assets/screenshots/detailsOrder.png)
+
+- *Favorites*  
+![Favorites](assets/screenshots/favorites.png)
+
+#### 👤 User Profile
+- *Profile*  
+![Profile](assets/screenshots/profile.png)
+
+- *Orders History*  
+![Orders](assets/screenshots/orders.png)
+
 
 ---
+
+### 🛠 Admin Side
+
+#### 📦 Orders Management
+- *Orders Panel*  
+![Admin Orders](assets/screenshots/adminOrders.png)
+
+- *Edit Order*  
+![Edit Order](assets/screenshots/adminEditOrder.png)
+
+#### 👥 User Management
+- *Users Panel*  
+![Admin Users](assets/screenshots/adminUsers.png)
+
+- *Edit User*  
+![Edit User](assets/screenshots/adminEditUser.png)
+
+#### 👗 Product Management
+- *Products Panel*  
+![Admin Products](assets/screenshots/adminProducts.png)
+
+- *Edit Product*  
+![Edit Product](assets/screenshots/adminEditProduct.png)
+
+
+
+
 
 ## 📌 Project Status
 
@@ -91,7 +143,7 @@ Admin panel includes:
 📍 Pereira, Colombia  
 📩 **Email:** yhoangaga2024@gmail.com  
 🔗 **GitHub:** [yoan2024](https://github.com/yoan2024)  
-💼 **LinkedIn:** (add your LinkedIn link here)  
+💼 **LinkedIn:** https://www.linkedin.com/in/yoanramirezpro/ 
 
 ---
 
