@@ -47,7 +47,6 @@ const AppwithRoutes = () => {
     return () => clearTimeout(timer);
   }, [user]);
 
-  console.log("hola desde appwihroutes ajaj")
 
   // Loading screen while fetching user role
   if (loading) {
@@ -59,9 +58,11 @@ const AppwithRoutes = () => {
   }
 
   return (
-    <Router>
+    <div className="font-sans">
+      <Router>
       {rol === "admin" ? <LayoutAdmin rol={rol} /> : <LayoutClient />}
     </Router>
+    </div>
   );
 };
 

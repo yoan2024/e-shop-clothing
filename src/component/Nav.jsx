@@ -5,13 +5,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
 import { useCar } from "../context/Car";
-
+import { useUserProfile } from "../context/userProfileProvider";
 // Custom context hooks
 import { useUser } from "../context/User";
 import { useImage } from "../context/Image";
 
 import { logout } from "../firebase/authService";
 import ClipLoader from "react-spinners/ClipLoader";
+import UserProfile from "../page/client/logicaClient";
 
 /**
  * Nav Component
@@ -26,17 +27,19 @@ import ClipLoader from "react-spinners/ClipLoader";
  */
 
 const Nav = ({ tog, settog }) => {
+
   const { url } = useImage();
   const { user, setUser } = useUser();
   const [nCar, setNCar] = useState(0)
   const navigate = useNavigate();
   const [open, setOpen] = useState(false); // Controls avatar dropdown visibility
-
+  const [profile, setProfile] = useState({})
   const drownMenu = useRef() 
   const userAvatar = useRef() 
-
+  const {userProfile} = useUserProfile()
   const {car, setCar} = useCar()
 
+console.log("perfiluser", userProfile)
 useEffect(() => {
 
  const handleClickOutSite = (e) => {
@@ -58,6 +61,12 @@ const n = car.length
 setNCar(n)
   }
 },[car])
+
+
+
+useEffect(() => {
+  setProfile(userProfile)
+},[userProfile])
 
   // Logs out the user and redirects to home
   const handleLogout = () => {
@@ -115,8 +124,10 @@ setNCar(n)
     </div>
   };
    
+
+ 
   return (
-    <nav>
+    <nav className="relative">
       <div className="flex w-11/12 max-sm:w-full mt-3  justify-between items-center">
         {/* Navigation links */}
         <div className="flex flex-row gap-2 max-sm:hidden text-xl">
@@ -154,9 +165,9 @@ setNCar(n)
         {/* User profile, shopping bag, and favorites icons */}
         <div className="flex flex-row  items-center gap-4">
           {/* Avatar button */}
-          <div className="relative mt-2">
+          <div className="relative flex gap-2 text-xs  font-semibold hover:bg-slate-100 p-2 rounded-full cursor-pointer flex-row mt-2" onClick={() => setOpen(!open)} onMouseEnter={() => {setOpen(true) } } onMouseLeave={() => setOpen(false)}>
             <button ref={userAvatar}
-              onClick={() => setOpen(!open)}
+              
               className="focus:outline-none"
             >
               {url ? (
@@ -172,10 +183,13 @@ setNCar(n)
                 />
               )}
             </button>
-
+            <div className="flex flex-col"><span>Orders and</span><span></span> Account</div>
             {/* Dropdown panel */}
             {open && (
-              <div ref={drownMenu} className="absolute right-0 mt-2 w-64 bg-white border rounded-xl shadow-xl p-4 z-50">
+              <div ref={drownMenu}   className={`absolute top-[85%] right-[-50%] mt-2 w-64 bg-white border 
+              rounded-xl shadow-xl p-4 z-50 transition-all duration-300 ease-in-out
+              ${open ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-2 pointer-events-none"}
+              `}>
                 <div className="flex items-center gap-3 mb-4">
                   <img
                     src={url}
@@ -183,8 +197,7 @@ setNCar(n)
                     className="w-12 h-12 rounded-full"
                   />
                   <div>
-                    <p className="font-semibold text-lg">{user.name}</p>
-                    <p className="text-sm text-gray-500">{user.email}</p>
+                    <p className="font-semibold text-lg">{userProfile.name} </p>
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -195,7 +208,7 @@ setNCar(n)
                     }}
                     className="text-left px-4 py-2 rounded-md hover:bg-gray-100"
                   >
-                    View Profile
+                    View Profile and Orders
                   </button>
                   <button
                     onClick={handleLogout}

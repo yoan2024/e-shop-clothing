@@ -77,7 +77,7 @@ function ProfilePhotoUploader() {
   return (
     <div className="flex flex-col items-center gap-4">
       {/* Profile image and camera icon */}
-      <div className="w-48 h-48 relative">
+      <div className="w-24 h-24 relative">
         <img
           src={preview || url}
           alt="Profile picture"

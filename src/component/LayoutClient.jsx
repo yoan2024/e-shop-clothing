@@ -1,25 +1,31 @@
 // --- React imports ---
 import { useEffect, useState } from "react";
 import {
-  BrowserRouter as Router,
   Routes,
   Route,
+  useNavigate,
   useLocation,
 } from "react-router-dom";
 
-// --- Context imports ---
+// --- Contexts ---
 import { useUser } from "../context/User";
 import { useCar } from "../context/Car";
+import UserProfileProvider from "../context/userProfileProvider";
 
-// --- Firebase Firestore imports ---
-import { collection, doc, getDoc, setDoc, addDoc } from "firebase/firestore";
-import { auth } from "../firebase/firebase-config";
-import { db } from "../firebase/firebase-config";
+// --- Firebase ---
+import {
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+  addDoc,
+  onSnapshot,
+} from "firebase/firestore";
+import { auth, db } from "../firebase/firebase-config";
 import { logout } from "../firebase/authService";
-import { onSnapshot } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 
-// --- UI Components ---
+// --- Pages & Components ---
 import Home from "../page/client/Home";
 import PaymentSuccess from "./PaymentSuccess";
 import Header from "./Header";
@@ -28,35 +34,31 @@ import ProductDetails from "../page/client/ProductDetails";
 import Catalog from "../page/client/Catalog";
 import Login from "../page/client/Login";
 import SignUp from "../page/client/Sign_up";
-import UserProfile from "../page/client/UserProfile";
+import UserProfile from "../page/client/logicaClient";
 import Favorites from "../page/client/Favoritess";
 
-// --- Main Layout Component ---
 const LayoutClient = () => {
   // Context state
-  const { car, setCar } = useCar(); // Shopping cart context
-  const { user } = useUser();       // Authenticated user context
+  const { car, setCar } = useCar();
+  const { user } = useUser();
 
-  // Local component state
+  // Local state
   const [quantities, setQuantities] = useState({});
-  const [total, setTotal] = useState(0); 
-  const [toggle, setToggle] = useState(false); // Toggle for shopping bag view
-  const [paid, setPaid] = useState(false);     // State to show success payment screen
+  const [total, setTotal] = useState(0);
+  const [toggleCart, setToggleCart] = useState(false);
+  const [paid, setPaid] = useState(false);
 
+  const navigate = useNavigate();
   const location = useLocation();
 
-  // Routes where Header and Footer should be hidden
   const hiddenRoutes = ["/sign_up", "/login_in"];
 
-  /**
-   * Fetch cart data from Firestore when user or cart changes.
-   * Updates quantities and total price locally.
-   */
+  // 🔁 Fetch user cart from Firestore when user or cart changes
   useEffect(() => {
     if (!user) return;
 
     const fetchCart = async () => {
-      const cartRef = doc(db, "Car", user.uid); // Firestore cart reference
+      const cartRef = doc(db, "Car", user.uid);
       const cartSnapshot = await getDoc(cartRef);
 
       if (cartSnapshot.exists()) {
@@ -71,33 +73,29 @@ const LayoutClient = () => {
 
         setQuantities(updatedQuantities);
         setTotal(Number(updatedTotal).toFixed(2));
-      }else{
-        setTotal(0)
-        
+      } else {
+        setTotal(0);
       }
     };
 
-    onAuthStateChanged(auth, (user) => {
-    if (user) {
-    const userDocRef = doc(db, "users", user.uid);
-    onSnapshot(userDocRef, async (docSnap)  =>  {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        if (data.forceLogout === true) {
-       
-          logout(auth);
-        }
+    // 🔐 Watch user for force logout
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const userDocRef = doc(db, "users", user.uid);
+        onSnapshot(userDocRef, (docSnap) => {
+          if (docSnap.exists() && docSnap.data().forceLogout === true) {
+            logout(auth);
+            navigate("/login_in");
+          }
+        });
       }
     });
-  }
-    });
-    fetchCart();
-  }, [user, car]);
 
-  /**
-   * Handles changing the quantity of an item in the cart.
-   * Updates Firestore and local state.
-   */
+    fetchCart();
+    return () => unsubscribe();
+  }, [user, car, navigate]);
+
+  // ➕ Change item quantity
   const handleQuantityChange = async (id, quantity) => {
     if (!user) return;
 
@@ -105,20 +103,18 @@ const LayoutClient = () => {
     const docSnap = await getDoc(ref);
 
     if (docSnap.exists()) {
-      const items = docSnap.data().car.map((item) =>
+      const updatedItems = docSnap.data().car.map((item) =>
         item.id === id
-          ? { ...item, quantity: quantity, total: item.price * quantity }
+          ? { ...item, quantity, total: item.price * quantity }
           : item
       );
-      await setDoc(ref, { car: items });
-      setCar(items);
+      await setDoc(ref, { car: updatedItems });
+      setCar(updatedItems);
       setQuantities((prev) => ({ ...prev, [id]: quantity }));
     }
   };
 
-  /**
-   * Removes an item from the shopping cart in Firestore and state.
-   */
+  // ❌ Remove item from cart
   const handleRemoveItem = async (id) => {
     if (!user) return;
 
@@ -126,26 +122,19 @@ const LayoutClient = () => {
     const docSnap = await getDoc(ref);
 
     if (docSnap.exists()) {
-      const filtered = docSnap.data().car.filter((item) => item.id !== id);
-      await setDoc(ref, { car: filtered });
-      setCar(filtered);
+      const filteredItems = docSnap.data().car.filter((item) => item.id !== id);
+      await setDoc(ref, { car: filteredItems });
+      setCar(filteredItems);
     }
   };
 
-  /**
-   * Generates a unique order ID based on current date and time.
-   */
+  // 🧾 Generate unique order ID
   const generateOrderID = () => {
     const now = new Date();
-    return `ORD-${now.getFullYear()}${now.getMonth()}${now.getDate()}${now.getHours()}${now.getMinutes()}${now.getSeconds()}${now.getMilliseconds()}`;
+    return `ORD-${now.getTime()}`;
   };
 
-  /**
-   * Handles the checkout process:
-   * - Saves the order in Firestore
-   * - Clears the cart
-   * - Shows payment success component
-   */
+  // ✅ Handle checkout
   const handleCheckout = async () => {
     if (!user || car.length === 0) return;
 
@@ -160,46 +149,41 @@ const LayoutClient = () => {
 
     const order = {
       orderId,
-      paymentMethod: "Credit Card",
       orderDate,
-      shippingStatus: "🚚 Processing",
       orderedItems: car,
+      paymentMethod: "Credit Card",
+      shippingStatus: "🚚 Processing",
       email: userData.email,
+      name: userData.name,
+      phone: userData.phone,
+      address: userData.address,
+      role: userData.rol,
+      userId: user.uid,
       totalPaid: total,
       status: "Pending",
-      role: userData.rol,
-      address: userData.address,
-      phone: userData.phone,
-      name: userData.name,
-      userId: user.uid,
     };
 
     await addDoc(collection(db, "allOrders"), order);
     await setDoc(doc(db, "Car", user.uid), { car: [] });
+
     setCar([]);
     setPaid(true);
   };
 
-
-  
-
-
-
-
   return (
-    <>
-      {/* Header - hidden on login and signup pages */}
+   <>
+      {/* Header */}
       {!hiddenRoutes.includes(location.pathname) && (
-        <Header toggle={toggle} setToggle={setToggle} />
+        <Header toggle={toggleCart} setToggle={setToggleCart} />
       )}
 
       {/* Shopping Cart Drawer */}
-      {toggle && (
+      {toggleCart && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-end z-50">
           <div className="bg-white p-4 w-full max-w-md h-full overflow-y-auto">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-bold">Shopping Bag</h2>
-              <button onClick={() => setToggle(false)}>X</button>
+              <button onClick={() => setToggleCart(false)}>X</button>
             </div>
 
             <div className="mt-4">
@@ -233,7 +217,7 @@ const LayoutClient = () => {
               ))}
             </div>
 
-            {/* Cart Summary and Payment Button */}
+            {/* Cart Summary and Checkout */}
             <div className="border-t pt-4 mt-4">
               <p>Subtotal: ${total}</p>
               <p>Discount: $0</p>
@@ -249,10 +233,10 @@ const LayoutClient = () => {
         </div>
       )}
 
-      {/* Payment Confirmation Component */}
+      {/* Payment Confirmation */}
       {paid && <PaymentSuccess onClose={() => setPaid(false)} />}
 
-      {/* Main Routes */}
+      {/* Routes */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/favorites" element={<Favorites />} />
@@ -263,9 +247,9 @@ const LayoutClient = () => {
         <Route path="/login_in" element={<Login />} />
       </Routes>
 
-      {/* Footer - also hidden on login/signup pages */}
+      {/* Footer */}
       {!hiddenRoutes.includes(location.pathname) && <Footer />}
-    </>
+ </>
   );
 };
 

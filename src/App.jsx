@@ -5,11 +5,14 @@ import OrdersProvider from "./context/OrdersProvider.jsx";
 import FavoritesProvider from "./context/Favorites.jsx";
 import LikedProvider from "./context/Liked.jsx";
 import ImageProvider from "./context/Image.jsx";
+import UserProfileProvider from "./context/userProfileProvider.jsx";
 
 
 import AppwithRoutes from "./routes/AppwithRoutes.jsx";
+
 const App = () => {
   return (
+    <UserProfileProvider >
     <OrdersProvider>
       <ImageProvider>
         <LikedProvider>
@@ -25,6 +28,7 @@ const App = () => {
         </LikedProvider>
       </ImageProvider>
     </OrdersProvider>
+    </UserProfileProvider>
   );
 };
 
