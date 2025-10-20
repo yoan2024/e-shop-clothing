@@ -94,7 +94,7 @@ const Header = ({ toggle, setToggle}) => {
   }, []);
 
   return (
-    <header className="w-full bg-white/90 shadow-md flex flex-col justify-center px-3">
+    <header className=" shadow-md flex flex-col justify-center px-3">
       
       {/* Brand and Promo Section */}
       <div className="flex flex-row items-center relative header justify-between mb-2">

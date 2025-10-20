@@ -60,8 +60,9 @@ const UserProfile = () => {
   const [cAddress, setCAddress] = useState(false);
   const [disable, setDisable] = useState([]); // --- State to track which fields are being edited ---
 
-
-
+ 
+    ///estado para controlar las ordenes que el ususrio seleciona
+    const [activeTab, setActiveTab] = useState("All");
 
   // --- Load user data and orders from Firebase when the user changes or the component mounts ---
   useEffect(() => {
@@ -151,11 +152,11 @@ console.log(name, email, address, phone)
   return (
     <div className="min-h-screen flex flex-row lg:w-4/5     m-auto   py-3">
       
-      <AccountSidebar/>
+      <AccountSidebar  activeTab={activeTab} setActiveTab={setActiveTab}/>
       {user ? (
         <>
       {/*       <Profile_info name={name} email={email} address={address} phone={phone} setName={setName} setPhone={setPhone} setAddress={setAddress} setEmail={setEmail}/>
-*/}<Orders/>  
+*/}<Orders activeTab={activeTab} setActiveTab={setActiveTab}/>  
         </>
       ) : (
         // --- Loading spinner while user data is fetched ---

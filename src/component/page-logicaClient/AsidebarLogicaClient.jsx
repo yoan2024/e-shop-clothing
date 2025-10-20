@@ -2,7 +2,11 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp, Package, User, Star, Gift, Shield, CreditCard, Menu } from "lucide-react";
 
-const AccountSidebar = () => {
+
+
+const navItems = ["All", "Processing", "On the way", "Delivered", "Returned", "Cancelled"];
+
+const AccountSidebar = ({activeTab, setActiveTab} ) => {
   const [open, setOpen] = useState(false); // toggle orders dropdown
   const [menuOpen, setMenuOpen] = useState(false); // toggle sidebar on mobile
 
@@ -36,11 +40,12 @@ const AccountSidebar = () => {
             </button>
             {open && (
               <div className="pl-8 mt-2 flex flex-col gap-2 text-sm">
-                <button className="text-gray-500 bg-orange-100 border-l-4 border-solid border-orange-400">All</button>
-                <button className="text-gray-500 bg-orange-100 border-l-4 border-solid border-orange-400">Processing</button>
-                <button className="text-gray-500 bg-orange-100 border-l-4 border-solid border-orange-400">Shipped</button>
-                <button className="text-gray-500 bg-orange-100 border-l-4 border-solid border-orange-400">Delivered</button>
-                <button className="text-gray-500 bg-orange-100 border-l-4 border-solid border-orange-400">Returns</button>
+               
+               {navItems.map((a, b) =>{
+                return (
+                  <button onClick={() => setActiveTab(a) }  key={b} className={` ${activeTab === a ? "border-orange-400 border-l-4 bg-orange-200" : "border-transparent"}`}>{a}</button>
+                )
+               } ) } 
               </div>
             )}
           </div>

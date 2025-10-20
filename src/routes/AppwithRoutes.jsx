@@ -58,7 +58,7 @@ const AppwithRoutes = () => {
   }
 
   return (
-    <div className="font-sans">
+    <div className="font-sans ">
       <Router>
       {rol === "admin" ? <LayoutAdmin rol={rol} /> : <LayoutClient />}
     </Router>

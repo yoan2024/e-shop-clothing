@@ -11,15 +11,12 @@ import { useEffect } from "react";
 import BodyTableP from "./BodyTableP"; // Component responsible for rendering order items
 
 // ===== Component =====
-const Table = ({ label, ped }) => {
+const Table = ({  ped }) => {
 
   
 
   return (
-    <section className="flex flex-col items-center  mt-32 ">
-      {/* Section title */}
-      <div className="text-3xl mb-10 font-bold">{label}</div>
-
+    <section className="flex flex-col items-center ">
       {/* Loop through each order (pedido) */}
       <div className="overflow-x-auto max-w-full">
         {ped.map((p, index) => {
@@ -60,14 +57,14 @@ const Table = ({ label, ped }) => {
                </tr>
               <tr className="mt-5">
                  
-                  <th className="bg-black text-white">Total</th>
+                  <th className="bg-black/50 ">Total</th>
                   <th></th>
                   <th></th>
                   <th></th>
                   <th></th>
 
                   {/* Total amount paid */}
-                  <th className="bg-black text-white px-3 py-1 rounded">
+                  <th className="bg-black/50 ">
                     ${p.totalPaid} USD
                   </th>
 
@@ -76,10 +73,10 @@ const Table = ({ label, ped }) => {
                 
                   className={
                     p.status === "Pendiente"
-                      ? "bg-red-500"
+                      ? "bg-red-200"
                       : p.status === "En camino"
-                      ? "bg-blue-500"
-                      : "bg-green-500"
+                      ? "bg-blue-200"
+                      : "bg-green-200"
                   }>
                 
                   {p.status}

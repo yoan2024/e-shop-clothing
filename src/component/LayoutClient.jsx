@@ -172,7 +172,8 @@ const LayoutClient = () => {
 
   return (
    <>
-      {/* Header */}
+    <div className="min-w-fit">
+        {/* Header */}
       {!hiddenRoutes.includes(location.pathname) && (
         <Header toggle={toggleCart} setToggle={setToggleCart} />
       )}
@@ -249,6 +250,7 @@ const LayoutClient = () => {
 
       {/* Footer */}
       {!hiddenRoutes.includes(location.pathname) && <Footer />}
+    </div>
  </>
   );
 };
