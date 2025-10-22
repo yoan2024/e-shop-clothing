@@ -7,6 +7,11 @@ import {
   useLocation,
 } from "react-router-dom";
 
+
+// --- utils --- ///
+import { generateUniqueID } from "../utils/utils";
+
+
 // --- Contexts ---
 import { useUser } from "../context/User";
 import { useCar } from "../context/Car";
@@ -130,8 +135,8 @@ const LayoutClient = () => {
 
   // 🧾 Generate unique order ID
   const generateOrderID = () => {
-    const now = new Date();
-    return `ORD-${now.getTime()}`;
+    const  id = generateUniqueID()
+    return `ORD-${id}`;
   };
 
   // ✅ Handle checkout
@@ -146,13 +151,15 @@ const LayoutClient = () => {
     if (!userSnap.exists()) return;
 
     const userData = userSnap.data();
-
+    const  updateCar = car.map((c) => {
+      return {...c, reviewed: false}
+    })
     const order = {
       orderId,
       orderDate,
-      orderedItems: car,
+      orderedItems: updateCar,
       paymentMethod: "Credit Card",
-      shippingStatus: "🚚 Processing",
+      shippingStatus: "Pending",
       email: userData.email,
       name: userData.name,
       phone: userData.phone,
@@ -172,7 +179,7 @@ const LayoutClient = () => {
 
   return (
    <>
-    <div className="min-w-fit">
+    <div className="min-w-fit ">
         {/* Header */}
       {!hiddenRoutes.includes(location.pathname) && (
         <Header toggle={toggleCart} setToggle={setToggleCart} />
@@ -241,7 +248,7 @@ const LayoutClient = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/favorites" element={<Favorites />} />
-        <Route path="/userProfile" element={<UserProfile />} />
+        <Route path="/userProfile/:section" element={<UserProfile />} />
         <Route path="/catalog/:category" element={<Catalog />} />
         <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="/sign_up" element={<SignUp />} />

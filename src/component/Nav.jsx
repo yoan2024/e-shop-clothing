@@ -39,7 +39,6 @@ const Nav = ({ tog, settog }) => {
   const {userProfile} = useUserProfile()
   const {car, setCar} = useCar()
 
-console.log("perfiluser", userProfile)
 useEffect(() => {
 
  const handleClickOutSite = (e) => {
@@ -203,7 +202,7 @@ useEffect(() => {
                 <div className="flex flex-col gap-2">
                   <button
                     onClick={() => {
-                      navigate("/userProfile");
+                      navigate("/userProfile/profile");
                       setOpen(false);
                     }}
                     className="text-left px-4 py-2 rounded-md hover:bg-gray-100"

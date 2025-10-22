@@ -96,6 +96,7 @@ const CambiarEstado = ({ onclose, order, setorders, setpd }) => {
       className="border-2 border-solid border-black flex-1"
     >
       <option value="Preparing">Preparing</option>
+      <option value="Processing">Processing</option>
       <option value="Not shipped">Not shipped</option>
       <option value="Courier assigned">Courier assigned</option>
       <option value="On the way">On the way</option>
@@ -103,6 +104,7 @@ const CambiarEstado = ({ onclose, order, setorders, setpd }) => {
       <option value="Failed attempt">Failed attempt</option>
       <option value="Rescheduled">Rescheduled</option>
       <option value="Delivered">Delivered</option>
+      <option value="Cancelled">Cancelled</option>
       <option value="Returned">Returned</option>
     </select>
   </div>
@@ -116,10 +118,12 @@ const CambiarEstado = ({ onclose, order, setorders, setpd }) => {
       onChange={(e) => setOrderStatus(e.target.value)}
       className="border-2 border-solid border-black flex-1"
     >
-      <option value="Pending">Pending</option>
       <option value="On the way">On the way</option>
       <option value="Delivered">Delivered</option>
       <option value="Cancelled">Cancelled</option>
+      <option value="Processing">Processing</option>
+      <option value="Pending">Pending</option>
+      <option value="Returned">Returned</option>
     </select>
   </div>
 </div>

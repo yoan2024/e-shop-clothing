@@ -20,7 +20,7 @@ const BodyTableP = ({ itemspedidos,  status, shippingStatus }) => {
               </td>
 
               {/* Product title, truncated if too long */}
-              <td className="max-w-[200px] truncate">{p.title}</td>
+              <td className="max-w-[100px] truncate">{p.title}</td>
 
               {/* Quantity of the product ordered */}
               <td>{p.quantity}</td>

@@ -47,7 +47,7 @@ console.log("productos fil", filterProducts,  products)
         </div>
       )}
 
-      {filterProducts.length === 0 && <div class="flex min-w-full justify-center items-center   bg-gray-100 text-center text-gray-700 p-6 rounded-lg shadow-md">
+      {filterProducts.length === 0 && <div className="flex min-w-full justify-center items-center   bg-gray-100 text-center text-gray-700 p-6 rounded-lg shadow-md">
         <div>
          <h2 class="text-xl font-semibold mb-2">No Products Found</h2>
          <p class="text-sm">Sorry, we couldn't find any products matching your filter. Please try again with different criteria.</p>

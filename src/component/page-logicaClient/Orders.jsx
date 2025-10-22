@@ -2,18 +2,28 @@ import { useEffect, useState } from "react";
 import { useOrders } from "../../context/OrdersProvider";
 import Table from "../Table";
 
-const navItems = ["All", "Processing", "On the way", "Delivered", "Returned", "Cancelled"];
+const navItems = [
+  "All",
+  "Processing",
+  "On the way",
+  "Delivered",
+  "Returned",
+  "Cancelled",
+];
 
 export const Orders = ({ activeTab, setActiveTab }) => {
   const [search, setSearch] = useState("");
   const [ordersTab, setOrdersTab] = useState([]);
   const { orders, orderHistory } = useOrders();
 
+  console.log("ordenes", orders, "historyyy", orderHistory)
+
+  console.log("ordertav", ordersTab)
   // 🔹 Filter orders by tab and search input
   const filterByTabOrder = () => {
     const allOrders = [...orders, ...orderHistory];
     let filtered = [];
-
+console.log("activetab", activeTab)
     // 🔸 Filter by current tab
     switch (activeTab) {
       case "All":
@@ -29,6 +39,7 @@ export const Orders = ({ activeTab, setActiveTab }) => {
         filtered = allOrders.filter((o) => o.status === "Delivered");
         break;
       case "Returned":
+        console.log("entro aca en reurned")
         filtered = allOrders.filter((o) => o.status === "Returned");
         break;
       case "Cancelled":
@@ -39,31 +50,31 @@ export const Orders = ({ activeTab, setActiveTab }) => {
         break;
     }
 
-    // 🔸 Filter by search term (ID, item name, payment, etc.)
+    // 🔸 Filter by search term (order ID, item name, payment method, etc.)
     if (search.trim() !== "") {
-  const searchTerm = search.toLowerCase().trim();
+      const searchTerm = search.toLowerCase().trim();
 
-  filtered = filtered.filter((o) => {
-    // ✅ Step 1: match by orderId
-    const matchByOrderId = o.orderId?.toLowerCase().includes(searchTerm);
+      filtered = filtered.filter((o) => {
+        // ✅ 1. Match by orderId (outside orderedItems)
+        const matchByOrderId = o.orderId?.toLowerCase().includes(searchTerm);
 
-    // ✅ Step 2: match inside orderedItems (title or product id)
-    const matchByItem =
-      o.orderedItems?.some(
-        (item) =>
-          item.title?.toLowerCase().includes(searchTerm) ||
-          item.id?.toString().toLowerCase().includes(searchTerm)
-      ) || false;
+        // ✅ 2. Match inside orderedItems (title or product ID)
+        const matchByItem =
+          o.orderedItems?.some(
+            (item) =>
+              item.title?.toLowerCase().includes(searchTerm) ||
+              item.id?.toString().toLowerCase().includes(searchTerm)
+          ) || false;
 
-    // ✅ Step 3: match by payment method (e.g. "credit card", "paypal")
-    const matchByPayment =
-      o.paymentMethod?.toLowerCase().includes(searchTerm);
+        // ✅ 3. Match by payment method
+        const matchByPayment = o.paymentMethod
+          ?.toLowerCase()
+          .includes(searchTerm);
 
-    // Return true if any of the 3 match
-    return matchByOrderId || matchByItem || matchByPayment;
-  });
-}
-
+        // ✅ Return true if any match
+        return matchByOrderId || matchByItem || matchByPayment;
+      });
+    }
 
     setOrdersTab(filtered);
   };
@@ -74,19 +85,19 @@ export const Orders = ({ activeTab, setActiveTab }) => {
   }, [activeTab, search, orders, orderHistory]);
 
   return (
-    <section className="flex flex-col min-h-screen p-4 w-fit ">
+    <section className="flex flex-col min-h-screen items-center w-full py-4">
       {/* 🔸 Navigation bar */}
-      <nav className="flex mb-4 flex-row max-2xl:flex-col">
+      <nav className="flex mb-4 flex-row w-full max-2xl:flex-col">
         <div className="flex flex-wrap">
           {navItems.map((item) => (
             <div
               key={item}
               onClick={() => setActiveTab(item)}
-              className={`cursor-pointer px-4 py-2 text-center md:text-left border-b-2 md:border-b-0 md:border-l-4 md:pl-4 ${
+              className={`cursor-pointer border-b-2 px-4 py-2 transition-all ${
                 activeTab === item
                   ? "border-black font-semibold"
                   : "border-transparent text-gray-600 hover:text-black hover:border-gray-300"
-              } transition-all`}
+              }`}
             >
               {item}
             </div>
@@ -105,10 +116,8 @@ export const Orders = ({ activeTab, setActiveTab }) => {
         </div>
       </nav>
 
-      {/* 🔸 Orders table component */}
-      <section>
-        <Table ped={ordersTab} />
-      </section>
+      {/* 🔸 Orders table */}
+      <Table ped={ordersTab} />
     </section>
   );
 };
